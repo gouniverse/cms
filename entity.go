@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	uid "github.com/lesichkovm/gouid"
+	"github.com/gouniverse/uid"
 	"gorm.io/gorm"
 )
 
@@ -19,16 +19,16 @@ const (
 
 // Entity type
 type Entity struct {
-	ID          string     `gorm:"type:varchar(40);column:id;primary_key;"`
-	Status      string     `gorm:"type:varchar(10);column:status;"`
-	Type        string     `gorm:"type:varchar(40);column:type;"`
-	Name        string     `gorm:"type:varchar(255);column:name;DEFAULT NULL;"`
-	Description string     `gorm:"type:longtext;column:description;"`
-	CreatedAt   time.Time  `gorm:"type:datetime;column:created_at;DEFAULT NULL;"`
-	UpdatedAt   time.Time  `gorm:"type:datetime;column:updated_at;DEFAULT NULL;"`
-	DeletedAt   *time.Time `gorm:"type:datetime;olumn:deleted_at;DEFAULT NULL;"`
+	ID     string `gorm:"type:varchar(40);column:id;primary_key;"`
+	Status string `gorm:"type:varchar(10);column:status;"`
+	Type   string `gorm:"type:varchar(40);column:type;"`
+	//Name        string     `gorm:"type:varchar(255);column:name;DEFAULT NULL;"`
+	//Description string     `gorm:"type:longtext;column:description;"`
+	CreatedAt time.Time  `gorm:"type:datetime;column:created_at;DEFAULT NULL;"`
+	UpdatedAt time.Time  `gorm:"type:datetime;column:updated_at;DEFAULT NULL;"`
+	DeletedAt *time.Time `gorm:"type:datetime;column:deleted_at;DEFAULT NULL;"`
 
-	Attributes []EntityAttribute
+	Attributes []EntityAttribute `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // TableName teh name of the User table
@@ -38,7 +38,7 @@ func (Entity) TableName() string {
 
 // BeforeCreate adds UID to model
 func (e *Entity) BeforeCreate(tx *gorm.DB) (err error) {
-	uuid := uid.NanoUid()
+	uuid := uid.HumanUid()
 	e.ID = uuid
 	return nil
 }
@@ -47,13 +47,34 @@ func (e *Entity) BeforeCreate(tx *gorm.DB) (err error) {
 func (e *Entity) GetAttribute(attributeKey string) *EntityAttribute {
 	entityAttribute := &EntityAttribute{}
 
-	result := GetDb().First(&entityAttribute, "entity_id=? AND attribute_key = ?", e.ID, attributeKey)
+	result := GetDb().First(&entityAttribute, "entity_id=? AND attribute_key=?", e.ID, attributeKey)
 
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil
+	if result.Error != nil {
+
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil
+		}
+
+		log.Panic(result.Error)
 	}
 
 	return entityAttribute
+}
+
+// GetAttributeValue the value of the attribute or the default value if it does not exist
+func (e *Entity) GetAttributeValue(attributeKey string, defaultValue interface{}) interface{} {
+	entityAttribute := e.GetAttribute(attributeKey)
+
+	if entityAttribute == nil {
+		return defaultValue
+	}
+
+	return entityAttribute.GetValue()
+}
+
+// UpsertAttributes upserts the attributes
+func (e *Entity) UpsertAttributes(attributes map[string]interface{}) bool {
+	return EntityAttributesUpsert(e.ID, attributes)
 }
 
 // EntityAttribute type
@@ -74,7 +95,7 @@ func (EntityAttribute) TableName() string {
 
 // BeforeCreate adds UID to model
 func (e *EntityAttribute) BeforeCreate(tx *gorm.DB) (err error) {
-	uuid := uid.NanoUid()
+	uuid := uid.HumanUid()
 	e.ID = uuid
 	return nil
 }
@@ -115,72 +136,11 @@ func (e *EntityAttribute) GetValue() interface{} {
 	return value
 }
 
-// EntityCreate creates a new entity
-func EntityCreate(entityType string) *Entity {
-	entity := &Entity{Type: entityType, Status: EntityStatusActive}
-
-	dbResult := GetDb().Create(&entity)
-
-	if dbResult.Error != nil {
-		return nil
-	}
-
-	return entity
-}
-
-// EntityCreateWithAttributes func
-func EntityCreateWithAttributes(entityType string, attributes map[string]interface{}) *Entity {
-	// Note the use of tx as the database handle once you are within a transaction
-	tx := GetDb().Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Error; err != nil {
-		return nil
-	}
-
-	//return tx.Commit().Error
-
-	entity := &Entity{Type: entityType, Status: EntityStatusActive}
-
-	dbResult := tx.Create(&entity)
-
-	if dbResult.Error != nil {
-		tx.Rollback()
-		return nil
-	}
-
-	//entityAttributes := make([]EntityAttribute, 0)
-	for k, v := range attributes {
-		ea := EntityAttribute{EntityID: entity.ID, AttributeKey: k} //, AttributeValue: value}
-		ea.SetValue(v)
-
-		dbResult2 := tx.Create(&ea)
-		if dbResult2.Error != nil {
-			tx.Rollback()
-			return nil
-		}
-	}
-
-	err := tx.Commit().Error
-
-	if err != nil {
-		tx.Rollback()
-		return nil
-	}
-
-	return entity
-
-}
-
 // EntityAttributeFind finds an entity by ID
 func EntityAttributeFind(entityID string, attributeKey string) *EntityAttribute {
 	entityAttribute := &EntityAttribute{}
 
-	result := GetDb().First(&entityAttribute, "entity_id = ? AND attribute_key = ?", entityID, attributeKey)
+	result := GetDb().First(&entityAttribute, "entity_id=? AND attribute_key=?", entityID, attributeKey)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil
@@ -265,18 +225,124 @@ func EntityAttributeUpsert(entityID string, attributeKey string, attributeValue 
 
 }
 
-// EntityFindByID finds an entity by ID
-func EntityFindByID(entityID string) *Entity {
-	entity := &Entity{}
+// EntityCreate creates a new entity
+func EntityCreate(entityType string) *Entity {
+	entity := &Entity{Type: entityType, Status: EntityStatusActive}
 
-	resultEntity := GetDb().First(&entity, "id = ?", entityID)
+	dbResult := GetDb().Create(&entity)
 
-	if resultEntity.Error != nil {
-		log.Panic(resultEntity.Error)
+	if dbResult.Error != nil {
+		return nil
 	}
 
-	if errors.Is(resultEntity.Error, gorm.ErrRecordNotFound) {
+	return entity
+}
+
+// EntityCreateWithAttributes func
+func EntityCreateWithAttributes(entityType string, attributes map[string]interface{}) *Entity {
+	// Note the use of tx as the database handle once you are within a transaction
+	tx := GetDb().Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
 		return nil
+	}
+
+	//return tx.Commit().Error
+
+	entity := &Entity{Type: entityType, Status: EntityStatusActive}
+
+	dbResult := tx.Create(&entity)
+
+	if dbResult.Error != nil {
+		tx.Rollback()
+		return nil
+	}
+
+	//entityAttributes := make([]EntityAttribute, 0)
+	for k, v := range attributes {
+		ea := EntityAttribute{EntityID: entity.ID, AttributeKey: k} //, AttributeValue: value}
+		ea.SetValue(v)
+
+		dbResult2 := tx.Create(&ea)
+		if dbResult2.Error != nil {
+			tx.Rollback()
+			return nil
+		}
+	}
+
+	err := tx.Commit().Error
+
+	if err != nil {
+		tx.Rollback()
+		return nil
+	}
+
+	return entity
+}
+
+// EntityDelete deletes an entity and all attributes
+func EntityDelete(entityID string) bool {
+	if entityID == "" {
+		return false
+	}
+
+	// Note the use of tx as the database handle once you are within a transaction
+	tx := GetDb().Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		log.Println(err)
+		return false
+	}
+
+	if err := tx.Where("entity_id=?", entityID).Delete(&EntityAttribute{}).Error; err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return false
+	}
+
+	if err := tx.Where("id=?", entityID).Delete(&Entity{}).Error; err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return false
+	}
+
+	err := tx.Commit().Error
+
+	if err == nil {
+		return true
+	}
+
+	log.Println(err)
+
+	return false
+}
+
+// EntityFindByID finds an entity by ID
+func EntityFindByID(entityID string) *Entity {
+	if entityID == "" {
+		return nil
+	}
+
+	entity := &Entity{}
+
+	resultEntity := GetDb().First(&entity, "id=?", entityID)
+
+	if resultEntity.Error != nil {
+		if errors.Is(resultEntity.Error, gorm.ErrRecordNotFound) {
+			return nil
+		}
+		log.Panic(resultEntity.Error)
 	}
 
 	// DEBUG: log.Println(entity)
@@ -289,7 +355,7 @@ func EntityFindByAttribute(entityType string, attributeKey string, attributeValu
 	entityAttribute := &EntityAttribute{}
 
 	subQuery := GetDb().Model(&Entity{}).Select("id").Where("type = ?", entityType)
-	result := GetDb().First(&entityAttribute, "entity_id IN (?) AND attribute_key = ? AND attribute_value = ?", subQuery, attributeKey, attributeValue)
+	result := GetDb().First(&entityAttribute, "entity_id IN (?) AND attribute_key=? AND attribute_value=?", subQuery, attributeKey, attributeValue)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil
@@ -303,7 +369,7 @@ func EntityFindByAttribute(entityType string, attributeKey string, attributeValu
 
 	entity := &Entity{}
 
-	resultEntity := GetDb().First(&entity, "id = ?", entityAttribute.EntityID)
+	resultEntity := GetDb().First(&entity, "id=?", entityAttribute.EntityID)
 
 	if errors.Is(resultEntity.Error, gorm.ErrRecordNotFound) {
 		return nil
@@ -318,10 +384,45 @@ func EntityFindByAttribute(entityType string, attributeKey string, attributeValu
 	return entity
 }
 
+// EntityListByAttribute finds an entity by attribute
+func EntityListByAttribute(entityType string, attributeKey string, attributeValue string) []Entity {
+	//entityAttributes := []EntityAttribute{}
+	var entityIDs []string
+
+	subQuery := GetDb().Model(&Entity{}).Select("id").Where("type = ?", entityType)
+	result := GetDb().Model(&EntityAttribute{}).Select("entity_id").Find(&entityIDs, "entity_id IN (?) AND attribute_key=? AND attribute_value=?", subQuery, attributeKey, attributeValue)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil
+	}
+
+	if result.Error != nil {
+		log.Panic(result.Error)
+	}
+
+	// DEBUG: log.Println(result)
+
+	entities := []Entity{}
+
+	resultEntity := GetDb().Where("id IN (?)", entityIDs).Find(&entities)
+
+	if errors.Is(resultEntity.Error, gorm.ErrRecordNotFound) {
+		return nil
+	}
+
+	if resultEntity.Error != nil {
+		log.Panic(resultEntity.Error)
+	}
+
+	// DEBUG: log.Println(entity)
+
+	return entities
+}
+
 // EntityList lists entities
 func EntityList(entityType string, offset uint64, perPage uint64, search string, orderBy string, sort string) []Entity {
 	entityList := []Entity{}
-	result := GetDb().Where("type = ?", entityType).Order(orderBy + " " + sort).Offset(int(offset)).Limit(int(perPage)).Find(&entityList)
+	result := GetDb().Where("type=?", entityType).Order(orderBy + " " + sort).Offset(int(offset)).Limit(int(perPage)).Find(&entityList)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil
@@ -333,7 +434,7 @@ func EntityList(entityType string, offset uint64, perPage uint64, search string,
 // EntityCount counts entities
 func EntityCount(entityType string) uint64 {
 	var count int64
-	GetDb().Model(&Entity{}).Where("type = ?", entityType).Count(&count)
+	GetDb().Model(&Entity{}).Where("type=?", entityType).Count(&count)
 	return uint64(count)
 	// sqlStr, args, _ := squirrel.Select("COUNT(*) AS count").From(TableArticle).Limit(1).ToSql()
 
@@ -342,4 +443,8 @@ func EntityCount(entityType string) uint64 {
 	// count, _ := strconv.ParseUint(entities[0]["count"], 10, 64)
 
 	// return count
+}
+
+func Tree(id string, name string, parentId string) {
+
 }
