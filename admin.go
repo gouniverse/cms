@@ -11,8 +11,8 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-// AdminPage shows an admin page
-func AdminPage(w http.ResponseWriter, r *http.Request) {
+// Router shows the admin page
+func Router(w http.ResponseWriter, r *http.Request) {
 	path := utils.Req(r, "path", "home")
 
 	if path == "" {
