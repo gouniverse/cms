@@ -7,6 +7,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.3.2 // indirect
 	github.com/gouniverse/api v1.2.0
 	github.com/gouniverse/html v1.22.0
+	github.com/gouniverse/uid v1.1.0
 	github.com/gouniverse/utils v1.6.0
 	github.com/jordan-wright/email v4.0.1-0.20201230161404-3656afaabac4+incompatible // indirect
 	github.com/klauspost/compress v1.11.6 // indirect
