@@ -10,7 +10,7 @@ import (
 
 func InitDB(filepath string) *gorm.DB /**sql.DB*/ {
 
-  db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+  db, err := gorm.Open(sqlite.Open(filepath), &gorm.Config{})
   if err != nil { panic(err) }
   // Auto Migrate
   db.AutoMigrate(&Entity{})
@@ -25,4 +25,8 @@ func TestCreation(t *testing.T) {
 	//if sql != "SELECT * FROM 'user';" {
 		//t.Fatalf(sql)
 	//}
+	entity := EntityCreate("post")
+	if entity == nil{
+		t.Fatalf("Entity could not be created")
+	}
 }
