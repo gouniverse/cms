@@ -1,11 +1,12 @@
 package cms
 
 import (
+	"log"
 	"testing"
 	//"database/sql"
-   _ "github.com/mattn/go-sqlite3"
-  "gorm.io/driver/sqlite"
-  "gorm.io/gorm"
+	_ "github.com/mattn/go-sqlite3"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func InitDB(filepath string) *gorm.DB /**sql.DB*/ {
@@ -21,12 +22,10 @@ func InitDB(filepath string) *gorm.DB /**sql.DB*/ {
 	return db
 }
 func TestCreation(t *testing.T) {
-	InitDB("entity_test.db")
-	//if sql != "SELECT * FROM 'user';" {
-		//t.Fatalf(sql)
-	//}
+	Init("sqlite", "entity_test.db")
 	entity := EntityCreate("post")
 	if entity == nil{
 		t.Fatalf("Entity could not be created")
 	}
+	log.Println(entity.ID)
 }
