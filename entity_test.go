@@ -1,7 +1,7 @@
 package cms
 
 import (
-	"log"
+	//"log"
 	"testing"
 	//"database/sql"
 	_ "github.com/mattn/go-sqlite3"
@@ -21,11 +21,24 @@ func InitDB(filepath string) *gorm.DB /**sql.DB*/ {
 	// return db
 	return db
 }
-func TestCreation(t *testing.T) {
+
+func TestEntityCreate(t *testing.T) {
 	Init("sqlite", "entity_test.db")
 	entity := EntityCreate("post")
 	if entity == nil{
 		t.Fatalf("Entity could not be created")
 	}
-	log.Println(entity.ID)
+}
+
+func TestEntityCreateWithAttributes(t *testing.T) {
+	Init("sqlite", "entity_test.db")
+	entity := EntityCreateWithAttributes("post", map[string]interface{}{
+		"name":"Hello world",
+	})
+	if entity == nil{
+		t.Fatalf("Entity could not be created")
+	}
+	if entity.GetAttributeValue("name","").(string) != "Hello world"{
+		t.Fatalf("Entity attribute mismatch")
+	}
 }
