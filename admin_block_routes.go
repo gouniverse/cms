@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strings"
@@ -217,12 +218,16 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		content = contentAttribute.GetValue().(string)
 	}
 
+	contentJSON, _ := json.Marshal(content)
+	nameJSON, _ := json.Marshal(name)
+	statusJSON, _ := json.Marshal(status)
+
 	inlineScript := `
 var blockUpdateUrl = "` + endpoint + `?path=blocks/block-update-ajax";
 var blockId = "` + blockID + `";
-var name = "` + name + `";
-var status = "` + status + `";
-var content = "` + content + `";
+var name = ` + string(nameJSON) + `;
+var status = ` + string(statusJSON) + `;
+var content = ` + string(contentJSON) + `;
 const BlockUpdate = {
 	data() {
 		return {

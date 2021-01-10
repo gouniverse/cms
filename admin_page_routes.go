@@ -248,7 +248,9 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	canonicalURL := page.GetAttributeValue("canonical_url", "").(string)
 
 	contentJSON, _ := json.Marshal(content)
+	nameJSON, _ := json.Marshal(name)
 	templateIDJSON, _ := json.Marshal(templateID)
+	titleJSON, _ := json.Marshal(title)
 
 	inlineScript := `
 var pageUpdateUrl = "` + endpoint + `?path=pages/page-update-ajax";
@@ -258,10 +260,10 @@ var canonicalUrl = "` + canonicalURL + `";
 var metaDescription = "` + metaDescription + `";
 var metaKeywords = "` + metaKeywords + `";
 var metaRobots = "` + metaRobots + `";
-var name = "` + name + `";
+var name = ` + string(nameJSON) + `;
 var status = "` + status + `";
-var title = "` + title + `";
-var canonicalUrl = "` + canonicalURL + `";
+var title = ` + string(titleJSON) + `;
+var canonicalUrl = ` + canonicalURL + `;
 var content = ` + string(contentJSON) + `;
 var templateId = ` + string(templateIDJSON) + `;
 const PageUpdate = {
