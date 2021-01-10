@@ -163,11 +163,11 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupAlias.AddChild(formGroupAliasLabel)
 	formGroupAlias.AddChild(formGroupAliasInput)
 
-	templateList := EntityList("template", 0, 100, "", "name", "asc")
+	templateList := EntityList("template", 0, 100, "", "id", "asc")
 	formGroupTemplate := hb.NewDiv().Attr("class", "form-group")
 	formGroupTemplateLabel := hb.NewLabel().HTML("Template").Attr("class", "form-label")
 	formGroupTemplateSelect := hb.NewSelect().Attr("class", "form-control").Attr("v-model", "pageModel.templateId")
-	formGroupTemplateOptionsEmpty := hb.NewOption().Attr("value", "").HTML("none")
+	formGroupTemplateOptionsEmpty := hb.NewOption().Attr("value", "").HTML("- none -")
 	formGroupTemplateSelect.AddChild(formGroupTemplateOptionsEmpty)
 	for _, template := range templateList {
 		formGroupTemplateOptionsTemplate := hb.NewOption().Attr("value", template.ID).HTML(template.GetAttributeValue("name", "n/a").(string))
