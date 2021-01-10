@@ -358,7 +358,7 @@ func pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	modalContent := hb.NewDiv().Attr("class", "modal-content")
 	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Page"))
 	modalBody := hb.NewDiv().Attr("class", "modal-body")
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Title")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageCreateModel.title")))
+	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageCreateModel.name")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
 	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "pageCreate"))
@@ -404,7 +404,7 @@ const PageManager = {
 	data() {
 		return {
 		  pageCreateModel:{
-			  title:"Test"
+			  name:""
 		  }
 		}
 	},
@@ -415,11 +415,11 @@ const PageManager = {
 			modalPageCreate.show();
 		},
 		pageCreate(){
-			var title = this.pageCreateModel.title;
-		    $.post(pageCreateUrl, {title: title}).done((result)=>{
+			var name = this.pageCreateModel.name;
+			$.post(pageCreateUrl, {name: name}).done((result)=>{
 				if (result.status==="success"){
 					var modalPageCreate = new bootstrap.Modal(document.getElementById('ModalPageCreate'));
-			        modalPageCreate.hide();
+					modalPageCreate.hide();
 
 					return location.href = pageUpdateUrl+ "&page_id=" + result.data.page_id;
 				}
