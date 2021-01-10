@@ -188,8 +188,8 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupContent.AddChild(formGroupContentInput)
 
 	tabContentContent.AddChild(formGroupTitle).AddChild(formGroupContent)
-	tabContentSeo.AddChild(formGroupTemplate)
-	tabContentSettings.AddChild(formGroupAlias).AddChild(formGroupName)
+	tabContentSeo.AddChild(formGroupAlias)
+	tabContentSettings.AddChild(formGroupStatus).AddChild(formGroupTemplate).AddChild(formGroupName)
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)

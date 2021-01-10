@@ -122,47 +122,11 @@ func cmsHeader(endpoint string) string {
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(menusCount, 10)))))
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(blocksCount, 10)))))
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(widgetsCount, 10)))))
+	// add Translations
 
 	divCard := hb.NewDiv().Attr("class", "card card-default mt-3 mb-3")
 	divCardBody := hb.NewDiv().Attr("class", "card-body").Attr("style", "padding: 2px;")
 	return divCard.AddChild(divCardBody.AddChild(ulNav)).ToHTML()
-
-	h := `<div class="card card-default mt-3 mb-3">
-    <div class="card-body" style="padding: 2px;">
-        <ul class="nav  nav-pills justify-content-center">
-            <li class="nav-item">
-                ` + linkHome.ToHTML() + `
-            </li>
-            <li class="nav-item">
-				` + linkTemplates.ToHTML() + `
-            </li>
-            <li class="nav-item">
-                ` + linkPages.ToHTML() + `
-            </li>
-            <li class="nav-item">
-				` + linkBlocks.ToHTML() + `
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-				` + linkWidgets.ToHTML() + `
-                    <span class="badge bg-secondary">3</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    Translations
-                    <span class="badge">2</span>
-                </a>
-            </li>
-            <li class="nav-item" class="nav-item">
-                <a class="nav-link" href="#" target="_blank">
-                    Media
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>`
-	return h
 }
 
 // Webpage returns the webpage template for the website

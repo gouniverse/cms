@@ -8,6 +8,7 @@ import (
 var dbInstance *gorm.DB
 var prefix string
 
+// Init initializes the CMS
 func Init(driverName string, dsn string) {
 	prefix = "cms_"
 	//sqlDB, err := sql.Open("mysql", "mydb_dsn")
@@ -26,6 +27,7 @@ func Init(driverName string, dsn string) {
 	dbInstance = db
 }
 
+// GetDb returns an instance to the CMS database
 func GetDb() *gorm.DB {
 	return dbInstance
 }
