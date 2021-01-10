@@ -2,7 +2,9 @@
 
 ![tests](https://github.com/gouniverse/cms/workflows/tests/badge.svg)
 
-A "plug-and-play" content managing system (CMS) for Laravel that does its job and stays out of your way.
+PREVIEW ONLY. NOT STABLE
+
+A "plug-and-play" content managing system (CMS) for GoLang that does its job and stays out of your way.
 
 ## Introduction
 
