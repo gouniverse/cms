@@ -252,13 +252,13 @@ const BlockUpdate = {
 					enterMode: "keep", tabMode: "shift"
 				});
 				$(document).on('mouseup', '.CodeMirror', function() {
-					self.templateModel.content = editor.getValue();
+					self.blockModel.content = editor.getValue();
 				});
 				$(document).on('change', '.CodeMirror', function() {
-					self.templateModel.content = editor.getValue();
+					self.blockModel.content = editor.getValue();
 				});
 				setInterval(()=>{
-					self.templateModel.content = editor.getValue();
+					self.blockModel.content = editor.getValue();
 				}, 1000)
 			}
 		}, 500);
