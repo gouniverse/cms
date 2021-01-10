@@ -445,6 +445,6 @@ func EntityCount(entityType string) uint64 {
 	// return count
 }
 
-func Tree(id string, name string, parentId string) {
+// func Tree(id string, name string, parentId string) {
 
-}
+// }

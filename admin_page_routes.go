@@ -40,7 +40,11 @@ func pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	pageID := strings.Trim(utils.Req(r, "page_id", ""), " ")
 	alias := strings.Trim(utils.Req(r, "alias", ""), " ")
+	canonicalURL := strings.Trim(utils.Req(r, "canonicalUrl", ""), " ")
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
+	metaDescription := strings.Trim(utils.Req(r, "meta_description", ""), " ")
+	metaKeywords := strings.Trim(utils.Req(r, "meta_keywords", ""), " ")
+	metaRobots := strings.Trim(utils.Req(r, "meta_robots", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	title := strings.Trim(utils.Req(r, "title", ""), " ")
@@ -79,12 +83,16 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	isOk := EntityAttributesUpsert(pageID, map[string]interface{}{
-		"alias":       alias,
-		"content":     content,
-		"name":        name,
-		"status":      status,
-		"template_id": templateID,
-		"title":       title,
+		"alias":            alias,
+		"canonical_url":    canonicalURL,
+		"content":          content,
+		"meta_description": metaDescription,
+		"meta_keywords":    metaKeywords,
+		"meta_robots":      metaRobots,
+		"name":             name,
+		"status":           status,
+		"template_id":      templateID,
+		"title":            title,
 	})
 
 	if isOk == false {
@@ -163,6 +171,35 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupAlias.AddChild(formGroupAliasLabel)
 	formGroupAlias.AddChild(formGroupAliasInput)
 
+	// "PageMetaDescription": pageMetaDescription,
+	// "PageMetaKeywords":    pageMetaKeywords,
+	// "PageRobots":          pageMetaRobots,
+
+	// Canonical Url
+	formGroupCanonicalURL := hb.NewDiv().Attr("class", "form-group")
+	formGroupCanonicalURLLabel := hb.NewLabel().HTML("Canonical Url").Attr("class", "form-label")
+	formGroupCanonicalURLInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.canonicalUrl")
+	formGroupCanonicalURL.AddChild(formGroupCanonicalURLLabel).AddChild(formGroupCanonicalURLInput)
+
+	// Meta Description
+	formGroupMetaDescription := hb.NewDiv().Attr("class", "form-group")
+	formGroupMetaDescriptionLabel := hb.NewLabel().HTML("Meta Description").Attr("class", "form-label")
+	formGroupMetaDescriptionInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.metaDescription")
+	formGroupMetaDescription.AddChild(formGroupMetaDescriptionLabel).AddChild(formGroupMetaDescriptionInput)
+
+	// Meta Keywords
+	formGroupMetaKeywords := hb.NewDiv().Attr("class", "form-group")
+	formGroupMetaKeywordsLabel := hb.NewLabel().HTML("Meta Keywords").Attr("class", "form-label")
+	formGroupMetaKeywordsInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.metaKeywords")
+	formGroupMetaKeywords.AddChild(formGroupMetaKeywordsLabel).AddChild(formGroupMetaKeywordsInput)
+
+	// Robots
+	formGroupMetaRobots := hb.NewDiv().Attr("class", "form-group")
+	formGroupMetaRobotsLabel := hb.NewLabel().HTML("Meta Robots").Attr("class", "form-label")
+	formGroupMetaRobotsInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.metaRobots")
+	formGroupMetaRobots.AddChild(formGroupMetaRobotsLabel).AddChild(formGroupMetaRobotsInput)
+
+	// Template
 	templateList := EntityList("template", 0, 100, "", "id", "asc")
 	formGroupTemplate := hb.NewDiv().Attr("class", "form-group")
 	formGroupTemplateLabel := hb.NewLabel().HTML("Template").Attr("class", "form-label")
@@ -175,11 +212,11 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 	formGroupTemplate.AddChild(formGroupTemplateLabel).AddChild(formGroupTemplateSelect)
 
+	// Title
 	formGroupTitle := hb.NewDiv().Attr("class", "form-group")
 	formGroupTitleLabel := hb.NewLabel().HTML("Title").Attr("class", "form-label")
 	formGroupTitleInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.title")
-	formGroupTitle.AddChild(formGroupTitleLabel)
-	formGroupTitle.AddChild(formGroupTitleInput)
+	formGroupTitle.AddChild(formGroupTitleLabel).AddChild(formGroupTitleInput)
 
 	formGroupContent := hb.NewDiv().Attr("class", "form-group")
 	formGroupContentLabel := hb.NewLabel().HTML("Content").Attr("class", "form-label")
@@ -188,7 +225,7 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupContent.AddChild(formGroupContentInput)
 
 	tabContentContent.AddChild(formGroupTitle).AddChild(formGroupContent)
-	tabContentSeo.AddChild(formGroupAlias)
+	tabContentSeo.AddChild(formGroupAlias).AddChild(formGroupMetaDescription).AddChild(formGroupMetaKeywords).AddChild(formGroupMetaRobots).AddChild(formGroupCanonicalURL)
 	tabContentSettings.AddChild(formGroupStatus).AddChild(formGroupTemplate).AddChild(formGroupName)
 
 	container.AddChild(hb.NewHTML(header))
@@ -205,6 +242,10 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	status := page.GetAttributeValue("status", "").(string)
 	templateID := page.GetAttributeValue("template_id", "").(string)
 	title := page.GetAttributeValue("title", "").(string)
+	metaDescription := page.GetAttributeValue("meta_description", "").(string)
+	metaKeywords := page.GetAttributeValue("meta_keywords", "").(string)
+	metaRobots := page.GetAttributeValue("meta_robots", "").(string)
+	canonicalURL := page.GetAttributeValue("canonical_url", "").(string)
 
 	contentJSON, _ := json.Marshal(content)
 	templateIDJSON, _ := json.Marshal(templateID)
@@ -213,9 +254,14 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 var pageUpdateUrl = "` + endpoint + `?path=pages/page-update-ajax";
 var pageId = "` + pageID + `";
 var alias = "` + alias + `";
+var canonicalUrl = "` + canonicalURL + `";
+var metaDescription = "` + metaDescription + `";
+var metaKeywords = "` + metaKeywords + `";
+var metaRobots = "` + metaRobots + `";
 var name = "` + name + `";
 var status = "` + status + `";
 var title = "` + title + `";
+var canonicalUrl = "` + canonicalURL + `";
 var content = ` + string(contentJSON) + `;
 var templateId = ` + string(templateIDJSON) + `;
 const PageUpdate = {
@@ -224,7 +270,11 @@ const PageUpdate = {
 			pageModel:{
 				pageId: pageId,
 				alias: alias,
+				canonicalUrl:canonicalUrl,
 				content: content,
+				metaDescription:metaDescription,
+				metaKeywords:metaKeywords,
+				metaRobots:metaRobots,
 				name: name,
 				status: status,
 				title: title,
@@ -265,7 +315,11 @@ const PageUpdate = {
 		},
 		pageSave(){
 			var alias = this.pageModel.alias;
+			var canonicalUrl = this.pageModel.canonicalUrl;
 			var content = this.pageModel.content;
+			var metaDescription = this.pageModel.metaDescription;
+			var metaKeywords = this.pageModel.metaKeywords;
+			var metaRobots = this.pageModel.metaRobots;
 			var name = this.pageModel.name;
 			var pageId = this.pageModel.pageId;
 			var status = this.pageModel.status;
@@ -276,6 +330,10 @@ const PageUpdate = {
 				page_id:pageId,
 				alias: alias,
 				content: content,
+				canonical_url:canonicalUrl,
+				meta_description:metaDescription,
+				meta_keywords:metaKeywords,
+				meta_robots:metaRobots,
 				name: name,
 				status: status,
 				title: title,
