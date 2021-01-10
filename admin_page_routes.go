@@ -40,7 +40,7 @@ func pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	pageID := strings.Trim(utils.Req(r, "page_id", ""), " ")
 	alias := strings.Trim(utils.Req(r, "alias", ""), " ")
-	canonicalURL := strings.Trim(utils.Req(r, "canonicalUrl", ""), " ")
+	canonicalURL := strings.Trim(utils.Req(r, "canonical_url", ""), " ")
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
 	metaDescription := strings.Trim(utils.Req(r, "meta_description", ""), " ")
 	metaKeywords := strings.Trim(utils.Req(r, "meta_keywords", ""), " ")
