@@ -188,7 +188,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	formGroupContent := hb.NewDiv().Attr("class", "form-group")
 	formGroupContentLabel := hb.NewLabel().HTML("Content").Attr("class", "form-label")
-	formGroupContentInput := hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "blockModel.content")
+	formGroupContentInput := hb.NewTextArea().Attr("class", "form-control CodeMirror").Attr("v-model", "blockModel.content")
 	formGroupContent.AddChild(formGroupContentLabel)
 	formGroupContent.AddChild(formGroupContentInput)
 
@@ -239,6 +239,30 @@ const BlockUpdate = {
 		    }
 		}
 	},
+	created(){
+		var self = this;
+		setTimeout(function () {
+			if ($('.CodeMirror').length > 0) {
+				var editor = CodeMirror.fromTextArea($('.CodeMirror').get(0), {
+					lineNumbers: true,
+					matchBrackets: true,
+					mode: "application/x-httpd-php",
+					indentUnit: 4,
+					indentWithTabs: true,
+					enterMode: "keep", tabMode: "shift"
+				});
+				$(document).on('mouseup', '.CodeMirror', function() {
+					self.templateModel.content = editor.getValue();
+				});
+				$(document).on('change', '.CodeMirror', function() {
+					self.templateModel.content = editor.getValue();
+				});
+				setInterval(()=>{
+					self.templateModel.content = editor.getValue();
+				}, 1000)
+			}
+		}, 500);
+	},
 	methods: {
 		blockSave(){
 			var content = this.blockModel.content;
@@ -278,11 +302,31 @@ const BlockUpdate = {
 Vue.createApp(BlockUpdate).mount('#block-update')
 	`
 
-	webblock := Webpage("Edit Block", h)
-	webblock.AddScript(inlineScript)
+	webtemplate := Webpage("Edit Block", h)
+	webtemplate.AddStyleURLs([]string{
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
+	})
+	webtemplate.AddScriptURLs([]string{
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
+		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
+	})
+	webtemplate.AddStyle(`	
+.CodeMirror {
+	border: 1px solid #eee;
+	height: auto;
+}
+	`)
+	webtemplate.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webblock.ToHTML()))
+	w.Write([]byte(webtemplate.ToHTML()))
 }
 
 func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
