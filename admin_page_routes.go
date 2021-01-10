@@ -247,6 +247,7 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	metaRobots := page.GetAttributeValue("meta_robots", "").(string)
 	canonicalURL := page.GetAttributeValue("canonical_url", "").(string)
 
+	canonicalURLJSON, _ := json.Marshal(canonicalURL)
 	contentJSON, _ := json.Marshal(content)
 	nameJSON, _ := json.Marshal(name)
 	templateIDJSON, _ := json.Marshal(templateID)
@@ -263,7 +264,7 @@ var metaRobots = "` + metaRobots + `";
 var name = ` + string(nameJSON) + `;
 var status = "` + status + `";
 var title = ` + string(titleJSON) + `;
-var canonicalUrl = ` + canonicalURL + `;
+var canonicalUrl = ` + string(canonicalURLJSON) + `;
 var content = ` + string(contentJSON) + `;
 var templateId = ` + string(templateIDJSON) + `;
 const PageUpdate = {
