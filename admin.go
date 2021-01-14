@@ -2,7 +2,6 @@ package cms
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"strconv"
@@ -16,7 +15,7 @@ func Router(w http.ResponseWriter, r *http.Request) {
 	path := utils.Req(r, "path", "home")
 
 	if path == "" {
-		path = "home"
+		path = PathHome
 	}
 
 	ctx := context.WithValue(r.Context(), keyEndpoint, r.URL.Path)
@@ -53,16 +52,16 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 		PathWidgetsWidgetUpdate:         pageWidgetsWidgetUpdate,
 		PathWidgetsWidgetUpdateAjax:     pageWidgetsWidgetUpdateAjax,
 	}
-	log.Println(route)
+	// log.Println(route)
 	if val, ok := routes[route]; ok {
 		return val
 	}
-	return routes["home"]
+	return routes[PathHome]
 }
 
 func pageHome(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	header := cmsHeader(endpoint)
 	breadcrums := cmsBreadcrumbs(map[string]string{
