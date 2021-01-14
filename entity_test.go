@@ -24,7 +24,7 @@ func InitDB(filepath string) *gorm.DB /**sql.DB*/ {
 
 func TestEntityCreate(t *testing.T) {
 	db := InitDB("entity_create.db")
-	Init(cms.Config{
+	Init(Config{
 		DbInstance: db,
 	})
 	entity := EntityCreate("post")
@@ -35,7 +35,7 @@ func TestEntityCreate(t *testing.T) {
 
 func TestEntityCreateWithAttributes(t *testing.T) {
 	db := InitDB("entity_update.db")
-	Init(cms.Config{
+	Init(Config{
 		DbInstance: db,
 	})
 	entity := EntityCreateWithAttributes("post", map[string]interface{}{
