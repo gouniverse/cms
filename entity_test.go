@@ -26,7 +26,7 @@ func TestEntityCreate(t *testing.T) {
 	db := InitDB("entity_create.db")
 	Init(cms.Config{
 		DbInstance: db,
-	}
+	})
 	entity := EntityCreate("post")
 	if entity == nil{
 		t.Fatalf("Entity could not be created")
@@ -37,7 +37,7 @@ func TestEntityCreateWithAttributes(t *testing.T) {
 	db := InitDB("entity_update.db")
 	Init(cms.Config{
 		DbInstance: db,
-	}
+	})
 	entity := EntityCreateWithAttributes("post", map[string]interface{}{
 		"name":"Hello world",
 	})
