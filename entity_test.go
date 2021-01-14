@@ -23,7 +23,10 @@ func InitDB(filepath string) *gorm.DB /**sql.DB*/ {
 }
 
 func TestEntityCreate(t *testing.T) {
-	Init("sqlite", "entity_test.db")
+	db := InitDB("entity_create.db")
+	Init(cms.Config{
+		DbInstance: db,
+	}
 	entity := EntityCreate("post")
 	if entity == nil{
 		t.Fatalf("Entity could not be created")
@@ -31,7 +34,10 @@ func TestEntityCreate(t *testing.T) {
 }
 
 func TestEntityCreateWithAttributes(t *testing.T) {
-	Init("sqlite", "entity_test.db")
+	db := InitDB("entity_update.db")
+	Init(cms.Config{
+		DbInstance: db,
+	}
 	entity := EntityCreateWithAttributes("post", map[string]interface{}{
 		"name":"Hello world",
 	})
