@@ -1,6 +1,8 @@
 package cms
 
 import (
+	"log"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -8,26 +10,41 @@ import (
 var dbInstance *gorm.DB
 var prefix string
 
+// Config contains the configurations for the auth package
+type Config struct {
+	DbInstance *gorm.DB
+	DbDriver   string
+	DbDsn      string
+}
+
+var (
+	configuration Config
+)
+
 // Init initializes the CMS
-func Init(driverName string, dsn string) {
+func Init(config Config) {
+	if config.DbInstance == nil && (config.DbDriver == "" || config.DbDsn == "") {
+		log.Panicln("Either DbInstance or DnDriver and DbDsn are required field")
+	}
+
 	prefix = "cms_"
-	//sqlDB, err := sql.Open("mysql", "mydb_dsn")
-	// gormDB, err := gorm.Open(mysql.New(mysql.Config{
-	// 	Conn: sqlDB,
-	// }), &gorm.Config{})
-	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
+	
+	if config.DbDriver != "" {
+		db, err := gorm.Open(sqlite.Open(config.DbDsn), &gorm.Config{})
+		if err != nil {
+			panic("failed to connect database")
+		}
+		// dbInstance = db
+		config.DbInstance = db
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&Entity{})
-	db.AutoMigrate(&EntityAttribute{})
-
-	dbInstance = db
+	config.DbInstance.AutoMigrate(&Entity{})
+	config.DbInstance.AutoMigrate(&EntityAttribute{})
+	configuration = config
 }
 
 // GetDb returns an instance to the CMS database
 func GetDb() *gorm.DB {
-	return dbInstance
+	return configuration.DbInstance
 }
