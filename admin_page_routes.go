@@ -19,21 +19,21 @@ func pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := EntityCreateWithAttributes("page", map[string]interface{}{
-		"name":   name,
-		"status": "inactive",
-		"title":  name,
-		"alias":  "/" + utils.Slugify(name+"-"+utils.RandStr(16), '-'),
-	})
+	page := GetEntityStore().EntityCreate("page")
 
-	log.Println(entity)
+	log.Println(page)
 
-	if entity == nil {
+	if page == nil {
 		api.Respond(w, r, api.Error("Page failed to be created"))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": entity.ID}))
+	page.SetString("name", name)
+	page.SetString("status", "inactive")
+	page.SetString("title", name)
+	page.SetString("alias", "/"+utils.Slugify(name+"-"+utils.RandStr(16), '-'))
+
+	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID}))
 	return
 }
 
@@ -55,7 +55,7 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := EntityFindByID(pageID)
+	page := GetEntityStore().EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
@@ -82,18 +82,16 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := EntityAttributesUpsert(pageID, map[string]interface{}{
-		"alias":            alias,
-		"canonical_url":    canonicalURL,
-		"content":          content,
-		"meta_description": metaDescription,
-		"meta_keywords":    metaKeywords,
-		"meta_robots":      metaRobots,
-		"name":             name,
-		"status":           status,
-		"template_id":      templateID,
-		"title":            title,
-	})
+	page.SetString("alias", alias)
+	page.SetString("canonical_url", canonicalURL)
+	page.SetString("content", content)
+	page.SetString("meta_description", metaDescription)
+	page.SetString("meta_keywords", metaKeywords)
+	page.SetString("meta_robots", metaRobots)
+	page.SetString("name", name)
+	page.SetString("status", status)
+	page.SetString("template_id", templateID)
+	isOk := page.SetString("title", title)
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Page failed to be updated"))
@@ -114,7 +112,7 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := EntityFindByID(pageID)
+	page := GetEntityStore().EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
@@ -200,14 +198,14 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupMetaRobots.AddChild(formGroupMetaRobotsLabel).AddChild(formGroupMetaRobotsInput)
 
 	// Template
-	templateList := EntityList("template", 0, 100, "", "id", "asc")
+	templateList := GetEntityStore().EntityList("template", 0, 100, "", "id", "asc")
 	formGroupTemplate := hb.NewDiv().Attr("class", "form-group")
 	formGroupTemplateLabel := hb.NewLabel().HTML("Template").Attr("class", "form-label")
 	formGroupTemplateSelect := hb.NewSelect().Attr("class", "form-control").Attr("v-model", "pageModel.templateId")
 	formGroupTemplateOptionsEmpty := hb.NewOption().Attr("value", "").HTML("- none -")
 	formGroupTemplateSelect.AddChild(formGroupTemplateOptionsEmpty)
 	for _, template := range templateList {
-		formGroupTemplateOptionsTemplate := hb.NewOption().Attr("value", template.ID).HTML(template.GetAttributeValue("name", "n/a").(string))
+		formGroupTemplateOptionsTemplate := hb.NewOption().Attr("value", template.ID).HTML(template.GetString("name", "n/a"))
 		formGroupTemplateSelect.AddChild(formGroupTemplateOptionsTemplate)
 	}
 	formGroupTemplate.AddChild(formGroupTemplateLabel).AddChild(formGroupTemplateSelect)
@@ -236,16 +234,16 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	alias := page.GetAttributeValue("alias", "").(string)
-	content := page.GetAttributeValue("content", "").(string)
-	name := page.GetAttributeValue("name", "").(string)
-	status := page.GetAttributeValue("status", "").(string)
-	templateID := page.GetAttributeValue("template_id", "").(string)
-	title := page.GetAttributeValue("title", "").(string)
-	metaDescription := page.GetAttributeValue("meta_description", "").(string)
-	metaKeywords := page.GetAttributeValue("meta_keywords", "").(string)
-	metaRobots := page.GetAttributeValue("meta_robots", "").(string)
-	canonicalURL := page.GetAttributeValue("canonical_url", "").(string)
+	alias := page.GetString("alias", "")
+	content := page.GetString("content", "")
+	name := page.GetString("name", "")
+	status := page.GetString("status", "")
+	templateID := page.GetString("template_id", "")
+	title := page.GetString("title", "")
+	metaDescription := page.GetString("meta_description", "")
+	metaKeywords := page.GetString("meta_keywords", "")
+	metaRobots := page.GetString("meta_robots", "")
+	canonicalURL := page.GetString("canonical_url", "")
 
 	canonicalURLJSON, _ := json.Marshal(canonicalURL)
 	contentJSON, _ := json.Marshal(content)
@@ -428,7 +426,7 @@ func pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	pages := EntityList("page", 0, 200, "", "id", "asc")
+	pages := GetEntityStore().EntityList("page", 0, 200, "", "id", "asc")
 
 	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -442,9 +440,9 @@ func pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, page := range pages {
-		name := page.GetAttributeValue("name", "n/a").(string)
-		alias := page.GetAttributeValue("alias", "n/a").(string)
-		status := page.GetAttributeValue("status", "n/a").(string)
+		name := page.GetString("name", "n/a")
+		alias := page.GetString("alias", "n/a")
+		status := page.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "pageEdit('"+page.ID+"')")
 
 		tr := hb.NewTR()

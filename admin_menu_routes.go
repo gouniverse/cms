@@ -22,9 +22,8 @@ func pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := EntityCreateWithAttributes("menu", map[string]interface{}{
-		"name": name,
-	})
+	menu := GetEntityStore().EntityCreate("menu")
+	menu.SetString("name", name)
 
 	//log.Println(menu)
 
@@ -70,7 +69,7 @@ func pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	menus := EntityList("menu", 0, 200, "", "id", "asc")
+	menus := entityStore.EntityList("menu", 0, 200, "", "id", "asc")
 
 	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -85,8 +84,8 @@ func pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3).AddChild(th4))
 
 	for _, menu := range menus {
-		name := menu.GetAttributeValue("name", "n/a").(string)
-		status := menu.GetAttributeValue("status", "n/a").(string)
+		name := menu.GetString("name", "n/a")
+		status := menu.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID+"')")
 		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID+"')")
 
@@ -164,7 +163,7 @@ func pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := EntityFindByID(menuID)
+	menu := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -205,17 +204,9 @@ func pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := menu.GetAttributeValue("name", "").(string)
-	statusAttribute := EntityAttributeFind(menu.ID, "status")
-	status := ""
-	if statusAttribute != nil {
-		status = statusAttribute.GetValue().(string)
-	}
-	contentAttribute := EntityAttributeFind(menu.ID, "content")
-	content := ""
-	if contentAttribute != nil {
-		content = contentAttribute.GetValue().(string)
-	}
+	name := menu.GetString("name", "")
+	status := menu.GetString("status", "")
+	content := menu.GetString("content", "")
 
 	inlineScript := `
 var menuUpdateUrl = "` + endpoint + `?path=menus/menu-update-ajax";
@@ -289,7 +280,7 @@ func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := EntityFindByID(menuID)
+	menu := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -306,10 +297,8 @@ func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := EntityAttributesUpsert(menuID, map[string]interface{}{
-		"name":   name,
-		"status": status,
-	})
+	menu.SetString("name", name)
+	isOk := menu.SetString("status", status)
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Menu failed to be updated"))
@@ -324,8 +313,14 @@ func getChildren(data []map[string]interface{}, parentID string) []map[string]in
 	children := []map[string]interface{}{}
 	sequences := []string{}
 	for _, node := range data {
-		nodeParentID := node["parent_id"].(string)
-		sequence := node["sequence"].(string)
+		nodeParentID := ""
+		sequence := ""
+		if keyExists(node, "parent_id") {
+			nodeParentID = node["parent_id"].(string)
+		}
+		if keyExists(node, "sequence") {
+			sequence = node["sequence"].(string)
+		}
 		if nodeParentID == parentID {
 			sequences = append(sequences, sequence)
 			children = append(children, node)
@@ -366,17 +361,17 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 }
 
 func buildTree(menuID string) []map[string]interface{} {
-	menuitems := EntityListByAttribute("menuitem", "menu_id", "\""+menuID+"\"")
+	menuitems := GetEntityStore().EntityListByAttribute("menuitem", "menu_id", menuID)
 
 	nodeList := []map[string]interface{}{}
 	for _, menuitem := range menuitems {
 		itemID := menuitem.ID
-		itemName := menuitem.GetAttributeValue("name", "n/a").(string)
-		parentID := menuitem.GetAttributeValue("parent_id", "").(string)
-		sequence := menuitem.GetAttributeValue("sequence", "").(string)
-		target := menuitem.GetAttributeValue("target", "").(string)
-		url := menuitem.GetAttributeValue("url", "").(string)
-		pageID := menuitem.GetAttributeValue("page_id", "").(string)
+		itemName := menuitem.GetString("name", "n/a")
+		parentID := menuitem.GetString("parent_id", "")
+		sequence := menuitem.GetString("sequence", "")
+		target := menuitem.GetString("target", "")
+		url := menuitem.GetString("url", "")
+		pageID := menuitem.GetString("page_id", "")
 		item := map[string]interface{}{
 			"id":        itemID,
 			"parent_id": parentID,
@@ -402,7 +397,7 @@ func pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := EntityFindByID(menuID)
+	menu := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -428,7 +423,7 @@ func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := EntityFindByID(menuID)
+	menu := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -444,7 +439,7 @@ func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
-	heading := hb.NewHeading1().HTML("Edit Menu Items for Menu '" + menu.GetAttributeValue("name", "").(string) + "'")
+	heading := hb.NewHeading1().HTML("Edit Menu Items for Menu '" + menu.GetString("name", "") + "'")
 	//button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "menuSave")
 	//heading.AddChild(button)
 
@@ -730,7 +725,7 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := EntityFindByID(menuID)
+	menu := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -752,39 +747,38 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		//log.Println(node)
 		id := node["id"].(string)
 		name := node["name"].(string)
-		sequence := node["sequence"].(string)
-		pageID := node["page_id"].(string)
-		url := node["url"].(string)
-		target := node["target"].(string)
-
-		parentID, ok := node["parent_id"]
-		if ok {
-			parentID = parentID.(string)
-		} else {
-			parentID = ""
+		pageID := ""
+		url := ""
+		target := ""
+		parentID := ""
+		sequence := ""
+		if keyExists(node, "page_id") {
+			pageID = node["page_id"].(string)
+		}
+		if keyExists(node, "url") {
+			url = node["url"].(string)
+		}
+		if keyExists(node, "target") {
+			target = node["target"].(string)
+		}
+		if keyExists(node, "parent_id") {
+			parentID = node["parent_id"].(string)
+		}
+		if keyExists(node, "sequence") {
+			sequence = node["sequence"].(string)
 		}
 
-		menuitem := EntityFindByID(id)
+		menuitem := GetEntityStore().EntityFindByID(id)
 		if menuitem == nil {
-			menuitem = EntityCreateWithAttributes("menuitem", map[string]interface{}{
-				"name":      name,
-				"menu_id":   menuID,
-				"parent_id": parentID,
-				"sequence":  sequence,
-				"page_id":   pageID,
-				"url":       url,
-				"target":    target,
-			})
+			menuitem = GetEntityStore().EntityCreate("menuitem")
 		}
-		isOk := menuitem.UpsertAttributes(map[string]interface{}{
-			"name":      name,
-			"menu_id":   menuID,
-			"parent_id": parentID,
-			"sequence":  sequence,
-			"page_id":   pageID,
-			"url":       url,
-			"target":    target,
-		})
+		menuitem.SetString("name", name)
+		menuitem.SetString("menu_id", menuID)
+		menuitem.SetString("parent_id", parentID)
+		menuitem.SetString("sequence", sequence)
+		menuitem.SetString("page_id", pageID)
+		menuitem.SetString("url", url)
+		isOk := menuitem.SetString("target", target)
 
 		newIDs = append(newIDs, menuitem.ID)
 
@@ -794,16 +788,20 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// DEBUG: log.Println(newIDs)
-	allMenuItems := EntityListByAttribute("menuitem", "menu_id", "\""+menuID+"\"")
+	allMenuItems := GetEntityStore().EntityListByAttribute("menuitem", "menu_id", menuID)
 	for _, menuitem := range allMenuItems {
 		//allIDs = append(allIDs, menuitem.ID)
 		exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
 		if exists == false {
-			EntityDelete(menuitem.ID)
+			GetEntityStore().EntityDelete(menuitem.ID)
 		}
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
 	return
+}
+
+func keyExists(decoded map[string]interface{}, key string) bool {
+	val, ok := decoded[key]
+	return ok && val != nil
 }

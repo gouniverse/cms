@@ -20,7 +20,7 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := EntityCreateWithAttributes("block", map[string]interface{}{
+	entity := GetEntityStore().EntityCreateWithAttributes("block", map[string]interface{}{
 		"name": name,
 	})
 
@@ -68,7 +68,7 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	blocks := EntityList("block", 0, 200, "", "id", "asc")
+	blocks := GetEntityStore().EntityList("block", 0, 200, "", "id", "asc")
 
 	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -82,8 +82,8 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, block := range blocks {
-		name := block.GetAttributeValue("name", "n/a").(string)
-		status := block.GetAttributeValue("status", "n/a").(string)
+		name := block.GetString("name", "n/a")
+		status := block.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "blockEdit('"+block.ID+"')")
 
 		tr := hb.NewTR()
@@ -152,7 +152,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block := EntityFindByID(blockID)
+	block := GetEntityStore().EntityFindByID(blockID)
 
 	if block == nil {
 		api.Respond(w, r, api.Error("Block NOT FOUND with ID "+blockID))
@@ -193,9 +193,9 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupContent.AddChild(formGroupContentInput)
 
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this block in your website use the following shortcode:"))
-	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Block: ` + block.GetAttributeValue("name", "").(string) + ` -->
+	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Block: ` + block.GetString("name", "") + ` -->
 [[BLOCK_` + block.ID + `]]
-&lt;!-- END: Block: ` + block.GetAttributeValue("name", "").(string) + ` -->`))
+&lt;!-- END: Block: ` + block.GetString("name", "") + ` -->`))
 	paragraphUsage.AddChild(code)
 
 	container.AddChild(hb.NewHTML(header))
@@ -206,16 +206,16 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := block.GetAttributeValue("name", "").(string)
-	statusAttribute := EntityAttributeFind(block.ID, "status")
+	name := block.GetString("name", "")
+	statusAttribute := GetEntityStore().AttributeFind(block.ID, "status")
 	status := ""
 	if statusAttribute != nil {
-		status = statusAttribute.GetValue().(string)
+		status = statusAttribute.GetString()
 	}
-	contentAttribute := EntityAttributeFind(block.ID, "content")
+	contentAttribute := GetEntityStore().AttributeFind(block.ID, "content")
 	content := ""
 	if contentAttribute != nil {
-		content = contentAttribute.GetValue().(string)
+		content = contentAttribute.GetString()
 	}
 
 	contentJSON, _ := json.Marshal(content)
@@ -340,7 +340,7 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block := EntityFindByID(blockID)
+	block := GetEntityStore().EntityFindByID(blockID)
 
 	if block == nil {
 		api.Respond(w, r, api.Error("Block NOT FOUND with ID "+blockID))
@@ -357,11 +357,9 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := EntityAttributesUpsert(blockID, map[string]interface{}{
-		"content": content,
-		"name":    name,
-		"status":  status,
-	})
+	block.SetString("content", content)
+	block.SetString("name", name)
+	isOk := block.SetString("status", status)
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Block failed to be updated"))

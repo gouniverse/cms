@@ -3,6 +3,7 @@ package cms
 import (
 	"log"
 
+	"github.com/gouniverse/entitystore"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -19,6 +20,7 @@ type Config struct {
 
 var (
 	configuration Config
+	entityStore   *entitystore.Store
 )
 
 // Init initializes the CMS
@@ -28,7 +30,7 @@ func Init(config Config) {
 	}
 
 	prefix = "cms_"
-	
+
 	if config.DbDriver != "" {
 		db, err := gorm.Open(sqlite.Open(config.DbDsn), &gorm.Config{})
 		if err != nil {
@@ -38,13 +40,20 @@ func Init(config Config) {
 		config.DbInstance = db
 	}
 
+	entityStore = entitystore.NewStore(entitystore.WithGormDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
+
 	// Migrate the schema
-	config.DbInstance.AutoMigrate(&Entity{})
-	config.DbInstance.AutoMigrate(&EntityAttribute{})
+	// config.DbInstance.AutoMigrate(&Entity{})
+	// config.DbInstance.AutoMigrate(&EntityAttribute{})
 	configuration = config
 }
 
 // GetDb returns an instance to the CMS database
 func GetDb() *gorm.DB {
 	return configuration.DbInstance
+}
+
+// GetEntityStore returns the user store
+func GetEntityStore() *entitystore.Store {
+	return entityStore
 }

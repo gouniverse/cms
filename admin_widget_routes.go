@@ -18,7 +18,7 @@ func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := EntityCreateWithAttributes("widget", map[string]interface{}{
+	entity := GetEntityStore().EntityCreateWithAttributes("widget", map[string]interface{}{
 		"name": name,
 	})
 
@@ -66,7 +66,7 @@ func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	widgets := EntityList("widget", 0, 200, "", "id", "asc")
+	widgets := GetEntityStore().EntityList("widget", 0, 200, "", "id", "asc")
 
 	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -80,8 +80,8 @@ func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, widget := range widgets {
-		name := widget.GetAttributeValue("name", "n/a").(string)
-		status := widget.GetAttributeValue("status", "n/a").(string)
+		name := widget.GetString("name", "n/a")
+		status := widget.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "widgetEdit('"+widget.ID+"')")
 
 		tr := hb.NewTR()
@@ -150,7 +150,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget := EntityFindByID(widgetID)
+	widget := GetEntityStore().EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))
@@ -191,9 +191,9 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupContent.AddChild(formGroupContentInput)
 
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this widget in your website use the following shortcode:"))
-	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Widget: ` + widget.GetAttributeValue("name", "").(string) + ` -->
+	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Widget: ` + widget.GetString("name", "") + ` -->
 [[BLOCK_` + widget.ID + `]]
-&lt;!-- END: Widget: ` + widget.GetAttributeValue("name", "").(string) + ` -->`))
+&lt;!-- END: Widget: ` + widget.GetString("name", "") + ` -->`))
 	paragraphUsage.AddChild(code)
 
 	container.AddChild(hb.NewHTML(header))
@@ -204,16 +204,16 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := widget.GetAttributeValue("name", "").(string)
-	statusAttribute := EntityAttributeFind(widget.ID, "status")
+	name := widget.GetString("name", "")
+	statusAttribute := GetEntityStore().AttributeFind(widget.ID, "status")
 	status := ""
 	if statusAttribute != nil {
-		status = statusAttribute.GetValue().(string)
+		status = statusAttribute.GetString()
 	}
-	contentAttribute := EntityAttributeFind(widget.ID, "content")
+	contentAttribute := GetEntityStore().AttributeFind(widget.ID, "content")
 	content := ""
 	if contentAttribute != nil {
-		content = contentAttribute.GetValue().(string)
+		content = contentAttribute.GetString()
 	}
 
 	inlineScript := `
@@ -290,7 +290,7 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget := EntityFindByID(widgetID)
+	widget := GetEntityStore().EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))
@@ -307,7 +307,7 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := EntityAttributesUpsert(widgetID, map[string]interface{}{
+	isOk := GetEntityStore().AttributesSet(widgetID, map[string]interface{}{
 		"content": content,
 		"name":    name,
 		"status":  status,

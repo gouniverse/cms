@@ -19,7 +19,7 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := EntityCreateWithAttributes("template", map[string]interface{}{
+	entity := GetEntityStore().EntityCreateWithAttributes("template", map[string]interface{}{
 		"name":   name,
 		"status": "inactive",
 	})
@@ -68,7 +68,7 @@ func pageTemplateTemplateManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	templates := EntityList("template", 0, 200, "", "id", "asc")
+	templates := GetEntityStore().EntityList("template", 0, 200, "", "id", "asc")
 
 	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -82,8 +82,8 @@ func pageTemplateTemplateManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, template := range templates {
-		name := template.GetAttributeValue("name", "n/a").(string)
-		status := template.GetAttributeValue("status", "n/a").(string)
+		name := template.GetString("name", "n/a")
+		status := template.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "templateEdit('"+template.ID+"')")
 
 		tr := hb.NewTR()
@@ -153,7 +153,7 @@ func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template := EntityFindByID(templateID)
+	template := GetEntityStore().EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -202,9 +202,9 @@ func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := template.GetAttributeValue("name", "").(string)
-	status := template.GetAttributeValue("status", "").(string)
-	content := template.GetAttributeValue("content", "").(string)
+	name := template.GetString("name", "")
+	status := template.GetString("status", "")
+	content := template.GetString("content", "")
 	templateJSON, _ := json.Marshal(templateID)
 	nameJSON, _ := json.Marshal(name)
 	statusJSON, _ := json.Marshal(status)
@@ -337,7 +337,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template := EntityFindByID(templateID)
+	template := GetEntityStore().EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -354,11 +354,9 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := EntityAttributesUpsert(templateID, map[string]interface{}{
-		"content": content,
-		"name":    name,
-		"status":  status,
-	})
+	template.SetString("content", content)
+	template.SetString("name", name)
+	isOk := template.SetString("status", status)
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Template failed to be updated"))
