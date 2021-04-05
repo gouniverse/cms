@@ -18,18 +18,16 @@ func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := GetEntityStore().EntityCreateWithAttributes("widget", map[string]interface{}{
-		"name": name,
-	})
+	widget := GetEntityStore().EntityCreate("widget")
 
-	log.Println(entity)
-
-	if entity == nil {
+	if widget == nil {
 		api.Respond(w, r, api.Error("Widget failed to be created"))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": entity.ID}))
+	widget.SetString("name", name)
+
+	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID}))
 	return
 }
 
@@ -307,11 +305,9 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := GetEntityStore().AttributesSet(widgetID, map[string]interface{}{
-		"content": content,
-		"name":    name,
-		"status":  status,
-	})
+	widget.SetString("content", content)
+	widget.SetString("name", name)
+	isOk := widget.SetString("status", status)
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Widget failed to be updated"))

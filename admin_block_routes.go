@@ -20,18 +20,16 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := GetEntityStore().EntityCreateWithAttributes("block", map[string]interface{}{
-		"name": name,
-	})
+	block := GetEntityStore().EntityCreate("block")
 
-	log.Println(entity)
-
-	if entity == nil {
+	if block == nil {
 		api.Respond(w, r, api.Error("Block failed to be created"))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": entity.ID}))
+	block.SetString("name", name)
+
+	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
 	return
 }
 

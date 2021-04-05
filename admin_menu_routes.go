@@ -23,14 +23,13 @@ func pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	menu := GetEntityStore().EntityCreate("menu")
-	menu.SetString("name", name)
-
-	//log.Println(menu)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu failed to be created"))
 		return
 	}
+
+	menu.SetString("name", name)
 
 	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
 	return

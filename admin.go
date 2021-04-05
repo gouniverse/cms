@@ -141,7 +141,7 @@ func Webpage(title, content string) *hb.Webpage {
 	})
 	webpage.AddScriptURLs([]string{
 		"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js",
-		"http://code.jquery.com/jquery-3.5.1.min.js",
+		"https://code.jquery.com/jquery-3.5.1.min.js",
 		"https://unpkg.com/vue@next",
 		"https://cdn.jsdelivr.net/npm/sweetalert2@9",
 	})
