@@ -19,10 +19,7 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template := GetEntityStore().EntityCreate("template"), map[string]interface{}{
-		"name":   name,
-		"status": "inactive",
-	})
+	template := GetEntityStore().EntityCreate("template")
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template failed to be created"))
@@ -31,7 +28,6 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 	template.SetString("name", name)
 	template.SetString("status", "inactive")
-
 
 	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
 	return
