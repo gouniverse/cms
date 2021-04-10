@@ -51,10 +51,21 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 		PathWidgetsWidgetManager:        pageWidgetsWidgetManager,
 		PathWidgetsWidgetUpdate:         pageWidgetsWidgetUpdate,
 		PathWidgetsWidgetUpdateAjax:     pageWidgetsWidgetUpdateAjax,
-		PathEntitiesEntityCreateAjax:    pageEntitiesEntityCreateAjax,
-		PathEntitiesEntityManager:       pageEntitiesEntityManager,
-		PathEntitiesEntityUpdate:        pageEntitiesEntityUpdate,
-		PathEntitiesEntityUpdateAjax:    pageEntitiesEntityUpdateAjax,
+
+		// START: Settings
+		PathSettingsSettingCreateAjax: pageSettingsSettingCreateAjax,
+		PathSettingsSettingManager:    pageSettingsSettingManager,
+		PathSettingsSettingUpdate:     pageSettingsSettingUpdate,
+		PathSettingsSettingUpdateAjax: pageSettingsSettingUpdateAjax,
+		// END: Settings
+
+		// START: Custom Entities
+		PathEntitiesEntityCreateAjax: pageEntitiesEntityCreateAjax,
+		PathEntitiesEntityManager:    pageEntitiesEntityManager,
+		PathEntitiesEntityUpdate:     pageEntitiesEntityUpdate,
+		PathEntitiesEntityUpdateAjax: pageEntitiesEntityUpdateAjax,
+		// END: Custom Entities
+
 	}
 	// log.Println(route)
 	if val, ok := routes[route]; ok {
@@ -109,6 +120,7 @@ func cmsHeader(endpoint string) string {
 	linkPages := hb.NewHyperlink().HTML("Pages ").Attr("href", endpoint+"?path="+PathPagesPageManager).Attr("class", "nav-link")
 	linkTemplates := hb.NewHyperlink().HTML("Templates ").Attr("href", endpoint+"?path="+PathTemplatesTemplateManager).Attr("class", "nav-link")
 	linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
+	linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
 	blocksCount := GetEntityStore().EntityCount("block")
 	menusCount := GetEntityStore().EntityCount("menu")
 	pagesCount := GetEntityStore().EntityCount("page")
@@ -125,6 +137,7 @@ func cmsHeader(endpoint string) string {
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(menusCount, 10)))))
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(blocksCount, 10)))))
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(widgetsCount, 10)))))
+	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
 	// add Translations
 
 	for _, entity := range configuration.CustomEntityList {

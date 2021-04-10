@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gouniverse/entitystore"
+	"github.com/gouniverse/settingstore"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -22,6 +23,7 @@ type Config struct {
 var (
 	configuration Config
 	entityStore   *entitystore.Store
+	settingStore  *settingstore.Store
 )
 
 // Init initializes the CMS
@@ -42,6 +44,7 @@ func Init(config Config) {
 	}
 
 	entityStore = entitystore.NewStore(entitystore.WithGormDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
+	settingStore = settingstore.NewStore(settingstore.WithGormDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
 
 	// Migrate the schema
 	// config.DbInstance.AutoMigrate(&Entity{})
@@ -54,9 +57,14 @@ func GetDb() *gorm.DB {
 	return configuration.DbInstance
 }
 
-// GetEntityStore returns the user store
+// GetEntityStore returns the entity store
 func GetEntityStore() *entitystore.Store {
 	return entityStore
+}
+
+// GetSettingStore returns the setting store
+func GetSettingStore() *settingstore.Store {
+	return settingStore
 }
 
 type CustomEntityStructure struct {

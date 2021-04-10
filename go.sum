@@ -43,6 +43,10 @@ github.com/gouniverse/html v1.22.0 h1:Uq+/iqiS5ZuLDym4+gEX42koxoI2UNbHdgN+9ZuVli
 github.com/gouniverse/html v1.22.0/go.mod h1:qTtqco89aTfGaiXz5j/AfT/swJBT5qM+kTKjlkmgwFs=
 github.com/gouniverse/icons v1.1.0 h1:uE7Kc2I94EEX2OMaVxyrsVjvbSbqDub3uIXdHg+tomk=
 github.com/gouniverse/icons v1.1.0/go.mod h1:MJIS8jNScGeXKfyCbzOW+1OH9K6nfFlcIGciei1KDWI=
+github.com/gouniverse/settingstore v0.2.0 h1:XiLMOYoWwNvde3mO2m0H29iKwQYyDuKdVpf7bbH8rFk=
+github.com/gouniverse/settingstore v0.2.0/go.mod h1:g8Lzw+O7KX0+WVzW5BcuCvKVpKXD0yEUbERjb3vQEfY=
+github.com/gouniverse/settingstore v0.4.0 h1:mzRoLU7x+02ov+etSp3B+dPMnQMU7d9ykg3KQAB5vdY=
+github.com/gouniverse/settingstore v0.4.0/go.mod h1:g8Lzw+O7KX0+WVzW5BcuCvKVpKXD0yEUbERjb3vQEfY=
 github.com/gouniverse/uid v1.1.0 h1:xRyvMlKPyR8vH4JGyau+Smq8hEseTGziFoig+KzZCKM=
 github.com/gouniverse/uid v1.1.0/go.mod h1:DqHBO4xCA6IxtYkfWeYAXeGWsXDG157z+nyAowUUZCU=
 github.com/gouniverse/utils v1.6.0 h1:waYwarSFS0k8xEv1G9ofV8luPW425BRJBtoriugyYGM=
@@ -109,3 +113,5 @@ gorm.io/gorm v1.20.9 h1:M3aIZKXAC1PtPVu9t3WGwkBTE1le5c2telz3I/qjRNg=
 gorm.io/gorm v1.20.9/go.mod h1:0HFTzE/SqkGTzK6TlDPPQbAYCluiVvhzoA1+aVyzenw=
 gorm.io/gorm v1.21.6 h1:xEFbH7WShsnAM+HeRNv7lOeyqmDAK+dDnf1AMf/cVPQ=
 gorm.io/gorm v1.21.6/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
+gorm.io/gorm v1.21.7 h1:MuY8oejVL5l3iT7PfE3z5I4J+KW/Nu2w/uTpLe3vV1Q=
+gorm.io/gorm v1.21.7/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
