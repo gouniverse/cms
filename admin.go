@@ -51,6 +51,10 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 		PathWidgetsWidgetManager:        pageWidgetsWidgetManager,
 		PathWidgetsWidgetUpdate:         pageWidgetsWidgetUpdate,
 		PathWidgetsWidgetUpdateAjax:     pageWidgetsWidgetUpdateAjax,
+		PathEntitiesEntityCreateAjax:    pageEntitiesEntityCreateAjax,
+		PathEntitiesEntityManager:       pageEntitiesEntityManager,
+		PathEntitiesEntityUpdate:        pageEntitiesEntityUpdate,
+		PathEntitiesEntityUpdateAjax:    pageEntitiesEntityUpdateAjax,
 	}
 	// log.Println(route)
 	if val, ok := routes[route]; ok {
@@ -122,6 +126,12 @@ func cmsHeader(endpoint string) string {
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(blocksCount, 10)))))
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(widgetsCount, 10)))))
 	// add Translations
+
+	for _, entity := range configuration.CustomEntityList {
+		entiityType := entity.Type
+		linkEntity := hb.NewHyperlink().HTML(entiityType).Attr("href", endpoint+"?path=entities/entity-manager&type="+entiityType).Attr("class", "nav-link")
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkEntity))
+	}
 
 	divCard := hb.NewDiv().Attr("class", "card card-default mt-3 mb-3")
 	divCardBody := hb.NewDiv().Attr("class", "card-body").Attr("style", "padding: 2px;")

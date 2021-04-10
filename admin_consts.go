@@ -56,4 +56,12 @@ const (
 	PathWidgetsWidgetUpdate string = "widgets/widget-update"
 	// PathWidgetsWidgetUpdateAjax contains the path to admin block update page
 	PathWidgetsWidgetUpdateAjax string = "widgets/widget-update-ajax"
+	// PathWidgetsWidgetManager contains the path to admin block update page
+	PathEntitiesEntityManager string = "entities/entity-manager"
+	// PathWidgetsWidgetCreateAjax contains the path to admin block update page
+	PathEntitiesEntityCreateAjax string = "entities/entity-create-ajax"
+	// PathWidgetsWidgetUpdate contains the path to admin block update page
+	PathEntitiesEntityUpdate string = "entities/entity-update"
+	// PathWidgetsWidgetUpdateAjax contains the path to admin block update page
+	PathEntitiesEntityUpdateAjax string = "entities/entity-update-ajax"
 )

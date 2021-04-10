@@ -13,9 +13,10 @@ var prefix string
 
 // Config contains the configurations for the auth package
 type Config struct {
-	DbInstance *gorm.DB
-	DbDriver   string
-	DbDsn      string
+	DbInstance       *gorm.DB
+	DbDriver         string
+	DbDsn            string
+	CustomEntityList []CustomEntityStructure
 }
 
 var (
@@ -56,4 +57,18 @@ func GetDb() *gorm.DB {
 // GetEntityStore returns the user store
 func GetEntityStore() *entitystore.Store {
 	return entityStore
+}
+
+type CustomEntityStructure struct {
+	Type          string
+	Name          string
+	AttributeList []CustomAttributeStructure
+}
+
+type CustomAttributeStructure struct {
+	Name             string
+	Type             string
+	FormControlLabel string
+	FormControlType  string
+	FormControlHelp  string
 }
