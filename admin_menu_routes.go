@@ -273,6 +273,7 @@ func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	menuID := strings.Trim(utils.Req(r, "menu_id", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
+	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
 
 	if menuID == "" {
 		api.Respond(w, r, api.Error("Menu ID is required"))
@@ -297,6 +298,7 @@ func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	menu.SetString("name", name)
+	menu.SetString("handle", handle)
 	isOk := menu.SetString("status", status)
 
 	if isOk == false {

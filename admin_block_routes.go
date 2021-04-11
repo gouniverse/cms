@@ -332,6 +332,7 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
+	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
 
 	if blockID == "" {
 		api.Respond(w, r, api.Error("Block ID is required"))
@@ -357,6 +358,7 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	block.SetString("content", content)
 	block.SetString("name", name)
+	block.SetString("handle", handle)
 	isOk := block.SetString("status", status)
 
 	if isOk == false {

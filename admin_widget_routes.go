@@ -282,6 +282,7 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
+	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
 
 	if widgetID == "" {
 		api.Respond(w, r, api.Error("Widget ID is required"))
@@ -307,6 +308,7 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	widget.SetString("content", content)
 	widget.SetString("name", name)
+	widget.SetString("handle", handle)
 	isOk := widget.SetString("status", status)
 
 	if isOk == false {

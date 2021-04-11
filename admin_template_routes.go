@@ -329,6 +329,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
+	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
 
 	if templateID == "" {
 		api.Respond(w, r, api.Error("Template ID is required"))
@@ -354,6 +355,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	template.SetString("content", content)
 	template.SetString("name", name)
+	template.SetString("handle", handle)
 	isOk := template.SetString("status", status)
 
 	if isOk == false {

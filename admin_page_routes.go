@@ -49,6 +49,7 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	title := strings.Trim(utils.Req(r, "title", ""), " ")
 	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
+	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
 
 	if pageID == "" {
 		api.Respond(w, r, api.Error("Page ID is required"))
@@ -91,6 +92,7 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	page.SetString("name", name)
 	page.SetString("status", status)
 	page.SetString("template_id", templateID)
+	page.SetString("handle", handle)
 	isOk := page.SetString("title", title)
 
 	if isOk == false {

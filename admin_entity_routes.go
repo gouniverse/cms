@@ -302,6 +302,7 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	entityID := strings.Trim(utils.Req(r, "entity_id", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
+	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
 
 	if entityID == "" {
 		api.Respond(w, r, api.Error("Entity ID is required"))
@@ -333,6 +334,7 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	entity.SetString("name", name)
+	entity.SetString("handle", handle)
 	isOk := entity.SetString("status", status)
 
 	if isOk == false {
