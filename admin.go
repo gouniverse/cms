@@ -27,30 +27,45 @@ func Router(w http.ResponseWriter, r *http.Request) {
 
 func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
-		PathHome:                        pageHome,
-		PathBlocksBlockCreateAjax:       pageBlocksBlockCreateAjax,
-		PathBlocksBlockManager:          pageBlocksBlockManager,
-		PathBlocksBlockUpdate:           pageBlocksBlockUpdate,
-		PathBlocksBlockUpdateAjax:       pageBlocksBlockUpdateAjax,
-		PathMenusMenuCreateAjax:         pageMenusMenuCreateAjax,
-		PathMenusMenuManager:            pageMenusMenuManager,
-		PathMenusMenuUpdate:             pageMenusMenuUpdate,
-		PathMenusMenuItemsFetchAjax:     pageMenusMenuItemsFetchAjax,
-		PathMenusMenuItemsUpdate:        pageMenusMenuItemsUpdate,
-		PathMenusMenuItemsUpdateAjax:    pageMenusMenuItemsUpdateAjax,
-		PathMenusMenuUpdateAjax:         pageMenusMenuUpdateAjax,
-		PathPagesPageCreateAjax:         pagePagesPageCreateAjax,
-		PathPagesPageManager:            pagePagesPageManager,
-		PathPagesPageUpdate:             pagePagesPageUpdate,
-		PathPagesPageUpdateAjax:         pagePagesPageUpdateAjax,
+		PathHome: pageHome,
+		// START: Blocks
+		PathBlocksBlockCreateAjax: pageBlocksBlockCreateAjax,
+		PathBlocksBlockDeleteAjax: pageBlocksBlockDeleteAjax,
+		PathBlocksBlockManager:    pageBlocksBlockManager,
+		PathBlocksBlockUpdate:     pageBlocksBlockUpdate,
+		PathBlocksBlockUpdateAjax: pageBlocksBlockUpdateAjax,
+		// END: Blocks
+
+		// START: Menus
+		PathMenusMenuCreateAjax:      pageMenusMenuCreateAjax,
+		PathMenusMenuManager:         pageMenusMenuManager,
+		PathMenusMenuUpdate:          pageMenusMenuUpdate,
+		PathMenusMenuItemsFetchAjax:  pageMenusMenuItemsFetchAjax,
+		PathMenusMenuItemsUpdate:     pageMenusMenuItemsUpdate,
+		PathMenusMenuItemsUpdateAjax: pageMenusMenuItemsUpdateAjax,
+		PathMenusMenuUpdateAjax:      pageMenusMenuUpdateAjax,
+		// END: Menus
+
+		// START: Pages
+		PathPagesPageCreateAjax: pagePagesPageCreateAjax,
+		PathPagesPageManager:    pagePagesPageManager,
+		PathPagesPageUpdate:     pagePagesPageUpdate,
+		PathPagesPageUpdateAjax: pagePagesPageUpdateAjax,
+		// END: Pages
+
+		// START: Templates
 		PathTemplatesTemplateCreateAjax: pageTemplatesTemplateCreateAjax,
 		PathTemplatesTemplateManager:    pageTemplateTemplateManager,
 		PathTemplatesTemplateUpdate:     pageTemplatesTemplateUpdate,
 		PathTemplatesTemplateUpdateAjax: pageTemplatesTemplateUpdateAjax,
-		PathWidgetsWidgetCreateAjax:     pageWidgetsWidgetCreateAjax,
-		PathWidgetsWidgetManager:        pageWidgetsWidgetManager,
-		PathWidgetsWidgetUpdate:         pageWidgetsWidgetUpdate,
-		PathWidgetsWidgetUpdateAjax:     pageWidgetsWidgetUpdateAjax,
+		// END: Templates
+
+		// START: Widgets
+		PathWidgetsWidgetCreateAjax: pageWidgetsWidgetCreateAjax,
+		PathWidgetsWidgetManager:    pageWidgetsWidgetManager,
+		PathWidgetsWidgetUpdate:     pageWidgetsWidgetUpdate,
+		PathWidgetsWidgetUpdateAjax: pageWidgetsWidgetUpdateAjax,
+		// END: Widgets
 
 		// START: Settings
 		PathSettingsSettingCreateAjax: pageSettingsSettingCreateAjax,
@@ -141,8 +156,7 @@ func cmsHeader(endpoint string) string {
 	// add Translations
 
 	for _, entity := range configuration.CustomEntityList {
-		entiityType := entity.Type
-		linkEntity := hb.NewHyperlink().HTML(entiityType).Attr("href", endpoint+"?path=entities/entity-manager&type="+entiityType).Attr("class", "nav-link")
+		linkEntity := hb.NewHyperlink().HTML(entity.TypeLabel).Attr("href", endpoint+"?path=entities/entity-manager&type="+entity.Type).Attr("class", "nav-link")
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkEntity))
 	}
 

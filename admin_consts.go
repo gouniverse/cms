@@ -10,14 +10,21 @@ const (
 	keyEndpoint = contextKey("endpoint")
 	// PathHome contains the path to admin home page
 	PathHome string = "home"
-	// PathBlocksBlockManager contains the path to admin block create page
-	PathBlocksBlockManager string = "blocks/block-manager"
+
+	// START: Blocks
 	// PathBlocksBlockCreateAjax contains the path to admin block create page
 	PathBlocksBlockCreateAjax string = "blocks/block-create-ajax"
+	// PathBlocksBlockDeleteAjax contains the path to admin block delete page
+	PathBlocksBlockDeleteAjax string = "blocks/block-delete-ajax"
+	// PathBlocksBlockManager contains the path to admin block create page
+	PathBlocksBlockManager string = "blocks/block-manager"
 	// PathBlocksBlockUpdate contains the path to admin block update page
 	PathBlocksBlockUpdate string = "blocks/block-update"
 	// PathBlocksBlockUpdateAjax contains the path to admin block update page
 	PathBlocksBlockUpdateAjax string = "blocks/block-update-ajax"
+	// END: Blocks
+
+	// START: Menus
 	// PathMenusMenuManager contains the path to admin block update page
 	PathMenusMenuManager string = "menus/menu-manager"
 	// PathMenusMenuCreateAjax contains the path to admin block update page
@@ -32,6 +39,9 @@ const (
 	PathMenusMenuItemsUpdate string = "manus/menu-items-update"
 	// PathMenusMenuUpdateAjax contains the path to admin block update page
 	PathMenusMenuUpdateAjax string = "menus/menu-update-ajax"
+	// END: Menus
+
+	// START: Pages
 	// PathPagesPageManager contains the path to admin block update page
 	PathPagesPageManager string = "pages/page-manager"
 	// PathPagesPageCreateAjax contains the path to admin block update page
@@ -40,6 +50,9 @@ const (
 	PathPagesPageUpdate string = "pages/page-update"
 	// PathPagesPageUpdateAjax contains the path to admin block update page
 	PathPagesPageUpdateAjax string = "pages/page-update-ajax"
+	// END: Pages
+
+	// START: Templates
 	// PathTemplatesTemplateManager contains the path to admin block update page
 	PathTemplatesTemplateManager string = "templates/template-manager"
 	// PathTemplatesTemplateCreateAjax contains the path to admin block update page
@@ -48,7 +61,10 @@ const (
 	PathTemplatesTemplateUpdate string = "templates/template-update"
 	// PathTemplatesTemplateUpdateAjax contains the path to admin block update page
 	PathTemplatesTemplateUpdateAjax string = "templates/template-update-ajax"
-	// PathWidgetsWidgetManager contains the path to admin block update page
+	// END: Templates
+
+	// START: Widgets
+	// PathWidgetsWidgetManager contains the path to admin widgets update page
 	PathWidgetsWidgetManager string = "widgets/widget-manager"
 	// PathWidgetsWidgetCreateAjax contains the path to admin block update page
 	PathWidgetsWidgetCreateAjax string = "widgets/widget-create-ajax"
@@ -56,15 +72,18 @@ const (
 	PathWidgetsWidgetUpdate string = "widgets/widget-update"
 	// PathWidgetsWidgetUpdateAjax contains the path to admin block update page
 	PathWidgetsWidgetUpdateAjax string = "widgets/widget-update-ajax"
+	// END: Widgets
 
 	// START: Settings
-	// PathSettingsSettingManager contains the path to admin settings update page
+	// PathSettingsSettingManager contains the path to admin settings manager page
 	PathSettingsSettingManager string = "settings/setting-manager"
-	// PathSettingsSettingCreateAjax contains the path to admin block update page
+	// PathSettingsSettingCreateAjax contains the path to admin settings create page
 	PathSettingsSettingCreateAjax string = "settings/setting-create-ajax"
-	// PathSettingsSettingUpdate contains the path to admin block update page
+	// PathSettingsSettingDeleteAjax contains the path to admin settings delete page
+	PathSettingsSettingDeleteAjax string = "settings/setting-delete-ajax"
+	// PathSettingsSettingUpdate contains the path to admin settings update page
 	PathSettingsSettingUpdate string = "settings/setting-update"
-	// PathSettingsSettingUpdateAjax contains the path to admin block update page
+	// PathSettingsSettingUpdateAjax contains the path to admin settings update page
 	PathSettingsSettingUpdateAjax string = "settings/setting-update-ajax"
 	// END: Settings
 

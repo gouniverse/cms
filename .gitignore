@@ -1,3 +1,8 @@
+tmp/
 tmp/runner-build.exe
 entity_create.db
 entity_update.db
+development/.env
+development/database.db
+development/tmp/
+development/tmp/runner-build.exe

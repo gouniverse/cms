@@ -238,24 +238,13 @@ const SettingUpdate = {
 				setting_value: settingValue,
 			}).done((response)=>{
 				if (response.status !== "success") {
-					return Swal.fire({
-						icon: 'error',
-						title: 'Oops...',
-						text: response.message,
-					});
+					return Swal.fire({icon: 'error',title: 'Oops...',text: response.message,});
 				}
 
-				return Swal.fire({
-					icon: 'success',
-					title: 'Block saved',
-				});
+				return Swal.fire({icon: 'success',title: 'Setting saved',});
 			}).fail((result)=>{
 				console.log(result);
-				return Swal.fire({
-					icon: 'error',
-					title: 'Oops...',
-					text: result,
-				});
+				return Swal.fire({icon: 'error',title: 'Oops...',text: result,});
 			});
 		}
 	}
@@ -310,5 +299,24 @@ func pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Setting saved successfully", map[string]interface{}{"setting_key": settingKey}))
+	return
+}
+
+func pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
+	settingKey := utils.Req(r, "setting_key", "")
+
+	if settingKey == "" {
+		api.Respond(w, r, api.Error("Setting key is required"))
+		return
+	}
+
+	GetSettingStore().Remove(settingKey)
+
+	// if isOk == false {
+	// 	api.Respond(w, r, api.Error("Setting failed to be deleted"))
+	// 	return
+	// }
+
+	api.Respond(w, r, api.SuccessWithData("Setting deleted successfully", map[string]interface{}{"setting_key": settingKey}))
 	return
 }

@@ -59,12 +59,26 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	modalBody := hb.NewDiv().Attr("class", "modal-body")
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "blockCreateModel.name")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "blockCreate"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
+
+	modalDelete := hb.NewDiv().Attr("id", "ModalBlockDelete").Attr("class", "modal fade")
+	modalDeleteDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalDeleteContent := hb.NewDiv().Attr("class", "modal-content")
+	modalDeleteHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Delete Block"))
+	modalDeleteBody := hb.NewDiv().Attr("class", "modal-body")
+	modalDeleteBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to delete this block?"))
+	modalDeleteFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalDeleteFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	modalDeleteFooter.AddChild(hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger").Attr("v-on:click", "blockDelete"))
+	modalDeleteContent.AddChild(modalDeleteHeader).AddChild(modalDeleteBody).AddChild(modalDeleteFooter)
+	modalDeleteDialog.AddChild(modalDeleteContent)
+	modalDelete.AddChild(modalDeleteDialog)
+	container.AddChild(modalDelete)
 
 	blocks := GetEntityStore().EntityList("block", 0, 200, "", "id", "asc")
 
@@ -82,12 +96,13 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	for _, block := range blocks {
 		name := block.GetString("name", "n/a")
 		status := block.GetString("status", "n/a")
+		buttonDelete := hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger float-end").Attr("v-on:click", "showBlockDeleteModal('"+block.ID+"')")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "blockEdit('"+block.ID+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
 		td2 := hb.NewTD().HTML(status)
-		td3 := hb.NewTD().AddChild(buttonEdit)
+		td3 := hb.NewTD().SetAttribute("style", "white-space:nowrap;").AddChild(buttonEdit).AddChild(buttonDelete)
 
 		tbody.AddChild(tr.AddChild(td1).AddChild(td2).AddChild(td3))
 	}
@@ -97,12 +112,16 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 
 	inlineScript := `
 var blockCreateUrl = "` + endpoint + `?path=blocks/block-create-ajax"
+var blockDeleteUrl = "` + endpoint + `?path=blocks/block-delete-ajax"
 var blockUpdateUrl = "` + endpoint + `?path=blocks/block-update"
 const BlockManager = {
 	data() {
 		return {
 		  blockCreateModel:{
-			  name:""
+			  name:"",
+		  },
+		  blockDeleteModel:{
+			blockId:null,
 		  }
 		}
 	},
@@ -110,6 +129,11 @@ const BlockManager = {
         showBlockCreateModal(){
 			var modalBlockCreate = new bootstrap.Modal(document.getElementById('ModalBlockCreate'));
 			modalBlockCreate.show();
+		},
+		showBlockDeleteModal(blockId){
+			this.blockDeleteModel.blockId = blockId;
+			var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalBlockDelete'));
+			modalBlockDelete.show();
 		},
 		blockCreate(){
 			var name = this.blockCreateModel.name;
@@ -123,6 +147,20 @@ const BlockManager = {
 				alert("Failed. " + result.message)
 			}).fail((result)=>{
 				alert("Failed" + result)
+			});
+		},
+		blockDelete(){
+			var blockId = this.blockDeleteModel.blockId;
+		    $.post(blockDeleteUrl, {block_id: blockId}).done((result)=>{
+				if (result.status==="success"){
+					var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalBlockDelete'));
+			        modalBlockDelete.hide();
+
+					return location.href = location.href;
+				}
+				alert("Failed. " + result.message);
+			}).fail((result)=>{
+				alert("Failed" + result);
 			});
 		},
 		blockEdit(blockId){
@@ -367,5 +405,31 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
+	return
+}
+
+func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
+	blockID := strings.Trim(utils.Req(r, "block_id", ""), " ")
+
+	if blockID == "" {
+		api.Respond(w, r, api.Error("Block ID is required"))
+		return
+	}
+
+	block := GetEntityStore().EntityFindByID(blockID)
+
+	if block == nil {
+		api.Respond(w, r, api.Success("Block already deleted"))
+		return
+	}
+
+	isOk := GetEntityStore().EntityDelete(blockID)
+
+	if isOk == false {
+		api.Respond(w, r, api.Error("Block failed to be deleted"))
+		return
+	}
+
+	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID}))
 	return
 }

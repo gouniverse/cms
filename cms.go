@@ -69,6 +69,7 @@ func GetSettingStore() *settingstore.Store {
 
 type CustomEntityStructure struct {
 	Type          string
+	TypeLabel     string
 	Name          string
 	AttributeList []CustomAttributeStructure
 }
