@@ -20,3 +20,13 @@ This package allows to add a content management system as a module dependency, w
 - Menus (CMS)
 - Settings (CMS)
 - Custom Types
+
+# Simple Initialization
+
+In its simplest initialization the CMS package accepts a GORM DB instance
+
+```
+cms.Init(cms.Config{
+		DbInstance: gormDB,
+})
+```
