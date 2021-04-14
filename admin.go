@@ -152,7 +152,10 @@ func cmsHeader(endpoint string) string {
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(menusCount, 10)))))
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(blocksCount, 10)))))
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(widgetsCount, 10)))))
-	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
+
+	if configuration.EnableSettings == true {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
+	}
 	// add Translations
 
 	for _, entity := range configuration.CustomEntityList {

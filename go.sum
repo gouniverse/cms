@@ -13,6 +13,8 @@ github.com/gofiber/fiber/v2 v2.3.2 h1:8ecrfzlfTUsboMybK6TQIfPoObmPR1hEoKU7Ni1pEl
 github.com/gofiber/fiber/v2 v2.3.2/go.mod h1:f8BRRIMjMdRyt2qmJ/0Sea3j3rwwfufPrh9WNBRiVZ0=
 github.com/gouniverse/api v1.2.0 h1:K4aLXzM3KJFO/8DAHXoCTe0gs18PbO8yZPNyuNu+atE=
 github.com/gouniverse/api v1.2.0/go.mod h1:TkL+9yyPfgmS5GazxLPD5yjSCcISyZP4mPBnRxJkHMc=
+github.com/gouniverse/cachestore v0.3.0 h1:IMbjjRTo/3V1uWbuUS14JHNPDD6d8xe3cvUifUCvsxk=
+github.com/gouniverse/cachestore v0.3.0/go.mod h1:h14RcijYNs/duQ+cP9vxXxxZLLTMOWj11YXaRsHjKto=
 github.com/gouniverse/entitystore v0.2.0 h1:3bDs0suJlFelBRDMxaOGOOLkv7lo+pI1uySZYcf87ew=
 github.com/gouniverse/entitystore v0.2.0/go.mod h1:Tv6P+BwaSEMug3tuwUtcBrd7K5eADAPAv1XjZTaZPxM=
 github.com/gouniverse/entitystore v0.3.0 h1:WIzowBUHbyqpboxYvz4IVXelYKIv1KvqTAmZ8u3hTdU=

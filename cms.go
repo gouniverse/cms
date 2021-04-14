@@ -3,6 +3,7 @@ package cms
 import (
 	"log"
 
+	"github.com/gouniverse/cachestore"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/settingstore"
 	"gorm.io/driver/sqlite"
@@ -18,12 +19,19 @@ type Config struct {
 	DbDriver         string
 	DbDsn            string
 	CustomEntityList []CustomEntityStructure
+	EnableSettings   bool
+	EnableCache      bool
+	EnableWidgets    bool
 }
 
 var (
-	configuration Config
-	entityStore   *entitystore.Store
-	settingStore  *settingstore.Store
+	configuration   Config
+	entityStore     *entitystore.Store
+	settingStore    *settingstore.Store
+	cacheStore      *cachestore.Store
+	cacheEnabled    bool
+	settingsEnabled bool
+	widgetsEnabled  bool
 )
 
 // Init initializes the CMS
@@ -44,7 +52,17 @@ func Init(config Config) {
 	}
 
 	entityStore = entitystore.NewStore(entitystore.WithGormDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
-	settingStore = settingstore.NewStore(settingstore.WithGormDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
+
+	if config.EnableSettings {
+		settingsEnabled = true
+		settingStore = settingstore.NewStore(settingstore.WithGormDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
+	}
+
+	if config.EnableCache {
+		cacheEnabled = true
+		cacheStore = cachestore.NewStore(cachestore.WithGormDb(config.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
+		go cacheStore.ExpireCacheGoroutine()
+	}
 
 	// Migrate the schema
 	// config.DbInstance.AutoMigrate(&Entity{})
@@ -64,7 +82,20 @@ func GetEntityStore() *entitystore.Store {
 
 // GetSettingStore returns the setting store
 func GetSettingStore() *settingstore.Store {
-	return settingStore
+	if settingsEnabled {
+		return settingStore
+	}
+
+	return nil
+}
+
+// GetCacheStore returns the cache store
+func GetCacheStore() *cachestore.Store {
+	if cacheEnabled {
+		return cacheStore
+	}
+
+	return nil
 }
 
 type CustomEntityStructure struct {
