@@ -2,7 +2,7 @@
 
 ![tests](https://github.com/gouniverse/cms/workflows/tests/badge.svg)
 
-PREVIEW ONLY. NOT STABLE
+PREVIEW ONLY. NOT STABLE API CAN AND WILL CHANGE FREQUENTLY
 
 A "plug-and-play" content managing system (CMS) for GoLang that does its job and stays out of your way.
 
@@ -20,3 +20,13 @@ This package allows to add a content management system as a module dependency, w
 - Menus (CMS)
 - Settings (CMS)
 - Custom Types
+
+# Simple Initialization
+
+In its simplest initialization the CMS package accepts a GORM DB instance
+
+```
+cms.Init(cms.Config{
+		DbInstance: gormDB,
+})
+```
