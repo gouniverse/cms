@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
-	hb "github.com/gouniverse/html"
+	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/utils"
 )

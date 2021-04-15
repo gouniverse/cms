@@ -6,7 +6,7 @@ import (
 
 	"strconv"
 
-	hb "github.com/gouniverse/html"
+	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
 
@@ -86,6 +86,7 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 	if val, ok := routes[route]; ok {
 		return val
 	}
+
 	return routes[PathHome]
 }
 
@@ -136,6 +137,7 @@ func cmsHeader(endpoint string) string {
 	linkTemplates := hb.NewHyperlink().HTML("Templates ").Attr("href", endpoint+"?path="+PathTemplatesTemplateManager).Attr("class", "nav-link")
 	linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
 	linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
+	linkTranslations := hb.NewHyperlink().HTML("Translations").Attr("href", "#").Attr("class", "nav-link")
 	blocksCount := GetEntityStore().EntityCount("block")
 	menusCount := GetEntityStore().EntityCount("menu")
 	pagesCount := GetEntityStore().EntityCount("page")
@@ -147,11 +149,30 @@ func cmsHeader(endpoint string) string {
 
 	ulNav := hb.NewUL().Attr("class", "nav  nav-pills justify-content-center")
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkHome))
-	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(templatesCount, 10)))))
-	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(pagesCount, 10)))))
-	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(menusCount, 10)))))
-	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(blocksCount, 10)))))
-	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(widgetsCount, 10)))))
+
+	if configuration.EnableTemplates {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(templatesCount, 10)))))
+	}
+
+	if configuration.EnablePages {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(pagesCount, 10)))))
+	}
+
+	if configuration.EnableMenus {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(menusCount, 10)))))
+	}
+
+	if configuration.EnableBlocks {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(blocksCount, 10)))))
+	}
+
+	if configuration.EnableWidgets {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(widgetsCount, 10)))))
+	}
+
+	if configuration.EnableTranslations == true {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTranslations))
+	}
 
 	if configuration.EnableSettings == true {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))

@@ -15,23 +15,29 @@ var prefix string
 
 // Config contains the configurations for the auth package
 type Config struct {
-	DbInstance       *gorm.DB
-	DbDriver         string
-	DbDsn            string
-	CustomEntityList []CustomEntityStructure
-	EnableSettings   bool
-	EnableCache      bool
-	EnableWidgets    bool
+	DbInstance         *gorm.DB
+	DbDriver           string
+	DbDsn              string
+	CustomEntityList   []CustomEntityStructure
+	EnableBlocks       bool
+	EnableCache        bool
+	EnableMenus        bool
+	EnablePages        bool
+	EnableSettings     bool
+	EnableTemplates    bool
+	EnableTranslations bool
+	EnableWidgets      bool
 }
 
 var (
-	configuration   Config
-	entityStore     *entitystore.Store
-	settingStore    *settingstore.Store
-	cacheStore      *cachestore.Store
-	cacheEnabled    bool
-	settingsEnabled bool
-	widgetsEnabled  bool
+	configuration       Config
+	entityStore         *entitystore.Store
+	settingStore        *settingstore.Store
+	cacheStore          *cachestore.Store
+	cacheEnabled        bool
+	settingsEnabled     bool
+	translationsEnabled bool
+	widgetsEnabled      bool
 )
 
 // Init initializes the CMS

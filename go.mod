@@ -8,7 +8,8 @@ require (
 	github.com/gouniverse/api v1.2.0
 	github.com/gouniverse/cachestore v0.3.0 // indirect
 	github.com/gouniverse/entitystore v0.17.0 // indirect
-	github.com/gouniverse/html v1.22.0
+	github.com/gouniverse/hb v1.27.0 // indirect
+	//github.com/gouniverse/html v1.22.0
 	github.com/gouniverse/icons v1.1.0
 	github.com/gouniverse/settingstore v0.4.0 // indirect
 	github.com/gouniverse/uid v1.1.0

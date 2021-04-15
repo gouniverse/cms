@@ -43,6 +43,8 @@ github.com/gouniverse/entitystore v0.16.0 h1:G8+Hj4sqUtZDFilwZy62qhKoWgEf1XdxY8L
 github.com/gouniverse/entitystore v0.16.0/go.mod h1:hKClhcTIIJ76ltA+NiOQZd52afDTKVLrx0lhs/3n46M=
 github.com/gouniverse/entitystore v0.17.0 h1:9P2+sy4eY8RoBlL7giuvzAguA5ukzs481ohluHXP3Fc=
 github.com/gouniverse/entitystore v0.17.0/go.mod h1:hKClhcTIIJ76ltA+NiOQZd52afDTKVLrx0lhs/3n46M=
+github.com/gouniverse/hb v1.27.0 h1:/nyaY8w/ZK0ahcnmKD+vzae80hY1owpk8PK/ehngdVM=
+github.com/gouniverse/hb v1.27.0/go.mod h1:bA0VeRyNIMjq2yrJe41CzXqPYTewlgD2aMV/Cadpiug=
 github.com/gouniverse/html v1.22.0 h1:Uq+/iqiS5ZuLDym4+gEX42koxoI2UNbHdgN+9ZuVlio=
 github.com/gouniverse/html v1.22.0/go.mod h1:qTtqco89aTfGaiXz5j/AfT/swJBT5qM+kTKjlkmgwFs=
 github.com/gouniverse/icons v1.1.0 h1:uE7Kc2I94EEX2OMaVxyrsVjvbSbqDub3uIXdHg+tomk=
