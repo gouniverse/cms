@@ -49,6 +49,7 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 		// START: Pages
 		PathPagesPageCreateAjax: pagePagesPageCreateAjax,
 		PathPagesPageManager:    pagePagesPageManager,
+		PathPagesPageTrashAjax:  pagePagesPageTrashAjax,
 		PathPagesPageUpdate:     pagePagesPageUpdate,
 		PathPagesPageUpdateAjax: pagePagesPageUpdateAjax,
 		// END: Pages

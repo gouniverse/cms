@@ -42,13 +42,15 @@ const (
 	// END: Menus
 
 	// START: Pages
-	// PathPagesPageManager contains the path to admin block update page
+	// PathPagesPageManager contains the path to admin page manager page
 	PathPagesPageManager string = "pages/page-manager"
-	// PathPagesPageCreateAjax contains the path to admin block update page
+	// PathPagesPageCreateAjax contains the path to admin page update page
 	PathPagesPageCreateAjax string = "pages/page-create-ajax"
-	// PathPagesPageUpdate contains the path to admin block update page
+	// PathPagesPageTrashAjax contains the path to admin move page to trash
+	PathPagesPageTrashAjax string = "pages/page-trash-ajax"
+	// PathPagesPageUpdate contains the path to admin page update page
 	PathPagesPageUpdate string = "pages/page-update"
-	// PathPagesPageUpdateAjax contains the path to admin block update page
+	// PathPagesPageUpdateAjax contains the path to admin page update ajax page
 	PathPagesPageUpdateAjax string = "pages/page-update-ajax"
 	// END: Pages
 

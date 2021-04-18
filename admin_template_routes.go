@@ -65,14 +65,14 @@ func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	tr := hb.NewTR()
 	th1 := hb.NewTD().HTML("Name")
 	th2 := hb.NewTD().HTML("Status")
-	th3 := hb.NewTD().HTML("Actions").Attr("style", "width:1px;")
+	th3 := hb.NewTD().HTML("Actions").Attr("style", "width:120px;")
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, template := range templates {
 		name := template.GetString("name", "n/a")
 		status := template.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID+"')")
-		buttonTrash := hb.NewButton().HTML("Delete").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -101,10 +101,7 @@ const TemplateManager = {
 		}
 	},
 	created(){
-		//this.initDataTable();
-		//setTimeout(()=>{
-		//	$('#TableTemplates').DataTable();
-		//}, 1000);
+		this.initDataTable();
 	},
 	methods: {
 		initDataTable(){
@@ -146,6 +143,7 @@ const TemplateManager = {
 				if (result.status==="success"){
 					var ModalTemplateTrash = new bootstrap.Modal(document.getElementById('ModalTemplateTrash'));
 				    ModalTemplateTrash.hide();
+					location.href = location.href;
 					return;
 				}
 				alert("Failed. " + result.message)
@@ -162,7 +160,7 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 	webpage.AddScript(inlineScript)
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
-	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
+	//webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
 	w.Write([]byte(webpage.ToHTML()))
