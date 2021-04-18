@@ -55,7 +55,8 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 
 		// START: Templates
 		PathTemplatesTemplateCreateAjax: pageTemplatesTemplateCreateAjax,
-		PathTemplatesTemplateManager:    pageTemplateTemplateManager,
+		PathTemplatesTemplateManager:    pageTemplatesTemplateManager,
+		PathTemplatesTemplateTrashAjax:  pageTemplatesTemplateTrashAjax,
 		PathTemplatesTemplateUpdate:     pageTemplatesTemplateUpdate,
 		PathTemplatesTemplateUpdateAjax: pageTemplatesTemplateUpdateAjax,
 		// END: Templates

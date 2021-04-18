@@ -33,7 +33,7 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageTemplateTemplateManager(w http.ResponseWriter, r *http.Request) {
+func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	log.Println(endpoint)
 
@@ -52,23 +52,12 @@ func pageTemplateTemplateManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
 
-	modal := hb.NewDiv().Attr("id", "ModalTemplateCreate").Attr("class", "modal fade")
-	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	modalContent := hb.NewDiv().Attr("class", "modal-content")
-	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Template"))
-	modalBody := hb.NewDiv().Attr("class", "modal-body")
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "templateCreateModel.name")))
-	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
-	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "templateCreate"))
-	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	modalDialog.AddChild(modalContent)
-	modal.AddChild(modalDialog)
-	container.AddChild(modal)
+	container.AddChild(pageTemplatesTemplateTrashModal())
+	container.AddChild(pageTemplatesTemplateCreateModal())
 
 	templates := GetEntityStore().EntityList("template", 0, 200, "", "id", "asc")
 
-	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().Attr("id", "TableTemplates").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
 	table.AddChild(thead).AddChild(tbody)
@@ -82,12 +71,13 @@ func pageTemplateTemplateManager(w http.ResponseWriter, r *http.Request) {
 	for _, template := range templates {
 		name := template.GetString("name", "n/a")
 		status := template.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "templateEdit('"+template.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID+"')")
+		buttonTrash := hb.NewButton().HTML("Delete").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
 		td2 := hb.NewTD().HTML(status)
-		td3 := hb.NewTD().AddChild(buttonEdit)
+		td3 := hb.NewTD().AddChild(buttonEdit).AddChild(buttonTrash)
 
 		tbody.AddChild(tr.AddChild(td1).AddChild(td2).AddChild(td3))
 	}
@@ -96,17 +86,34 @@ func pageTemplateTemplateManager(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	inlineScript := `
-var templateCreateUrl = "` + endpoint + `?path=templates/template-create-ajax"
-var templateUpdateUrl = "` + endpoint + `?path=templates/template-update"
+var templateCreateUrl = "` + endpoint + `?path=templates/template-create-ajax";
+var templateTrashUrl = "` + endpoint + `?path=templates/template-trash-ajax";
+var templateUpdateUrl = "` + endpoint + `?path=templates/template-update";
 const TemplateManager = {
 	data() {
 		return {
 		  templateCreateModel:{
-			  name:""
+			name:""
+		  },
+		  templateTrashModel:{
+			id:""
 		  }
 		}
 	},
+	created(){
+		//this.initDataTable();
+		//setTimeout(()=>{
+		//	$('#TableTemplates').DataTable();
+		//}, 1000);
+	},
 	methods: {
+		initDataTable(){
+			$(() => {
+				$('#TableTemplates').DataTable({
+					"order": [[ 0, "asc" ]] // 1st column
+				});
+			});
+		},
         showTemplateCreateModal(){
 			//alert("Create template");
 			var modalTemplateCreate = new bootstrap.Modal(document.getElementById('ModalTemplateCreate'));
@@ -117,7 +124,7 @@ const TemplateManager = {
 			$.post(templateCreateUrl, {name: name}).done((result)=>{
 				if (result.status==="success"){
 					var modalTemplateCreate = new bootstrap.Modal(document.getElementById('ModalTemplateCreate'));
-				        modalTemplateCreate.hide();
+				    modalTemplateCreate.hide();
 					return location.href = templateUpdateUrl+ "&template_id=" + result.data.template_id;
 				}
 				alert("Failed. " + result.message)
@@ -127,17 +134,38 @@ const TemplateManager = {
 		},
 		templateEdit(templateId){
 			return location.href = templateUpdateUrl+ "&template_id=" + templateId;
+		},
+		showTemplateTrashModal(templateId){
+			this.templateTrashModel.id = templateId;
+			var modalTemplateTrash = new bootstrap.Modal(document.getElementById('ModalTemplateTrash'));
+			modalTemplateTrash.show();
+		},
+		templateTrash(){
+            let templateId = this.templateTrashModel.id;
+			$.post(templateTrashUrl, {template_id: templateId}).done((result)=>{
+				if (result.status==="success"){
+					var ModalTemplateTrash = new bootstrap.Modal(document.getElementById('ModalTemplateTrash'));
+				    ModalTemplateTrash.hide();
+					return;
+				}
+				alert("Failed. " + result.message)
+			}).fail((result)=>{
+				alert("Failed" + result)
+			});
 		}
 	}
 };
 Vue.createApp(TemplateManager).mount('#template-manager')
 	`
 
-	webtemplate := Webpage("Template Manager", h)
-	webtemplate.AddScript(inlineScript)
+	webpage := Webpage("Template Manager", h)
+	webpage.AddScript(inlineScript)
+	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
+	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webtemplate.ToHTML()))
+	w.Write([]byte(webpage.ToHTML()))
 }
 
 // pageTemplatesTemplateUpdate shows the template edit page
@@ -209,6 +237,7 @@ func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 	contentJSON, _ := json.Marshal(content)
 
 	inlineScript := `
+var templateTrashUrl = "` + endpoint + `?path=templates/template-trash-ajax";
 var templateUpdateUrl = "` + endpoint + `?path=templates/template-update-ajax";
 var templateId = ` + string(templateJSON) + `;
 var name = ` + string(nameJSON) + `;
@@ -323,6 +352,33 @@ Vue.createApp(TemplateUpdate).mount('#template-update')
 	w.Write([]byte(webtemplate.ToHTML()))
 }
 
+// pageTemplatesTemplateTrashAjax - moves the template to the trash
+func pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
+	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
+
+	if templateID == "" {
+		api.Respond(w, r, api.Error("Template ID is required"))
+		return
+	}
+
+	template := GetEntityStore().EntityFindByID(templateID)
+
+	if template == nil {
+		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
+		return
+	}
+
+	isOk := GetEntityStore().EntityTrash(templateID)
+
+	if isOk == false {
+		api.Respond(w, r, api.Error("Template failed to be moved to trash"))
+		return
+	}
+
+	api.Respond(w, r, api.SuccessWithData("Template moved to trash successfully", map[string]interface{}{"template_id": template.ID}))
+	return
+}
+
 // pageTemplatesTemplateUpdateAjax - saves the template via Ajax
 func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
@@ -365,4 +421,36 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
 	return
+}
+
+func pageTemplatesTemplateTrashModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalTemplateTrash").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Trash Template"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to move this template to trash bin?"))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Move to trash bin").Attr("class", "btn btn-danger").Attr("v-on:click", "templateTrash"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
+}
+
+func pageTemplatesTemplateCreateModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalTemplateCreate").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Template"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "templateCreateModel.name")))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "templateCreate"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
 }

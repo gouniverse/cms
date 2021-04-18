@@ -53,24 +53,26 @@ const (
 	// END: Pages
 
 	// START: Templates
-	// PathTemplatesTemplateManager contains the path to admin block update page
-	PathTemplatesTemplateManager string = "templates/template-manager"
-	// PathTemplatesTemplateCreateAjax contains the path to admin block update page
+	// PathTemplatesTemplateCreateAjax contains the path to admin template create page ajax
 	PathTemplatesTemplateCreateAjax string = "templates/template-create-ajax"
-	// PathTemplatesTemplateUpdate contains the path to admin block update page
+	// PathTemplatesTemplateManager contains the path to admin template manager page
+	PathTemplatesTemplateManager string = "templates/template-manager"
+	// PathTemplatesTemplateTrashAjax contains the path to template trash page
+	PathTemplatesTemplateTrashAjax string = "templates/template-trash-ajax"
+	// PathTemplatesTemplateUpdate contains the path to admin template update page
 	PathTemplatesTemplateUpdate string = "templates/template-update"
-	// PathTemplatesTemplateUpdateAjax contains the path to admin block update page
+	// PathTemplatesTemplateUpdateAjax contains the path to admin template update page ajax
 	PathTemplatesTemplateUpdateAjax string = "templates/template-update-ajax"
 	// END: Templates
 
 	// START: Widgets
-	// PathWidgetsWidgetManager contains the path to admin widgets update page
+	// PathWidgetsWidgetManager contains the path to admin widget manager page
 	PathWidgetsWidgetManager string = "widgets/widget-manager"
-	// PathWidgetsWidgetCreateAjax contains the path to admin block update page
+	// PathWidgetsWidgetCreateAjax contains the path to admin widget create page
 	PathWidgetsWidgetCreateAjax string = "widgets/widget-create-ajax"
-	// PathWidgetsWidgetUpdate contains the path to admin block update page
+	// PathWidgetsWidgetUpdate contains the path to admin widget update page
 	PathWidgetsWidgetUpdate string = "widgets/widget-update"
-	// PathWidgetsWidgetUpdateAjax contains the path to admin block update page
+	// PathWidgetsWidgetUpdateAjax contains the path to admin widget update ajax
 	PathWidgetsWidgetUpdateAjax string = "widgets/widget-update-ajax"
 	// END: Widgets
 
