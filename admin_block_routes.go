@@ -52,37 +52,38 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
 
-	modal := hb.NewDiv().Attr("id", "ModalBlockCreate").Attr("class", "modal fade")
-	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	modalContent := hb.NewDiv().Attr("class", "modal-content")
-	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Block"))
-	modalBody := hb.NewDiv().Attr("class", "modal-body")
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "blockCreateModel.name")))
-	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
-	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "blockCreate"))
-	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	modalDialog.AddChild(modalContent)
-	modal.AddChild(modalDialog)
-	container.AddChild(modal)
+	// modal := hb.NewDiv().Attr("id", "ModalBlockCreate").Attr("class", "modal fade")
+	// modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	// modalContent := hb.NewDiv().Attr("class", "modal-content")
+	// modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Block"))
+	// modalBody := hb.NewDiv().Attr("class", "modal-body")
+	// modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "blockCreateModel.name")))
+	// modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	// modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	// modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "blockCreate"))
+	// modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	// modalDialog.AddChild(modalContent)
+	// modal.AddChild(modalDialog)
+	container.AddChild(pageBlocksBlockCreateModal())
+	container.AddChild(pageBlocksBlockTrashModal())
 
-	modalDelete := hb.NewDiv().Attr("id", "ModalBlockDelete").Attr("class", "modal fade")
-	modalDeleteDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	modalDeleteContent := hb.NewDiv().Attr("class", "modal-content")
-	modalDeleteHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Delete Block"))
-	modalDeleteBody := hb.NewDiv().Attr("class", "modal-body")
-	modalDeleteBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to delete this block?"))
-	modalDeleteFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalDeleteFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
-	modalDeleteFooter.AddChild(hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger").Attr("v-on:click", "blockDelete"))
-	modalDeleteContent.AddChild(modalDeleteHeader).AddChild(modalDeleteBody).AddChild(modalDeleteFooter)
-	modalDeleteDialog.AddChild(modalDeleteContent)
-	modalDelete.AddChild(modalDeleteDialog)
-	container.AddChild(modalDelete)
+	// modalDelete := hb.NewDiv().Attr("id", "ModalBlockDelete").Attr("class", "modal fade")
+	// modalDeleteDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	// modalDeleteContent := hb.NewDiv().Attr("class", "modal-content")
+	// modalDeleteHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Delete Block"))
+	// modalDeleteBody := hb.NewDiv().Attr("class", "modal-body")
+	// modalDeleteBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to delete this block?"))
+	// modalDeleteFooter := hb.NewDiv().Attr("class", "modal-footer")
+	// modalDeleteFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	// modalDeleteFooter.AddChild(hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger").Attr("v-on:click", "blockDelete"))
+	// modalDeleteContent.AddChild(modalDeleteHeader).AddChild(modalDeleteBody).AddChild(modalDeleteFooter)
+	// modalDeleteDialog.AddChild(modalDeleteContent)
+	// modalDelete.AddChild(modalDeleteDialog)
+	// container.AddChild(modalDelete)
 
 	blocks := GetEntityStore().EntityList("block", 0, 200, "", "id", "asc")
 
-	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().Attr("id", "TableBlocks").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
 	table.AddChild(thead).AddChild(tbody)
@@ -90,19 +91,20 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	tr := hb.NewTR()
 	th1 := hb.NewTD().HTML("Name")
 	th2 := hb.NewTD().HTML("Status")
-	th3 := hb.NewTD().HTML("Actions").Attr("style", "width:1px;")
+	th3 := hb.NewTD().HTML("Actions").Attr("style", "width:120px;")
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, block := range blocks {
 		name := block.GetString("name", "n/a")
 		status := block.GetString("status", "n/a")
-		buttonDelete := hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger float-end").Attr("v-on:click", "showBlockDeleteModal('"+block.ID+"')")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "blockEdit('"+block.ID+"')")
+		//buttonDelete := hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger float-end").Attr("v-on:click", "showBlockDeleteModal('"+block.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "blockEdit('"+block.ID+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showBlockTrashModal('"+block.ID+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
 		td2 := hb.NewTD().HTML(status)
-		td3 := hb.NewTD().SetAttribute("style", "white-space:nowrap;").AddChild(buttonEdit).AddChild(buttonDelete)
+		td3 := hb.NewTD().SetAttribute("style", "white-space:nowrap;").AddChild(buttonEdit).AddChild(buttonTrash)
 
 		tbody.AddChild(tr.AddChild(td1).AddChild(td2).AddChild(td3))
 	}
@@ -113,6 +115,7 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	inlineScript := `
 var blockCreateUrl = "` + endpoint + `?path=blocks/block-create-ajax"
 var blockDeleteUrl = "` + endpoint + `?path=blocks/block-delete-ajax"
+var blockTrashUrl = "` + endpoint + `?path=templates/block-trash-ajax";
 var blockUpdateUrl = "` + endpoint + `?path=blocks/block-update"
 const BlockManager = {
 	data() {
@@ -122,18 +125,36 @@ const BlockManager = {
 		  },
 		  blockDeleteModel:{
 			blockId:null,
+		  },
+		  blockTrashModel:{
+			blockId:null,
 		  }
 		}
 	},
+	created(){
+		this.initDataTable();
+	},
 	methods: {
+		initDataTable(){
+			$(() => {
+				$('#TableBlocks').DataTable({
+					"order": [[ 0, "asc" ]] // 1st column
+				});
+			});
+		},
         showBlockCreateModal(){
 			var modalBlockCreate = new bootstrap.Modal(document.getElementById('ModalBlockCreate'));
 			modalBlockCreate.show();
 		},
-		showBlockDeleteModal(blockId){
-			this.blockDeleteModel.blockId = blockId;
-			var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalBlockDelete'));
-			modalBlockDelete.show();
+		// showBlockDeleteModal(blockId){
+		// 	this.blockDeleteModel.blockId = blockId;
+		// 	var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalBlockDelete'));
+		// 	modalBlockDelete.show();
+		// },
+		showBlockTrashModal(blockId){
+			this.blockTrashModel.blockId = blockId;
+			var modalBlockTrash = new bootstrap.Modal(document.getElementById('ModalBlockTrash'));
+			modalBlockTrash.show();
 		},
 		blockCreate(){
 			var name = this.blockCreateModel.name;
@@ -149,12 +170,26 @@ const BlockManager = {
 				alert("Failed" + result)
 			});
 		},
-		blockDelete(){
+		// blockDelete(){
+		// 	var blockId = this.blockDeleteModel.blockId;
+		//     $.post(blockDeleteUrl, {block_id: blockId}).done((result)=>{
+		// 		if (result.status==="success"){
+		// 			var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalBlockDelete'));
+		// 	        modalBlockDelete.hide();
+
+		// 			return location.href = location.href;
+		// 		}
+		// 		alert("Failed. " + result.message);
+		// 	}).fail((result)=>{
+		// 		alert("Failed" + result);
+		// 	});
+		// },
+		blockTrash(){
 			var blockId = this.blockDeleteModel.blockId;
-		    $.post(blockDeleteUrl, {block_id: blockId}).done((result)=>{
+			$.post(blockTrashUrl, {block_id: blockId}).done((result)=>{
 				if (result.status==="success"){
-					var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalBlockDelete'));
-			        modalBlockDelete.hide();
+					var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalTrsashDelete'));
+					modalBlockDelete.hide();
 
 					return location.href = location.href;
 				}
@@ -171,11 +206,13 @@ const BlockManager = {
 Vue.createApp(BlockManager).mount('#block-manager')
 	`
 
-	webblock := Webpage("Block Manager", h)
-	webblock.AddScript(inlineScript)
+	webpage := Webpage("Block Manager", h)
+	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
+	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webblock.ToHTML()))
+	w.Write([]byte(webpage.ToHTML()))
 }
 
 func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
@@ -432,4 +469,36 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 
 	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID}))
 	return
+}
+
+func pageBlocksBlockTrashModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalBlockTrash").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Trash Block"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to move this block to trash bin?"))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Move to trash bin").Attr("class", "btn btn-danger").Attr("v-on:click", "blockTrash"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
+}
+
+func pageBlocksBlockCreateModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalBlockCreate").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Block"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "blockCreateModel.name")))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "blockCreate"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
 }

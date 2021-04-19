@@ -157,9 +157,9 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 	`
 
 	webpage := Webpage("Template Manager", h)
-	webpage.AddScript(inlineScript)
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddScript(inlineScript)
 	//webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")

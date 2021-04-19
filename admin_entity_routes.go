@@ -64,23 +64,24 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
 
-	modal := hb.NewDiv().Attr("id", "ModalEntityCreate").Attr("class", "modal fade")
-	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	modalContent := hb.NewDiv().Attr("class", "modal-content")
-	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Enity - " + entityType))
-	modalBody := hb.NewDiv().Attr("class", "modal-body")
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "entityCreateModel.name")))
-	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
-	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "entityCreate"))
-	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	modalDialog.AddChild(modalContent)
-	modal.AddChild(modalDialog)
-	container.AddChild(modal)
+	// modal := hb.NewDiv().Attr("id", "ModalEntityCreate").Attr("class", "modal fade")
+	// modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	// modalContent := hb.NewDiv().Attr("class", "modal-content")
+	// modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Enity - " + entityType))
+	// modalBody := hb.NewDiv().Attr("class", "modal-body")
+	// modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "entityCreateModel.name")))
+	// modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	// modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	// modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "entityCreate"))
+	// modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	// modalDialog.AddChild(modalContent)
+	// modal.AddChild(modalDialog)
+	container.AddChild(pageEntitiesEntityCreateModal())
+	container.AddChild(pageEntitiesEntityTrashModal())
 
 	entities := GetEntityStore().EntityList(entityType, 0, 200, "", "id", "asc")
 
-	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().Attr("id", "TableEntities").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
 	table.AddChild(thead).AddChild(tbody)
@@ -88,18 +89,19 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	tr := hb.NewTR()
 	th1 := hb.NewTD().HTML("Name")
 	th2 := hb.NewTD().HTML("Status")
-	th3 := hb.NewTD().HTML("Actions").Attr("style", "width:1px;")
+	th3 := hb.NewTD().HTML("Actions").Attr("style", "width:120px;")
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, entity := range entities {
 		name := entity.GetString("name", "n/a")
 		status := entity.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "entityEdit('"+entity.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "entityEdit('"+entity.ID+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showEntityTrashModal('"+entity.ID+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
 		td2 := hb.NewTD().HTML(status)
-		td3 := hb.NewTD().AddChild(buttonEdit)
+		td3 := hb.NewTD().AddChild(buttonEdit).AddChild(buttonTrash)
 
 		tbody.AddChild(tr.AddChild(td1).AddChild(td2).AddChild(td3))
 	}
@@ -108,21 +110,40 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	inlineScript := `
-var entityCreateUrl = "` + endpoint + `?path=entities/entity-create-ajax"
-var entityUpdateUrl = "` + endpoint + `?path=entities/entity-update"
+var entityCreateUrl = "` + endpoint + `?path=entities/entity-create-ajax";
+var entityTrashUrl = "` + endpoint + `?path=entities/entity-trash-ajax";
+var entityUpdateUrl = "` + endpoint + `?path=entities/entity-update";
 const EntityManager = {
 	data() {
 		return {
 		  entityCreateModel:{
 			  name:"",
 			  type:"` + entityType + `",
+		  },
+		  entityTrashModel:{
+			entityId:null,
 		  }
 		}
 	},
+	created(){
+		this.initDataTable();
+	},
 	methods: {
+		initDataTable(){
+			$(() => {
+				$('#TableEntities').DataTable({
+					"order": [[ 0, "asc" ]] // 1st column
+				});
+			});
+		},
         showEntityCreateModal(){
 			var modalEntityCreate = new bootstrap.Modal(document.getElementById('ModalEntityCreate'));
 			modalEntityCreate.show();
+		},
+		showEntityTrashModal(entityId){
+			this.entityTrashModel.entityId = entityId;
+			var modalEntityDelete = new bootstrap.Modal(document.getElementById('ModalEntityDelete'));
+			modalEntitykDelete.show();
 		},
 		entityCreate(){
 			var name = this.entityCreateModel.name;
@@ -147,11 +168,13 @@ const EntityManager = {
 Vue.createApp(EntityManager).mount('#entity-manager')
 	`
 
-	webwidget := Webpage("Custom Entity Manager", h)
-	webwidget.AddScript(inlineScript)
+	webpage := Webpage("Custom Entity Manager", h)
+	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
+	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webwidget.ToHTML()))
+	w.Write([]byte(webpage.ToHTML()))
 }
 
 func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
@@ -356,4 +379,36 @@ func customEntityAttributeList(entityType string) []CustomAttributeStructure {
 		}
 	}
 	return []CustomAttributeStructure{}
+}
+
+func pageEntitiesEntityTrashModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalEntityTrash").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Trash Entity"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to move this entity to trash bin?"))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Move to trash bin").Attr("class", "btn btn-danger").Attr("v-on:click", "entityTrash"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
+}
+
+func pageEntitiesEntityCreateModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalEntityCreate").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Entity"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "entityCreateModel.name")))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "entityCreate"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
 }
