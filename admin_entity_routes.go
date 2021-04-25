@@ -210,18 +210,22 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 
 	formGroupStatus := hb.NewDiv().Attr("class", "form-group")
 	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-control").Attr("v-model", "entityModel.status")
+	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "entityModel.status")
 	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
 	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
 	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")
+	formGroupStatusHelp := hb.NewParagraph().Attr("class", "text-info").HTML("What is the current status of the entity")
 	formGroupStatus.AddChild(formGroupStatusLabel)
 	formGroupStatus.AddChild(formGroupStatusSelect.AddChild(formGroupOptionsActive).AddChild(formGroupOptionsInactive).AddChild(formGroupOptionsTrash))
+	formGroupStatus.AddChild(formGroupStatusHelp)
 
 	formGroupName := hb.NewDiv().Attr("class", "form-group")
 	formGroupNameLabel := hb.NewLabel().HTML("Name").Attr("class", "form-label")
 	formGroupNameInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "entityModel.name")
+	formGroupNameHelp := hb.NewParagraph().Attr("class", "text-info").HTML("What is the name of the entity")
 	formGroupName.AddChild(formGroupNameLabel)
 	formGroupName.AddChild(formGroupNameInput)
+	formGroupName.AddChild(formGroupNameHelp)
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
@@ -237,7 +241,7 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 		formGroupAttr := hb.NewDiv().Attr("class", "form-group mt-3")
 		formGroupAttrLabel := hb.NewLabel().HTML(attrFormControlLabel).Attr("class", "form-label")
-		formGroupAttrInput := hb.NewInput().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
+		formGroupAttrInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		if attr.FormControlType == "textarea" {
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}

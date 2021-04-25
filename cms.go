@@ -105,9 +105,15 @@ func GetCacheStore() *cachestore.Store {
 }
 
 type CustomEntityStructure struct {
-	Type          string
-	TypeLabel     string
-	Name          string
+	// Group to which this entity belongs (i.e. Shop, Users, etc)
+	Group string
+	// Type of the entity
+	Type string
+	// Label to display referencing the entity
+	TypeLabel string
+	// Name of the entity
+	Name string
+	// AttributeList list of attributes
 	AttributeList []CustomAttributeStructure
 }
 
