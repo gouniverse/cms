@@ -210,7 +210,7 @@ func pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
-	container.AddChild(formGroupName).AddChild(formGroupContent)
+	container.AddChild(formGroupName).AddChild(formGroupContent).AddChild(paragraphUsage)
 
 	h := container.ToHTML()
 
