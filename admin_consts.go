@@ -18,6 +18,8 @@ const (
 	PathBlocksBlockDeleteAjax string = "blocks/block-delete-ajax"
 	// PathBlocksBlockManager contains the path to admin block create page
 	PathBlocksBlockManager string = "blocks/block-manager"
+	// PathBlocksBlockTrashAjax contains the path to admin block trash page
+	PathBlocksBlockTrashAjax string = "blocks/block-trash-ajax"
 	// PathBlocksBlockUpdate contains the path to admin block update page
 	PathBlocksBlockUpdate string = "blocks/block-update"
 	// PathBlocksBlockUpdateAjax contains the path to admin block update page

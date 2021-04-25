@@ -237,7 +237,7 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 		formGroupAttr := hb.NewDiv().Attr("class", "form-group mt-3")
 		formGroupAttrLabel := hb.NewLabel().HTML(attrFormControlLabel).Attr("class", "form-label")
-		formGroupAttrInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
+		formGroupAttrInput := hb.NewInput().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
 		if attr.FormControlType == "textarea" {
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}

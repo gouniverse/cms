@@ -152,7 +152,7 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	// divPath := hb.NewDiv().Attr("class","form-group well").Attr("style","display:table;width:100%;margin-top:10px;padding:5px 10px;").HTML("Page address: ").HTML(" &nbsp;&nbsp;&nbsp; (to change click on Settings tab)")
 	formGroupStatus := hb.NewDiv().Attr("class", "form-group")
 	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-control").Attr("v-model", "pageModel.status")
+	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "pageModel.status")
 	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
 	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
 	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")
@@ -203,7 +203,7 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	templateList := GetEntityStore().EntityList("template", 0, 100, "", "id", "asc")
 	formGroupTemplate := hb.NewDiv().Attr("class", "form-group")
 	formGroupTemplateLabel := hb.NewLabel().HTML("Template").Attr("class", "form-label")
-	formGroupTemplateSelect := hb.NewSelect().Attr("class", "form-control").Attr("v-model", "pageModel.templateId")
+	formGroupTemplateSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "pageModel.templateId")
 	formGroupTemplateOptionsEmpty := hb.NewOption().Attr("value", "").HTML("- none -")
 	formGroupTemplateSelect.AddChild(formGroupTemplateOptionsEmpty)
 	for _, template := range templateList {

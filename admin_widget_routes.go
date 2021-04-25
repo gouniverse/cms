@@ -169,7 +169,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 
 	formGroupStatus := hb.NewDiv().Attr("class", "form-group")
 	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-control").Attr("v-model", "widgetModel.status")
+	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "widgetModel.status")
 	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
 	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
 	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")

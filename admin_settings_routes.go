@@ -50,23 +50,12 @@ func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
 
-	modal := hb.NewDiv().Attr("id", "ModalSettingCreate").Attr("class", "modal fade")
-	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	modalContent := hb.NewDiv().Attr("class", "modal-content")
-	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Setting"))
-	modalBody := hb.NewDiv().Attr("class", "modal-body")
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Key")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "settingCreateModel.key")))
-	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
-	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "settingCreate"))
-	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	modalDialog.AddChild(modalContent)
-	modal.AddChild(modalDialog)
-	container.AddChild(modal)
+	container.AddChild(pageSettingsSettingDeleteModal())
+	container.AddChild(pageSettingsSettingCreateModal())
 
 	settingKeys := GetSettingStore().Keys()
 
-	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().Attr("id", "TableSettings").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
 	table.AddChild(thead).AddChild(tbody)
@@ -78,11 +67,12 @@ func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 
 	for _, settingKey := range settingKeys {
 		name := settingKey
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "settingEdit('"+settingKey+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "settingEdit('"+settingKey+"')")
+		buttonDelete := hb.NewButton().HTML("Delete").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showSettingDeleteModal('"+settingKey+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
-		td3 := hb.NewTD().AddChild(buttonEdit)
+		td3 := hb.NewTD().Attr("style", "width:150px;").AddChild(buttonEdit).AddChild(buttonDelete)
 
 		tbody.AddChild(tr.AddChild(td1).AddChild(td3))
 	}
@@ -92,16 +82,30 @@ func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 
 	inlineScript := `
 var settingCreateUrl = "` + endpoint + `?path=settings/setting-create-ajax"
+var settingDeleteUrl = "` + endpoint + `?path=settings/setting-delete-ajax";
 var settingUpdateUrl = "` + endpoint + `?path=settings/setting-update"
 const SettingManager = {
 	data() {
 		return {
 		  settingCreateModel:{
 			  key:""
-		  }
+		  },
+		  settingDeleteModel:{
+			  key:"",
+		  },
 		}
 	},
+	created(){
+		this.initDataTable();
+	},
 	methods: {
+		initDataTable(){
+			$(() => {
+				$('#TableSettings').DataTable({
+					"order": [[ 0, "asc" ]] // 1st column
+				});
+			});
+		},
         showSettingCreateModal(){
 			var modalSettingCreate = new bootstrap.Modal(document.getElementById('ModalSettingCreate'));
 			modalSettingCreate.show();
@@ -122,6 +126,25 @@ const SettingManager = {
 		},
 		settingEdit(settingKey){
 			return location.href = settingUpdateUrl+ "&setting_key=" + settingKey;
+		},
+		showSettingDeleteModal(settingKey){
+			this.settingDeleteModel.key = settingKey;
+			var modalSettingDelete = new bootstrap.Modal(document.getElementById('ModalSettingDelete'));
+			modalSettingDelete.show();
+		},
+		settingDelete(){
+            let settingKey = this.settingDeleteModel.key;
+			$.post(settingDeleteUrl, {setting_key: settingKey}).done((result)=>{
+				if (result.status==="success"){
+					var ModalSettingDelete = new bootstrap.Modal(document.getElementById('ModalSettingDelete'));
+				    ModalSettingDelete.hide();
+					location.href = location.href;
+					return;
+				}
+				alert("Failed. " + result.message)
+			}).fail((result)=>{
+				alert("Failed" + result)
+			});
 		}
 	}
 };
@@ -129,6 +152,8 @@ Vue.createApp(SettingManager).mount('#setting-manager')
 	`
 
 	webpage := Webpage("Setting Manager", h)
+	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
+	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
@@ -319,4 +344,37 @@ func pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
 
 	api.Respond(w, r, api.SuccessWithData("Setting deleted successfully", map[string]interface{}{"setting_key": settingKey}))
 	return
+}
+
+func pageSettingsSettingDeleteModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalSettingDelete").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Delete Setting"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to delete this setting?"))
+	modalBody.AddChild(hb.NewParagraph().HTML("Note!. This action cannot be reveresed"))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Cancel").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger").Attr("v-on:click", "settingDelete"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
+}
+
+func pageSettingsSettingCreateModal() *hb.Tag {
+	modal := hb.NewDiv().Attr("id", "ModalSettingCreate").Attr("class", "modal fade")
+	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
+	modalContent := hb.NewDiv().Attr("class", "modal-content")
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Setting"))
+	modalBody := hb.NewDiv().Attr("class", "modal-body")
+	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Key")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "settingCreateModel.key")))
+	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "settingCreate"))
+	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
+	modalDialog.AddChild(modalContent)
+	modal.AddChild(modalDialog)
+	return modal
 }

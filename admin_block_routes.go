@@ -52,34 +52,8 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
 
-	// modal := hb.NewDiv().Attr("id", "ModalBlockCreate").Attr("class", "modal fade")
-	// modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	// modalContent := hb.NewDiv().Attr("class", "modal-content")
-	// modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Block"))
-	// modalBody := hb.NewDiv().Attr("class", "modal-body")
-	// modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "blockCreateModel.name")))
-	// modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	// modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
-	// modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "blockCreate"))
-	// modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	// modalDialog.AddChild(modalContent)
-	// modal.AddChild(modalDialog)
 	container.AddChild(pageBlocksBlockCreateModal())
 	container.AddChild(pageBlocksBlockTrashModal())
-
-	// modalDelete := hb.NewDiv().Attr("id", "ModalBlockDelete").Attr("class", "modal fade")
-	// modalDeleteDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	// modalDeleteContent := hb.NewDiv().Attr("class", "modal-content")
-	// modalDeleteHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Delete Block"))
-	// modalDeleteBody := hb.NewDiv().Attr("class", "modal-body")
-	// modalDeleteBody.AddChild(hb.NewParagraph().HTML("Are you sure you want to delete this block?"))
-	// modalDeleteFooter := hb.NewDiv().Attr("class", "modal-footer")
-	// modalDeleteFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
-	// modalDeleteFooter.AddChild(hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger").Attr("v-on:click", "blockDelete"))
-	// modalDeleteContent.AddChild(modalDeleteHeader).AddChild(modalDeleteBody).AddChild(modalDeleteFooter)
-	// modalDeleteDialog.AddChild(modalDeleteContent)
-	// modalDelete.AddChild(modalDeleteDialog)
-	// container.AddChild(modalDelete)
 
 	blocks := GetEntityStore().EntityList("block", 0, 200, "", "id", "asc")
 
@@ -115,7 +89,7 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	inlineScript := `
 var blockCreateUrl = "` + endpoint + `?path=blocks/block-create-ajax"
 var blockDeleteUrl = "` + endpoint + `?path=blocks/block-delete-ajax"
-var blockTrashUrl = "` + endpoint + `?path=templates/block-trash-ajax";
+var blockTrashUrl = "` + endpoint + `?path=blocks/block-trash-ajax";
 var blockUpdateUrl = "` + endpoint + `?path=blocks/block-update"
 const BlockManager = {
 	data() {
@@ -185,10 +159,10 @@ const BlockManager = {
 		// 	});
 		// },
 		blockTrash(){
-			var blockId = this.blockDeleteModel.blockId;
+			var blockId = this.blockTrashModel.blockId;
 			$.post(blockTrashUrl, {block_id: blockId}).done((result)=>{
 				if (result.status==="success"){
-					var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalTrsashDelete'));
+					var modalBlockDelete = new bootstrap.Modal(document.getElementById('ModalBlockTrash'));
 					modalBlockDelete.hide();
 
 					return location.href = location.href;
@@ -246,7 +220,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	formGroupStatus := hb.NewDiv().Attr("class", "form-group")
 	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-control").Attr("v-model", "blockModel.status")
+	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "blockModel.status")
 	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
 	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
 	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")
@@ -468,6 +442,32 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID}))
+	return
+}
+
+func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
+	blockID := strings.Trim(utils.Req(r, "block_id", ""), " ")
+
+	if blockID == "" {
+		api.Respond(w, r, api.Error("Block ID is required"))
+		return
+	}
+
+	block := GetEntityStore().EntityFindByID(blockID)
+
+	if block == nil {
+		api.Respond(w, r, api.Success("Block already deleted"))
+		return
+	}
+
+	isOk := GetEntityStore().EntityTrash(blockID)
+
+	if isOk == false {
+		api.Respond(w, r, api.Error("Block failed to be trashed"))
+		return
+	}
+
+	api.Respond(w, r, api.SuccessWithData("Block trashed successfully", map[string]interface{}{"block_id": block.ID}))
 	return
 }
 

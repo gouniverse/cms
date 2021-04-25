@@ -30,9 +30,10 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 		PathHome: pageHome,
 		// START: Blocks
 		PathBlocksBlockCreateAjax: pageBlocksBlockCreateAjax,
-		PathBlocksBlockDeleteAjax: pageBlocksBlockDeleteAjax,
+		//PathBlocksBlockDeleteAjax: pageBlocksBlockDeleteAjax,
 		PathBlocksBlockManager:    pageBlocksBlockManager,
 		PathBlocksBlockUpdate:     pageBlocksBlockUpdate,
+		PathBlocksBlockTrashAjax:  pageBlocksBlockTrashAjax,
 		PathBlocksBlockUpdateAjax: pageBlocksBlockUpdateAjax,
 		// END: Blocks
 
@@ -71,6 +72,7 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 
 		// START: Settings
 		PathSettingsSettingCreateAjax: pageSettingsSettingCreateAjax,
+		PathSettingsSettingDeleteAjax: pageSettingsSettingDeleteAjax,
 		PathSettingsSettingManager:    pageSettingsSettingManager,
 		PathSettingsSettingUpdate:     pageSettingsSettingUpdate,
 		PathSettingsSettingUpdateAjax: pageSettingsSettingUpdateAjax,
@@ -200,11 +202,11 @@ func Webpage(title, content string) *hb.Webpage {
 	webpage.SetFavicon(faviconImgCms)
 
 	webpage.AddStyleURLs([]string{
-		"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css",
+		"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css",
 	})
 	webpage.AddScriptURLs([]string{
-		"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js",
-		"https://code.jquery.com/jquery-3.5.1.min.js",
+		"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js",
+		"https://code.jquery.com/jquery-3.6.0.min.js",
 		"https://unpkg.com/vue@next",
 		"https://cdn.jsdelivr.net/npm/sweetalert2@9",
 	})
@@ -220,6 +222,25 @@ func Webpage(title, content string) *hb.Webpage {
 		color: #212529;
 		text-align: left;
 		background-color: #f8fafc;
+	}
+	.form-select {
+		display: block;
+		width: 100%;
+		padding: .375rem 2.25rem .375rem .75rem;
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: #212529;
+		background-color: #fff;
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+		background-repeat: no-repeat;
+		background-position: right .75rem center;
+		background-size: 16px 12px;
+		border: 1px solid #ced4da;
+		border-radius: .25rem;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
 	}`)
 	webpage.AddChild(hb.NewHTML(content))
 	return webpage
