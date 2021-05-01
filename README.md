@@ -153,3 +153,8 @@ cms.Init(cms.Config{
     CustomEntityList: entityList(),
 })
 ```
+
+
+## Similar Projects Build in GoLang
+
+- https://github.com/dionyself/golang-cms - last update 2018
