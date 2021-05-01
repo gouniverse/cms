@@ -155,10 +155,6 @@ cms.Init(cms.Config{
 })
 ```
 
-## Similar Projects Built in GoLang
-
-- https://github.com/dionyself/golang-cms - last update 2018
-
 ## Development Instructions
 
 Follow the instructions bellow to quickly start working on the project
@@ -167,3 +163,10 @@ Follow the instructions bellow to quickly start working on the project
 cd development
 fresh
 ```
+
+
+
+## Similar Projects Built in GoLang
+
+- https://github.com/dionyself/golang-cms - last update 2018
+- https://github.com/tejo/boxed - last updated 2018
