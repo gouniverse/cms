@@ -168,6 +168,7 @@ fresh
 
 ## Similar Projects Built in GoLang
 
+- https://github.com/ponzu-cms/ponzu - last updated 2020
 - https://github.com/dionyself/golang-cms - last update 2018
 - https://github.com/tejo/boxed - last updated 2018
 - https://github.com/fragmenta/fragmenta-cms - last updated 2018
