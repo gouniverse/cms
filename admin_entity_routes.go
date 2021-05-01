@@ -245,6 +245,14 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 		if attr.FormControlType == "textarea" {
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}
+		if attr.BelongsToType != "" {
+			entities := entityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
+			formGroupAttrInput = hb.NewSelect().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
+			for _, ent := range entities {
+				formGroupAttrOption := hb.NewOption().Attr("value", ent.ID).HTML(ent.GetString("name", "") + " (" + ent.ID + ")")
+				formGroupAttrInput.AddChild(formGroupAttrOption)
+			}
+		}
 		formGroupAttr.AddChild(formGroupAttrLabel)
 		formGroupAttr.AddChild(formGroupAttrInput)
 

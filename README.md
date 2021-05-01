@@ -51,7 +51,6 @@ cms.Init(cms.Config{
 })
 ```
 
-
 # Initialization with Custom Entity types
 
 ```
@@ -101,6 +100,7 @@ func entityList() []cms.CustomEntityStructure {
 				FormControlLabel: "User ID",
 				FormControlType:  "input",
 				FormControlHelp:  "The ID of the user who made the purchase",
+				BelongsToType:    "user",
 			},
 			{
 				Name:             "total",
@@ -128,6 +128,7 @@ func entityList() []cms.CustomEntityStructure {
 				FormControlLabel: "Product ID",
 				FormControlType:  "input",
 				FormControlHelp:  "The ID of the product that is ordered",
+				BelongsToType:    "product"
 			},
 			{
 				Name:             "quantity",
@@ -149,12 +150,20 @@ func entityList() []cms.CustomEntityStructure {
 }
 
 cms.Init(cms.Config{
-    DbInstance:      db,    
+    DbInstance:      db,
     CustomEntityList: entityList(),
 })
 ```
 
-
 ## Similar Projects Built in GoLang
 
 - https://github.com/dionyself/golang-cms - last update 2018
+
+## Development Instructions
+
+Follow the instructions bellow to quickly start working on the project
+
+```
+cd development
+fresh
+```

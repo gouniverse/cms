@@ -190,6 +190,7 @@ func entityList() []cms.CustomEntityStructure {
 				FormControlLabel: "User ID",
 				FormControlType:  "input",
 				FormControlHelp:  "The ID of the user who made the purchase",
+				BelongsToType:    "user",
 			},
 			{
 				Name:             "total",
@@ -210,7 +211,8 @@ func entityList() []cms.CustomEntityStructure {
 				Type:             "string",
 				FormControlLabel: "Order ID",
 				FormControlType:  "input",
-				FormControlHelp:  "The ID of the order the item belongs to",
+				FormControlHelp:  "The order the item belongs to",
+				BelongsToType:    "shop_order",
 			},
 			{
 				Name:             "product_id",
