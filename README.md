@@ -155,6 +155,6 @@ cms.Init(cms.Config{
 ```
 
 
-## Similar Projects Build in GoLang
+## Similar Projects Built in GoLang
 
 - https://github.com/dionyself/golang-cms - last update 2018
