@@ -26,7 +26,12 @@ func pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := GetEntityStore().EntityCreate(entityType)
+	entity, err := GetEntityStore().EntityCreate(entityType)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Entity failed to be created"))
+		return
+	}
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity failed to be created"))
@@ -79,7 +84,12 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageEntitiesEntityCreateModal())
 	container.AddChild(pageEntitiesEntityTrashModal())
 
-	entities := GetEntityStore().EntityList(entityType, 0, 200, "", "id", "asc")
+	entities, err := GetEntityStore().EntityList(entityType, 0, 200, "", "id", "asc")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Entities failed to be retrieved"))
+		return
+	}
 
 	table := hb.NewTable().Attr("id", "TableEntities").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -246,7 +256,7 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}
 		if attr.BelongsToType != "" {
-			entities := entityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
+			entities, _ := entityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
 			formGroupAttrInput = hb.NewSelect().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
 			for _, ent := range entities {
 				formGroupAttrOption := hb.NewOption().Attr("value", ent.ID).HTML(ent.GetString("name", "") + " (" + ent.ID + ")")
@@ -370,7 +380,12 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	entity.SetString("name", name)
 	entity.SetString("handle", handle)
-	isOk := entity.SetString("status", status)
+	isOk, err := entity.SetString("status", status)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Entity failed to be updated"))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Entity failed to be updated"))

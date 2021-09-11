@@ -1,21 +1,20 @@
 package cms
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/gouniverse/cachestore"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/settingstore"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
-var dbInstance *gorm.DB
+var dbInstance *sql.DB
 var prefix string
 
 // Config contains the configurations for the auth package
 type Config struct {
-	DbInstance         *gorm.DB
+	DbInstance         *sql.DB
 	DbDriver           string
 	DbDsn              string
 	CustomEntityList   []CustomEntityStructure
@@ -48,25 +47,33 @@ func Init(config Config) {
 
 	prefix = "cms_"
 
-	if config.DbDriver != "" {
-		db, err := gorm.Open(sqlite.Open(config.DbDsn), &gorm.Config{})
-		if err != nil {
-			panic("failed to connect database")
-		}
-		// dbInstance = db
-		config.DbInstance = db
-	}
+	var err error
+	entityStore, err = entitystore.NewStore(entitystore.WithDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
 
-	entityStore = entitystore.NewStore(entitystore.WithGormDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
+	if err != nil {
+		log.Panicln("Entity store failed to be intiated")
+		return
+	}
 
 	if config.EnableSettings {
 		settingsEnabled = true
-		settingStore = settingstore.NewStore(settingstore.WithGormDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
+		settingStore, err = settingstore.NewStore(settingstore.WithDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
+
+		if err != nil {
+			log.Panicln("Setting store failed to be intiated")
+			return
+		}
 	}
 
 	if config.EnableCache {
 		cacheEnabled = true
-		cacheStore = cachestore.NewStore(cachestore.WithGormDb(config.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
+		cacheStore, err = cachestore.NewStore(cachestore.WithDb(config.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
+
+		if err != nil {
+			log.Panicln("Cache store failed to be intiated")
+			return
+		}
+
 		go cacheStore.ExpireCacheGoroutine()
 	}
 
@@ -77,7 +84,7 @@ func Init(config Config) {
 }
 
 // GetDb returns an instance to the CMS database
-func GetDb() *gorm.DB {
+func GetDb() *sql.DB {
 	return configuration.DbInstance
 }
 

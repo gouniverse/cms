@@ -18,7 +18,12 @@ func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget := GetEntityStore().EntityCreate("widget")
+	widget, err := GetEntityStore().EntityCreate("widget")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Widget failed to be created: "+err.Error()))
+		return
+	}
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget failed to be created"))
@@ -64,7 +69,12 @@ func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	widgets := GetEntityStore().EntityList("widget", 0, 200, "", "id", "asc")
+	widgets, err := GetEntityStore().EntityList("widget", 0, 200, "", "id", "asc")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Widgets failed to be fetched: "+err.Error()))
+		return
+	}
 
 	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -203,12 +213,23 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	name := widget.GetString("name", "")
-	statusAttribute := GetEntityStore().AttributeFind(widget.ID, "status")
+	statusAttribute, err := GetEntityStore().AttributeFind(widget.ID, "status")
+	if err != nil {
+		api.Respond(w, r, api.Error("Status failed to be found: "+err.Error()))
+		return
+	}
+
 	status := ""
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute := GetEntityStore().AttributeFind(widget.ID, "content")
+	contentAttribute, err := GetEntityStore().AttributeFind(widget.ID, "content")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Content failed to be found: "+err.Error()))
+		return
+	}
+
 	content := ""
 	if contentAttribute != nil {
 		content = contentAttribute.GetString()
@@ -309,13 +330,17 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	widget.SetString("content", content)
 	widget.SetString("name", name)
 	widget.SetString("handle", handle)
-	isOk := widget.SetString("status", status)
+	isOk, err := widget.SetString("status", status)
 
-	if isOk == false {
+	if err != nil {
+		api.Respond(w, r, api.Error("Widget failed to be updated: "+err.Error()))
+		return
+	}
+
+	if !isOk {
 		api.Respond(w, r, api.Error("Widget failed to be updated"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID}))
-	return
 }

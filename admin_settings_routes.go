@@ -20,7 +20,12 @@ func pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := GetSettingStore().Set(key, "")
+	isOk, err := GetSettingStore().Set(key, "")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Setting failed to be created: "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Setting failed to be created"))
@@ -53,7 +58,12 @@ func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageSettingsSettingDeleteModal())
 	container.AddChild(pageSettingsSettingCreateModal())
 
-	settingKeys := GetSettingStore().Keys()
+	settingKeys, err := GetSettingStore().Keys()
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Setting keys failed to be retrieved "+err.Error()))
+		return
+	}
 
 	table := hb.NewTable().Attr("id", "TableSettings").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -316,7 +326,12 @@ func pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := GetSettingStore().Set(settingKey, settingValue)
+	isOk, err := GetSettingStore().Set(settingKey, settingValue)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Settings failed to be updated "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Setting failed to be updated"))

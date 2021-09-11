@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"log"
 	"net/http"
 	"time"
@@ -8,9 +10,10 @@ import (
 	"github.com/gouniverse/cms"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
-	"gorm.io/driver/mysql"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
+	_ "modernc.org/sqlite"
 )
 
 func main() {
@@ -18,10 +21,14 @@ func main() {
 	utils.EnvInitialize()
 
 	log.Println("2. Initializing database...")
-	db := mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
+	db, err := mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
+
+	if err != nil {
+		log.Panic("Database is NIL: " + err.Error())
+		return
+	}
 
 	if db == nil {
-		log.Println(utils.FileExists(".env"))
 		log.Panic("Database is NIL")
 		return
 	}
@@ -64,27 +71,29 @@ func pageDashboardWithEmbeddedCms(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(webpage.ToHTML()))
 }
 
-func mainDb(driverName string, dbHost string, dbPort string, dbName string, dbUser string, dbPass string) *gorm.DB {
-	var db *gorm.DB
+func mainDb(driverName string, dbHost string, dbPort string, dbName string, dbUser string, dbPass string) (*sql.DB, error) {
+	var db *sql.DB
 	var err error
-
 	if driverName == "sqlite" {
 		dsn := dbName
-		db, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+		db, err = sql.Open("sqlite", dsn)
 	}
 	if driverName == "mysql" {
-		// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 		dsn := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
-		log.Println(dsn)
-		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		db, err = sql.Open("mysql", dsn)
 	}
-	//defer db.Close()
-
+	if driverName == "postgres" {
+		dsn := "host=" + dbHost + " user=" + dbUser + " password=" + dbPass + " dbname=" + dbName + " port=" + dbPort + " sslmode=disable TimeZone=Europe/London"
+		db, err = sql.Open("postgres", dsn)
+	}
 	if err != nil {
-		panic("Failed to connect to the database")
+		return nil, err
+	}
+	if db == nil {
+		return nil, errors.New("database for driver " + driverName + " could not be intialized")
 	}
 
-	return db
+	return db, nil
 }
 
 func entityList() []cms.CustomEntityStructure {

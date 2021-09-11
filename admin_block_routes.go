@@ -20,7 +20,12 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block := GetEntityStore().EntityCreate("block")
+	block, err := GetEntityStore().EntityCreate("block")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Block failed to be created"))
+		return
+	}
 
 	if block == nil {
 		api.Respond(w, r, api.Error("Block failed to be created"))
@@ -55,7 +60,12 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageBlocksBlockCreateModal())
 	container.AddChild(pageBlocksBlockTrashModal())
 
-	blocks := GetEntityStore().EntityList("block", 0, 200, "", "id", "asc")
+	blocks, err := GetEntityStore().EntityList("block", 0, 200, "", "id", "asc")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Blocks failed to be listed"))
+		return
+	}
 
 	table := hb.NewTable().Attr("id", "TableBlocks").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -254,12 +264,24 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	name := block.GetString("name", "")
-	statusAttribute := GetEntityStore().AttributeFind(block.ID, "status")
+	statusAttribute, err := GetEntityStore().AttributeFind(block.ID, "status")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("IO Error. Attribute failed to be pulled"))
+		return
+	}
+
 	status := ""
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute := GetEntityStore().AttributeFind(block.ID, "content")
+	contentAttribute, err := GetEntityStore().AttributeFind(block.ID, "content")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("IO Error. Attribute failed to be fetched"))
+		return
+	}
+
 	content := ""
 	if contentAttribute != nil {
 		content = contentAttribute.GetString()
@@ -408,7 +430,7 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	block.SetString("content", content)
 	block.SetString("name", name)
 	block.SetString("handle", handle)
-	isOk := block.SetString("status", status)
+	isOk, _ := block.SetString("status", status)
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Block failed to be updated"))
@@ -460,7 +482,12 @@ func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := GetEntityStore().EntityTrash(blockID)
+	isOk, err := GetEntityStore().EntityTrash(blockID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Block failed to be trashed"))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Block failed to be trashed"))

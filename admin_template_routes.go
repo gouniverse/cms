@@ -19,7 +19,12 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template := GetEntityStore().EntityCreate("template")
+	template, err := GetEntityStore().EntityCreate("template")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Template failed to be created: "+err.Error()))
+		return
+	}
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template failed to be created"))
@@ -55,7 +60,12 @@ func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageTemplatesTemplateTrashModal())
 	container.AddChild(pageTemplatesTemplateCreateModal())
 
-	templates := GetEntityStore().EntityList("template", 0, 200, "", "id", "asc")
+	templates, err := GetEntityStore().EntityList("template", 0, 200, "", "id", "asc")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Templates failed to be fetched: "+err.Error()))
+		return
+	}
 
 	table := hb.NewTable().Attr("id", "TableTemplates").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -366,7 +376,12 @@ func pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := GetEntityStore().EntityTrash(templateID)
+	isOk, err := GetEntityStore().EntityTrash(templateID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Template failed to be moved to trash "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Template failed to be moved to trash"))
@@ -410,7 +425,12 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	template.SetString("content", content)
 	template.SetString("name", name)
 	template.SetString("handle", handle)
-	isOk := template.SetString("status", status)
+	isOk, err := template.SetString("status", status)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Template failed to be updated: "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Template failed to be updated"))

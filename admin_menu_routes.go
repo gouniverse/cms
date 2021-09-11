@@ -22,7 +22,12 @@ func pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := GetEntityStore().EntityCreate("menu")
+	menu, err := GetEntityStore().EntityCreate("menu")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Menu failed to be created "+err.Error()))
+		return
+	}
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu failed to be created"))
@@ -68,7 +73,12 @@ func pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	menus := entityStore.EntityList("menu", 0, 200, "", "id", "asc")
+	menus, err := entityStore.EntityList("menu", 0, 200, "", "id", "asc")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
+		return
+	}
 
 	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -299,7 +309,12 @@ func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	menu.SetString("name", name)
 	menu.SetString("handle", handle)
-	isOk := menu.SetString("status", status)
+	isOk, err := menu.SetString("status", status)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Menu failed to be updated "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Menu failed to be updated"))
@@ -362,7 +377,12 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 }
 
 func buildTree(menuID string) []map[string]interface{} {
-	menuitems := GetEntityStore().EntityListByAttribute("menuitem", "menu_id", menuID)
+	menuitems, err := GetEntityStore().EntityListByAttribute("menuitem", "menu_id", menuID)
+
+	if err != nil {
+		log.Panicln("Menu items failed to be retrieved " + err.Error())
+		return nil
+	}
 
 	nodeList := []map[string]interface{}{}
 	for _, menuitem := range menuitems {
@@ -771,7 +791,11 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 		menuitem := GetEntityStore().EntityFindByID(id)
 		if menuitem == nil {
-			menuitem = GetEntityStore().EntityCreate("menuitem")
+			menuitem, err = GetEntityStore().EntityCreate("menuitem")
+			if err != nil {
+				api.Respond(w, r, api.Error("Menu item failed to be created "+err.Error()))
+				return
+			}
 		}
 		menuitem.SetString("name", name)
 		menuitem.SetString("menu_id", menuID)
@@ -779,17 +803,28 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		menuitem.SetString("sequence", sequence)
 		menuitem.SetString("page_id", pageID)
 		menuitem.SetString("url", url)
-		isOk := menuitem.SetString("target", target)
+		isOk, err := menuitem.SetString("target", target)
 
-		newIDs = append(newIDs, menuitem.ID)
+		if err != nil {
+			api.Respond(w, r, api.Error("Menu items failed to be updated "+err.Error()))
+			return
+		}
 
 		if isOk == false {
 			api.Respond(w, r, api.Error("Menu items failed to be updated"))
 			return
 		}
+
+		newIDs = append(newIDs, menuitem.ID)
 	}
 
-	allMenuItems := GetEntityStore().EntityListByAttribute("menuitem", "menu_id", menuID)
+	allMenuItems, err := GetEntityStore().EntityListByAttribute("menuitem", "menu_id", menuID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Menu items failed to be fetched: "+err.Error()))
+		return
+	}
+
 	for _, menuitem := range allMenuItems {
 		//allIDs = append(allIDs, menuitem.ID)
 		exists, _ := utils.ArrayContains(newIDs, menuitem.ID)

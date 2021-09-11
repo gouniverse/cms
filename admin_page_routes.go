@@ -19,9 +19,14 @@ func pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := GetEntityStore().EntityCreate("page")
+	page, err := GetEntityStore().EntityCreate("page")
 
-	log.Println(page)
+	if err != nil {
+		api.Respond(w, r, api.Error("Page failed to be created: "+err.Error()))
+		return
+	}
+
+	// log.Println(page)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page failed to be created"))
@@ -93,7 +98,12 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	page.SetString("status", status)
 	page.SetString("template_id", templateID)
 	page.SetString("handle", handle)
-	isOk := page.SetString("title", title)
+	isOk, err := page.SetString("title", title)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Page failed to be updated: "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Page failed to be updated"))
@@ -200,7 +210,11 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupMetaRobots.AddChild(formGroupMetaRobotsLabel).AddChild(formGroupMetaRobotsInput)
 
 	// Template
-	templateList := GetEntityStore().EntityList("template", 0, 100, "", "id", "asc")
+	templateList, err := GetEntityStore().EntityList("template", 0, 100, "", "id", "asc")
+	if err != nil {
+		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
+		return
+	}
 	formGroupTemplate := hb.NewDiv().Attr("class", "form-group")
 	formGroupTemplateLabel := hb.NewLabel().HTML("Template").Attr("class", "form-label")
 	formGroupTemplateSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "pageModel.templateId")
@@ -429,7 +443,11 @@ func pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pagePagesPageCreateModal())
 	container.AddChild(pagePagesPageTrashModal())
 
-	pages := GetEntityStore().EntityList("page", 0, 200, "", "id", "asc")
+	pages, err := GetEntityStore().EntityList("page", 0, 200, "", "id", "asc")
+	if err != nil {
+		api.Respond(w, r, api.Error("Page list failed to be retrieved "+err.Error()))
+		return
+	}
 
 	table := hb.NewTable().Attr("id", "TablePages").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
@@ -557,7 +575,12 @@ func pagePagesPageTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := GetEntityStore().EntityTrash(pageID)
+	isOk, err := GetEntityStore().EntityTrash(pageID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Entity failed to be trashed "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Page failed to be moved to trash"))
