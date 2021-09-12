@@ -61,7 +61,7 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := GetEntityStore().EntityFindByID(pageID)
+	page, _ := GetEntityStore().EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
@@ -124,7 +124,7 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := GetEntityStore().EntityFindByID(pageID)
+	page, _ := GetEntityStore().EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
@@ -221,7 +221,8 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupTemplateOptionsEmpty := hb.NewOption().Attr("value", "").HTML("- none -")
 	formGroupTemplateSelect.AddChild(formGroupTemplateOptionsEmpty)
 	for _, template := range templateList {
-		formGroupTemplateOptionsTemplate := hb.NewOption().Attr("value", template.ID).HTML(template.GetString("name", "n/a"))
+		templateName, _ := template.GetString("name", "n/a")
+		formGroupTemplateOptionsTemplate := hb.NewOption().Attr("value", template.ID).HTML(templateName)
 		formGroupTemplateSelect.AddChild(formGroupTemplateOptionsTemplate)
 	}
 	formGroupTemplate.AddChild(formGroupTemplateLabel).AddChild(formGroupTemplateSelect)
@@ -250,16 +251,16 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	alias := page.GetString("alias", "")
-	content := page.GetString("content", "")
-	name := page.GetString("name", "")
-	status := page.GetString("status", "")
-	templateID := page.GetString("template_id", "")
-	title := page.GetString("title", "")
-	metaDescription := page.GetString("meta_description", "")
-	metaKeywords := page.GetString("meta_keywords", "")
-	metaRobots := page.GetString("meta_robots", "")
-	canonicalURL := page.GetString("canonical_url", "")
+	alias, _ := page.GetString("alias", "")
+	content, _ := page.GetString("content", "")
+	name, _ := page.GetString("name", "")
+	status, _ := page.GetString("status", "")
+	templateID, _ := page.GetString("template_id", "")
+	title, _ := page.GetString("title", "")
+	metaDescription, _ := page.GetString("meta_description", "")
+	metaKeywords, _ := page.GetString("meta_keywords", "")
+	metaRobots, _ := page.GetString("meta_robots", "")
+	canonicalURL, _ := page.GetString("canonical_url", "")
 
 	canonicalURLJSON, _ := json.Marshal(canonicalURL)
 	contentJSON, _ := json.Marshal(content)
@@ -461,9 +462,9 @@ func pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, page := range pages {
-		name := page.GetString("name", "n/a")
-		alias := page.GetString("alias", "n/a")
-		status := page.GetString("status", "n/a")
+		name, _ := page.GetString("name", "n/a")
+		alias, _ := page.GetString("alias", "n/a")
+		status, _ := page.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "pageEdit('"+page.ID+"')").Attr("style", "margin-right:5px")
 		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showPageTrashModal('"+page.ID+"')")
 
@@ -568,7 +569,7 @@ func pagePagesPageTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page := GetEntityStore().EntityFindByID(pageID)
+	page, _ := GetEntityStore().EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))

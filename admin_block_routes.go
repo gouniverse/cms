@@ -23,7 +23,7 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 	block, err := GetEntityStore().EntityCreate("block")
 
 	if err != nil {
-		api.Respond(w, r, api.Error("Block failed to be created"))
+		api.Respond(w, r, api.Error("Block failed to be created: "+err.Error()))
 		return
 	}
 
@@ -79,8 +79,16 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, block := range blocks {
-		name := block.GetString("name", "n/a")
-		status := block.GetString("status", "n/a")
+		name, err := block.GetString("name", "n/a")
+		if err != nil {
+			api.Respond(w, r, api.Error("Name failed to be retrieved: "+err.Error()))
+			return
+		}
+		status, err := block.GetString("status", "n/a")
+		if err != nil {
+			api.Respond(w, r, api.Error("Status failed to be retrieved: "+err.Error()))
+			return
+		}
 		//buttonDelete := hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger float-end").Attr("v-on:click", "showBlockDeleteModal('"+block.ID+"')")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "blockEdit('"+block.ID+"')").Attr("style", "margin-right:5px")
 		buttonTrash := hb.NewButton().HTML("Trash").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showBlockTrashModal('"+block.ID+"')")
@@ -209,7 +217,12 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block := GetEntityStore().EntityFindByID(blockID)
+	block, err := GetEntityStore().EntityFindByID(blockID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Block failed to be retrieved: "+err.Error()))
+		return
+	}
 
 	if block == nil {
 		api.Respond(w, r, api.Error("Block NOT FOUND with ID "+blockID))
@@ -250,9 +263,11 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupContent.AddChild(formGroupContentInput)
 
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this block in your website use the following shortcode:"))
-	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Block: ` + block.GetString("name", "") + ` -->
+
+	blockName, err := block.GetString("name", "")
+	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Block: ` + blockName + ` -->
 [[BLOCK_` + block.ID + `]]
-&lt;!-- END: Block: ` + block.GetString("name", "") + ` -->`))
+&lt;!-- END: Block: ` + blockName + ` -->`))
 	paragraphUsage.AddChild(code)
 
 	container.AddChild(hb.NewHTML(header))
@@ -263,7 +278,11 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := block.GetString("name", "")
+	name, err := block.GetString("name", "")
+	if err != nil {
+		api.Respond(w, r, api.Error("Name failed to be retrieved: "+err.Error()))
+		return
+	}
 	statusAttribute, err := GetEntityStore().AttributeFind(block.ID, "status")
 
 	if err != nil {
@@ -410,7 +429,12 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block := GetEntityStore().EntityFindByID(blockID)
+	block, err := GetEntityStore().EntityFindByID(blockID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Block not found: "+err.Error()))
+		return
+	}
 
 	if block == nil {
 		api.Respond(w, r, api.Error("Block NOT FOUND with ID "+blockID))
@@ -449,7 +473,12 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block := GetEntityStore().EntityFindByID(blockID)
+	block, err := GetEntityStore().EntityFindByID(blockID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Database error: "+err.Error()))
+		return
+	}
 
 	if block == nil {
 		api.Respond(w, r, api.Success("Block already deleted"))
@@ -475,7 +504,12 @@ func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block := GetEntityStore().EntityFindByID(blockID)
+	block, err := GetEntityStore().EntityFindByID(blockID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Error: "+err.Error()))
+		return
+	}
 
 	if block == nil {
 		api.Respond(w, r, api.Success("Block already deleted"))

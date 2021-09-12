@@ -93,8 +93,8 @@ func pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3).AddChild(th4))
 
 	for _, menu := range menus {
-		name := menu.GetString("name", "n/a")
-		status := menu.GetString("status", "n/a")
+		name, _ := menu.GetString("name", "n/a")
+		status, _ := menu.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID+"')")
 		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID+"')")
 
@@ -172,7 +172,7 @@ func pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := GetEntityStore().EntityFindByID(menuID)
+	menu, _ := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -213,9 +213,9 @@ func pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := menu.GetString("name", "")
-	status := menu.GetString("status", "")
-	content := menu.GetString("content", "")
+	name, _ := menu.GetString("name", "")
+	status, _ := menu.GetString("status", "")
+	content, _ := menu.GetString("content", "")
 
 	inlineScript := `
 var menuUpdateUrl = "` + endpoint + `?path=menus/menu-update-ajax";
@@ -290,7 +290,7 @@ func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := GetEntityStore().EntityFindByID(menuID)
+	menu, _ := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -387,12 +387,12 @@ func buildTree(menuID string) []map[string]interface{} {
 	nodeList := []map[string]interface{}{}
 	for _, menuitem := range menuitems {
 		itemID := menuitem.ID
-		itemName := menuitem.GetString("name", "n/a")
-		parentID := menuitem.GetString("parent_id", "")
-		sequence := menuitem.GetString("sequence", "")
-		target := menuitem.GetString("target", "")
-		url := menuitem.GetString("url", "")
-		pageID := menuitem.GetString("page_id", "")
+		itemName, _ := menuitem.GetString("name", "n/a")
+		parentID, _ := menuitem.GetString("parent_id", "")
+		sequence, _ := menuitem.GetString("sequence", "")
+		target, _ := menuitem.GetString("target", "")
+		url, _ := menuitem.GetString("url", "")
+		pageID, _ := menuitem.GetString("page_id", "")
 		item := map[string]interface{}{
 			"id":        itemID,
 			"parent_id": parentID,
@@ -418,7 +418,7 @@ func pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := GetEntityStore().EntityFindByID(menuID)
+	menu, _ := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -444,12 +444,14 @@ func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := GetEntityStore().EntityFindByID(menuID)
+	menu, _ := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
 		return
 	}
+
+	menuName, _ := menu.GetString("name", "")
 
 	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
 	breadcrums := cmsBreadcrumbs(map[string]string{
@@ -460,7 +462,7 @@ func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
-	heading := hb.NewHeading1().HTML("Edit Menu Items for Menu '" + menu.GetString("name", "") + "'")
+	heading := hb.NewHeading1().HTML("Edit Menu Items for Menu '" + menuName + "'")
 	//button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "menuSave")
 	//heading.AddChild(button)
 
@@ -746,7 +748,7 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu := GetEntityStore().EntityFindByID(menuID)
+	menu, _ := GetEntityStore().EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -789,7 +791,7 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 			sequence = node["sequence"].(string)
 		}
 
-		menuitem := GetEntityStore().EntityFindByID(id)
+		menuitem, _ := GetEntityStore().EntityFindByID(id)
 		if menuitem == nil {
 			menuitem, err = GetEntityStore().EntityCreate("menuitem")
 			if err != nil {

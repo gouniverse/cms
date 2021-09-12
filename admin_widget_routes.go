@@ -88,8 +88,8 @@ func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, widget := range widgets {
-		name := widget.GetString("name", "n/a")
-		status := widget.GetString("status", "n/a")
+		name, _ := widget.GetString("name", "n/a")
+		status, _ := widget.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "widgetEdit('"+widget.ID+"')")
 
 		tr := hb.NewTR()
@@ -158,7 +158,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget := GetEntityStore().EntityFindByID(widgetID)
+	widget, _ := GetEntityStore().EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))
@@ -199,9 +199,10 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupContent.AddChild(formGroupContentInput)
 
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this widget in your website use the following shortcode:"))
-	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Widget: ` + widget.GetString("name", "") + ` -->
+	widgetName, _ := widget.GetString("name", "")
+	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Widget: ` + widgetName + ` -->
 [[BLOCK_` + widget.ID + `]]
-&lt;!-- END: Widget: ` + widget.GetString("name", "") + ` -->`))
+&lt;!-- END: Widget: ` + widgetName + ` -->`))
 	paragraphUsage.AddChild(code)
 
 	container.AddChild(hb.NewHTML(header))
@@ -212,7 +213,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := widget.GetString("name", "")
+	name, _ := widget.GetString("name", "")
 	statusAttribute, err := GetEntityStore().AttributeFind(widget.ID, "status")
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be found: "+err.Error()))
@@ -310,7 +311,7 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget := GetEntityStore().EntityFindByID(widgetID)
+	widget, _ := GetEntityStore().EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))

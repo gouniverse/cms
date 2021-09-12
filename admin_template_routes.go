@@ -79,8 +79,8 @@ func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, template := range templates {
-		name := template.GetString("name", "n/a")
-		status := template.GetString("status", "n/a")
+		name, _ := template.GetString("name", "n/a")
+		status, _ := template.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID+"')").Attr("style", "margin-right:5px")
 		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID+"')")
 
@@ -187,7 +187,7 @@ func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template := GetEntityStore().EntityFindByID(templateID)
+	template, _ := GetEntityStore().EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -236,9 +236,9 @@ func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	name := template.GetString("name", "")
-	status := template.GetString("status", "")
-	content := template.GetString("content", "")
+	name, _ := template.GetString("name", "")
+	status, _ := template.GetString("status", "")
+	content, _ := template.GetString("content", "")
 	templateJSON, _ := json.Marshal(templateID)
 	nameJSON, _ := json.Marshal(name)
 	statusJSON, _ := json.Marshal(status)
@@ -369,7 +369,7 @@ func pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template := GetEntityStore().EntityFindByID(templateID)
+	template, _ := GetEntityStore().EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -405,7 +405,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template := GetEntityStore().EntityFindByID(templateID)
+	template, _ := GetEntityStore().EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))

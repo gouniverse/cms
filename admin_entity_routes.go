@@ -103,8 +103,8 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, entity := range entities {
-		name := entity.GetString("name", "n/a")
-		status := entity.GetString("status", "n/a")
+		name, _ := entity.GetString("name", "n/a")
+		status, _ := entity.GetString("status", "n/a")
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "entityEdit('"+entity.ID+"')").Attr("style", "margin-right:5px")
 		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showEntityTrashModal('"+entity.ID+"')")
 
@@ -197,7 +197,7 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := GetEntityStore().EntityFindByID(entityID)
+	entity, _ := GetEntityStore().EntityFindByID(entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))
@@ -259,7 +259,8 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 			entities, _ := entityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
 			formGroupAttrInput = hb.NewSelect().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
 			for _, ent := range entities {
-				formGroupAttrOption := hb.NewOption().Attr("value", ent.ID).HTML(ent.GetString("name", "") + " (" + ent.ID + ")")
+				entName, _ := ent.GetString("name", "")
+				formGroupAttrOption := hb.NewOption().Attr("value", ent.ID).HTML(entName + " (" + ent.ID + ")")
 				formGroupAttrInput.AddChild(formGroupAttrOption)
 			}
 		}
@@ -274,13 +275,13 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 
 		container.AddChild(formGroupAttr)
 
-		customAttrValues[attrName] = entity.GetString(attrName, "")
+		customAttrValues[attrName], _ = entity.GetString(attrName, "")
 	}
 
 	h := container.ToHTML()
 
-	name := entity.GetString("name", "")
-	status := entity.GetString("status", "")
+	name, _ := entity.GetString("name", "")
+	status, _ := entity.GetString("status", "")
 	jsonCustomValues, _ := json.Marshal(customAttrValues)
 
 	inlineScript := `
@@ -354,7 +355,7 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity := GetEntityStore().EntityFindByID(entityID)
+	entity, err := GetEntityStore().EntityFindByID(entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))
