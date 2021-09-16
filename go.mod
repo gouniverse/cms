@@ -8,7 +8,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.18.0 // indirect
 	github.com/gouniverse/api v1.3.0
 	github.com/gouniverse/cachestore v0.4.0
-	github.com/gouniverse/entitystore v0.35.0
+	github.com/gouniverse/entitystore v0.41.0
 	github.com/gouniverse/hb v1.27.0
 	//github.com/gouniverse/html v1.22.0
 	github.com/gouniverse/icons v1.1.0

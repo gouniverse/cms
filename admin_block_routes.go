@@ -485,7 +485,12 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk := GetEntityStore().EntityDelete(blockID)
+	isOk, err := GetEntityStore().EntityDelete(blockID)
+
+	if err != nil {
+		api.Respond(w, r, api.Error("Block failed to be deleted: "+err.Error()))
+		return
+	}
 
 	if isOk == false {
 		api.Respond(w, r, api.Error("Block failed to be deleted"))

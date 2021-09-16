@@ -33,14 +33,24 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 	template.SetString("name", name)
 	template.SetString("status", "inactive")
+	template.Status = "inactive"
+	GetEntityStore().EntityUpdate(*template)
 
 	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
-	return
 }
 
 func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	log.Println(endpoint)
+
+	GetEntityStore().SetDebug(true)
+	templates, err := GetEntityStore().EntityList("template", 0, 200, "", "id", "asc")
+	if err != nil {
+		api.Respond(w, r, api.Error("Templates failed to be fetched: "+err.Error()))
+		return
+	}
+
+	log.Println(templates)
 
 	header := cmsHeader(endpoint)
 	breadcrums := cmsBreadcrumbs(map[string]string{
@@ -60,13 +70,6 @@ func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageTemplatesTemplateTrashModal())
 	container.AddChild(pageTemplatesTemplateCreateModal())
 
-	templates, err := GetEntityStore().EntityList("template", 0, 200, "", "id", "asc")
-
-	if err != nil {
-		api.Respond(w, r, api.Error("Templates failed to be fetched: "+err.Error()))
-		return
-	}
-
 	table := hb.NewTable().Attr("id", "TableTemplates").Attr("class", "table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
@@ -79,8 +82,16 @@ func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
 
 	for _, template := range templates {
-		name, _ := template.GetString("name", "n/a")
-		status, _ := template.GetString("status", "n/a")
+		name, err := template.GetString("name", "n/a")
+		if err != nil {
+			api.Respond(w, r, api.Error("Attribute 'name' failed to be fetched: "+err.Error()))
+			return
+		}
+		status, err := template.GetString("status", "n/a")
+		if err != nil {
+			api.Respond(w, r, api.Error("Attribute 'status' failed to be fetched: "+err.Error()))
+			return
+		}
 		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID+"')").Attr("style", "margin-right:5px")
 		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID+"')")
 
@@ -422,17 +433,31 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template.SetString("content", content)
-	template.SetString("name", name)
-	template.SetString("handle", handle)
-	isOk, err := template.SetString("status", status)
+	// template.SetString("content", content)
+	// template.SetString("name", name)
+	// template.SetString("handle", handle)
+	_, err := GetEntityStore().AttributeSetString(template.ID, "content", content)
+	if err != nil {
+		api.Respond(w, r, api.Error("Content failed to be updated: "+err.Error()))
+		return
+	}
+
+	_, err = GetEntityStore().AttributeSetString(template.ID, "name", name)
+	if err != nil {
+		api.Respond(w, r, api.Error("Name failed to be updated: "+err.Error()))
+		return
+	}
+
+	template.Status = status
+	template.Handle = handle
+	isOk, err := GetEntityStore().EntityUpdate(*template)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be updated: "+err.Error()))
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Template failed to be updated"))
 		return
 	}
