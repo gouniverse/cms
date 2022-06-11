@@ -174,3 +174,10 @@ fresh
 - https://github.com/fragmenta/fragmenta-cms - last updated 2018
 - https://github.com/ngocphuongnb/tetua
 - https://github.com/ketchuphq/ketchup - last update 2018
+- https://github.com/monsti/monsti - last update 2018
+- https://github.com/xiusin/pinecms
+
+
+
+
+
