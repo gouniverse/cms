@@ -177,7 +177,13 @@ fresh
 - https://github.com/monsti/monsti - last update 2018
 - https://github.com/xiusin/pinecms
 - https://github.com/gmemstr/pogo - last update 2018
+- https://github.com/xushuhui/lin-cms-go - last update 2021
+- https://github.com/uberswe/beubo - last update 2021
+- https://github.com/digimakergo
+- https://github.com/jlelse/GoBlog
 
+# Notable
+- https://github.com/tenox7/wfm - stabdalone file manager
 
 
 
