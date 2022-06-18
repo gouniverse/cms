@@ -9,7 +9,7 @@ require (
 	github.com/gouniverse/entitystore v0.47.0
 	github.com/gouniverse/hb v1.33.0
 	github.com/gouniverse/icons v1.1.0
-	github.com/gouniverse/settingstore v0.7.0
+	github.com/gouniverse/settingstore v0.8.0
 	github.com/gouniverse/utils v1.15.0
 	github.com/lib/pq v1.10.6
 	modernc.org/sqlite v1.17.3
