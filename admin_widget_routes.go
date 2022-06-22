@@ -18,7 +18,7 @@ func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, err := GetEntityStore().EntityCreate("widget")
+	widget, err := EntityStore.EntityCreate("widget")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widget failed to be created: "+err.Error()))
@@ -69,7 +69,7 @@ func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	widgets, err := GetEntityStore().EntityList("widget", 0, 200, "", "id", "asc")
+	widgets, err := EntityStore.EntityList("widget", 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widgets failed to be fetched: "+err.Error()))
@@ -158,7 +158,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, _ := GetEntityStore().EntityFindByID(widgetID)
+	widget, _ := EntityStore.EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))
@@ -214,7 +214,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	name, _ := widget.GetString("name", "")
-	statusAttribute, err := GetEntityStore().AttributeFind(widget.ID, "status")
+	statusAttribute, err := EntityStore.AttributeFind(widget.ID, "status")
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be found: "+err.Error()))
 		return
@@ -224,7 +224,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := GetEntityStore().AttributeFind(widget.ID, "content")
+	contentAttribute, err := EntityStore.AttributeFind(widget.ID, "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be found: "+err.Error()))
@@ -311,7 +311,7 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, _ := GetEntityStore().EntityFindByID(widgetID)
+	widget, _ := EntityStore.EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))

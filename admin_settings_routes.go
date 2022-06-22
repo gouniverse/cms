@@ -20,7 +20,7 @@ func pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := GetSettingStore().Set(key, "")
+	isOk, err := SettingStore.Set(key, "")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Setting failed to be created: "+err.Error()))
@@ -58,7 +58,7 @@ func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageSettingsSettingDeleteModal())
 	container.AddChild(pageSettingsSettingCreateModal())
 
-	settingKeys, err := GetSettingStore().Keys()
+	settingKeys, err := SettingStore.Keys()
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Setting keys failed to be retrieved "+err.Error()))
@@ -180,7 +180,7 @@ func pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	settingValue := GetSettingStore().Get(settingKey, "%%NOTFOUND%%")
+	settingValue := SettingStore.Get(settingKey, "%%NOTFOUND%%")
 
 	if settingValue == "%%NOTFOUND%%" {
 		api.Respond(w, r, api.Error("Setting NOT FOUND with key "+settingKey))
@@ -326,7 +326,7 @@ func pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := GetSettingStore().Set(settingKey, settingValue)
+	isOk, err := SettingStore.Set(settingKey, settingValue)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Settings failed to be updated "+err.Error()))
@@ -350,7 +350,7 @@ func pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	GetSettingStore().Remove(settingKey)
+	SettingStore.Remove(settingKey)
 
 	// if isOk == false {
 	// 	api.Respond(w, r, api.Error("Setting failed to be deleted"))

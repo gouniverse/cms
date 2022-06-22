@@ -20,7 +20,7 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := GetEntityStore().EntityCreate("block")
+	block, err := EntityStore.EntityCreate("block")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be created: "+err.Error()))
@@ -60,7 +60,7 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageBlocksBlockCreateModal())
 	container.AddChild(pageBlocksBlockTrashModal())
 
-	blocks, err := GetEntityStore().EntityList("block", 0, 200, "", "id", "asc")
+	blocks, err := EntityStore.EntityList("block", 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Blocks failed to be listed"))
@@ -217,7 +217,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := GetEntityStore().EntityFindByID(blockID)
+	block, err := EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be retrieved: "+err.Error()))
@@ -283,7 +283,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		api.Respond(w, r, api.Error("Name failed to be retrieved: "+err.Error()))
 		return
 	}
-	statusAttribute, err := GetEntityStore().AttributeFind(block.ID, "status")
+	statusAttribute, err := EntityStore.AttributeFind(block.ID, "status")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be pulled"))
@@ -294,7 +294,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := GetEntityStore().AttributeFind(block.ID, "content")
+	contentAttribute, err := EntityStore.AttributeFind(block.ID, "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be fetched"))
@@ -429,7 +429,7 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := GetEntityStore().EntityFindByID(blockID)
+	block, err := EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block not found: "+err.Error()))
@@ -473,7 +473,7 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := GetEntityStore().EntityFindByID(blockID)
+	block, err := EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Database error: "+err.Error()))
@@ -485,7 +485,7 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := GetEntityStore().EntityDelete(blockID)
+	isOk, err := EntityStore.EntityDelete(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be deleted: "+err.Error()))
@@ -509,7 +509,7 @@ func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := GetEntityStore().EntityFindByID(blockID)
+	block, err := EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Error: "+err.Error()))
@@ -521,7 +521,7 @@ func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := GetEntityStore().EntityTrash(blockID)
+	isOk, err := EntityStore.EntityTrash(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be trashed"))

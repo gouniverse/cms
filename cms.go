@@ -6,6 +6,7 @@ import (
 
 	"github.com/gouniverse/cachestore"
 	"github.com/gouniverse/entitystore"
+	"github.com/gouniverse/sessionstore"
 	"github.com/gouniverse/settingstore"
 )
 
@@ -22,6 +23,7 @@ type Config struct {
 	EnableCache        bool
 	EnableMenus        bool
 	EnablePages        bool
+	EnableSession      bool
 	EnableSettings     bool
 	EnableTemplates    bool
 	EnableTranslations bool
@@ -30,10 +32,12 @@ type Config struct {
 
 var (
 	configuration       Config
-	entityStore         *entitystore.Store
-	settingStore        *settingstore.Store
-	cacheStore          *cachestore.Store
+	EntityStore         *entitystore.Store
+	CacheStore          *cachestore.Store
+	SessionStore        *sessionstore.Store
+	SettingStore        *settingstore.Store
 	cacheEnabled        bool
+	sessionEnabled      bool
 	settingsEnabled     bool
 	translationsEnabled bool
 	widgetsEnabled      bool
@@ -48,33 +52,45 @@ func Init(config Config) {
 	prefix = "cms_"
 
 	var err error
-	entityStore, err = entitystore.NewStore(entitystore.WithDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
+	EntityStore, err = entitystore.NewStore(entitystore.WithDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
 
 	if err != nil {
 		log.Panicln("Entity store failed to be intiated")
 		return
 	}
 
-	if config.EnableSettings {
-		settingsEnabled = true
-		settingStore, err = settingstore.NewStore(settingstore.WithDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
-
-		if err != nil {
-			log.Panicln("Setting store failed to be intiated")
-			return
-		}
-	}
-
 	if config.EnableCache {
 		cacheEnabled = true
-		cacheStore, err = cachestore.NewStore(cachestore.WithDb(config.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
+		CacheStore, err = cachestore.NewStore(cachestore.WithDb(config.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
 
 		if err != nil {
 			log.Panicln("Cache store failed to be intiated")
 			return
 		}
 
-		go cacheStore.ExpireCacheGoroutine()
+		go CacheStore.ExpireCacheGoroutine()
+	}
+
+	if config.EnableSession {
+		sessionEnabled = true
+		SessionStore, err = sessionstore.NewStore(sessionstore.WithDb(config.DbInstance), sessionstore.WithTableName("cms_session"), sessionstore.WithAutoMigrate(true))
+
+		if err != nil {
+			log.Panicln("Session store failed to be intiated")
+			return
+		}
+
+		go SessionStore.ExpireSessionGoroutine()
+	}
+
+	if config.EnableSettings {
+		settingsEnabled = true
+		SettingStore, err = settingstore.NewStore(settingstore.WithDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
+
+		if err != nil {
+			log.Panicln("Setting store failed to be intiated")
+			return
+		}
 	}
 
 	// Migrate the schema
@@ -86,29 +102,6 @@ func Init(config Config) {
 // GetDb returns an instance to the CMS database
 func GetDb() *sql.DB {
 	return configuration.DbInstance
-}
-
-// GetEntityStore returns the entity store
-func GetEntityStore() *entitystore.Store {
-	return entityStore
-}
-
-// GetSettingStore returns the setting store
-func GetSettingStore() *settingstore.Store {
-	if settingsEnabled {
-		return settingStore
-	}
-
-	return nil
-}
-
-// GetCacheStore returns the cache store
-func GetCacheStore() *cachestore.Store {
-	if cacheEnabled {
-		return cacheStore
-	}
-
-	return nil
 }
 
 type CustomEntityStructure struct {

@@ -19,7 +19,7 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, err := GetEntityStore().EntityCreate("template")
+	template, err := EntityStore.EntityCreate("template")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be created: "+err.Error()))
@@ -34,7 +34,7 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 	template.SetString("name", name)
 	template.SetString("status", "inactive")
 	template.Status = "inactive"
-	GetEntityStore().EntityUpdate(*template)
+	EntityStore.EntityUpdate(*template)
 
 	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
 }
@@ -43,14 +43,12 @@ func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	log.Println(endpoint)
 
-	GetEntityStore().SetDebug(true)
-	templates, err := GetEntityStore().EntityList("template", 0, 200, "", "id", "asc")
+	templates, err := EntityStore.EntityList("template", 0, 200, "", "id", "asc")
+
 	if err != nil {
 		api.Respond(w, r, api.Error("Templates failed to be fetched: "+err.Error()))
 		return
 	}
-
-	log.Println(templates)
 
 	header := cmsHeader(endpoint)
 	breadcrums := cmsBreadcrumbs(map[string]string{
@@ -198,7 +196,7 @@ func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := GetEntityStore().EntityFindByID(templateID)
+	template, _ := EntityStore.EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -380,14 +378,14 @@ func pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := GetEntityStore().EntityFindByID(templateID)
+	template, _ := EntityStore.EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
 		return
 	}
 
-	isOk, err := GetEntityStore().EntityTrash(templateID)
+	isOk, err := EntityStore.EntityTrash(templateID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be moved to trash "+err.Error()))
@@ -416,7 +414,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := GetEntityStore().EntityFindByID(templateID)
+	template, _ := EntityStore.EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -436,13 +434,13 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	// template.SetString("content", content)
 	// template.SetString("name", name)
 	// template.SetString("handle", handle)
-	_, err := GetEntityStore().AttributeSetString(template.ID, "content", content)
+	_, err := EntityStore.AttributeSetString(template.ID, "content", content)
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be updated: "+err.Error()))
 		return
 	}
 
-	_, err = GetEntityStore().AttributeSetString(template.ID, "name", name)
+	_, err = EntityStore.AttributeSetString(template.ID, "name", name)
 	if err != nil {
 		api.Respond(w, r, api.Error("Name failed to be updated: "+err.Error()))
 		return
@@ -450,7 +448,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	template.Status = status
 	template.Handle = handle
-	isOk, err := GetEntityStore().EntityUpdate(*template)
+	isOk, err := EntityStore.EntityUpdate(*template)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be updated: "+err.Error()))

@@ -26,7 +26,7 @@ func pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity, err := GetEntityStore().EntityCreate(entityType)
+	entity, err := EntityStore.EntityCreate(entityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity failed to be created"))
@@ -84,7 +84,7 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(pageEntitiesEntityCreateModal())
 	container.AddChild(pageEntitiesEntityTrashModal())
 
-	entities, err := GetEntityStore().EntityList(entityType, 0, 200, "", "id", "asc")
+	entities, err := EntityStore.EntityList(entityType, 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entities failed to be retrieved"))
@@ -197,7 +197,7 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity, _ := GetEntityStore().EntityFindByID(entityID)
+	entity, _ := EntityStore.EntityFindByID(entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))
@@ -256,7 +256,7 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}
 		if attr.BelongsToType != "" {
-			entities, _ := entityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
+			entities, _ := EntityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
 			formGroupAttrInput = hb.NewSelect().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
 			for _, ent := range entities {
 				entName, _ := ent.GetString("name", "")
@@ -355,7 +355,7 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity, err := GetEntityStore().EntityFindByID(entityID)
+	entity, err := EntityStore.EntityFindByID(entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))
