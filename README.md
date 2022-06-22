@@ -20,6 +20,8 @@ This package allows to add a content management system as a module dependency, w
 - Menus (CMS)
 - Settings (CMS)
 - Custom Types
+- Cache Store
+- Session Store
 
 # Simple Initialization
 
@@ -165,6 +167,42 @@ cms.Init(cms.Config{
     DbInstance:      db,
     CustomEntityList: entityList(),
 })
+```
+
+## Cache Store
+
+Some of the data retrieval or processing tasks performed by your application could be CPU intensive or take several seconds to complete. When this is the case, it is common to cache the retrieved data for a time so it can be retrieved quickly on subsequent requests for the same data. 
+
+CMS comes out of the box with and SQL based cache store that can be enabled on demand. The cache store is based on the following project:
+https://github.com/gouniverse/cachestore
+
+1. Initialization with Cache Store
+
+```
+cms.Init(cms.Config{
+    DbInstance:      db,
+    EnableSettings:  true,
+})
+```
+
+2. Setting a cache key
+
+```
+isSaved, err := cms.CacheStore.Set("token", "ABCD", 60*60) // 1 hour (60 min * 60 sec)
+if isSaved == false {
+	log.Println("Saving failed")
+	return
+}
+```
+
+3. Getting a cache key
+
+```
+token, err := cms.CacheStore.Get("token", "") // "" (default)
+if token == "" {
+	log.Println("Token does not exist or expired")
+	return
+}
 ```
 
 ## Development Instructions
