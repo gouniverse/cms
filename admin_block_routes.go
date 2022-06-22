@@ -2,7 +2,6 @@ package cms
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -40,7 +39,7 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	header := cmsHeader(endpoint)
 	breadcrums := cmsBreadcrumbs(map[string]string{
@@ -209,7 +208,7 @@ Vue.createApp(BlockManager).mount('#block-manager')
 
 func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	blockID := utils.Req(r, "block_id", "")
 	if blockID == "" {

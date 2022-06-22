@@ -2,7 +2,6 @@ package cms
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -46,7 +45,7 @@ func pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	entityType := utils.Req(r, "type", "")
 	if entityType == "" {
@@ -189,7 +188,7 @@ Vue.createApp(EntityManager).mount('#entity-manager')
 
 func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	entityID := utils.Req(r, "entity_id", "")
 	if entityID == "" {

@@ -2,7 +2,6 @@ package cms
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -41,7 +40,7 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	templates, err := EntityStore.EntityList("template", 0, 200, "", "id", "asc")
 
@@ -188,7 +187,7 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 // pageTemplatesTemplateUpdate shows the template edit page
 func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	templateID := utils.Req(r, "template_id", "")
 	if templateID == "" {

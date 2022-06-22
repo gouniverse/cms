@@ -2,7 +2,6 @@ package cms
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -38,7 +37,7 @@ func pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	header := cmsHeader(endpoint)
 	breadcrums := cmsBreadcrumbs(map[string]string{
@@ -172,7 +171,7 @@ Vue.createApp(SettingManager).mount('#setting-manager')
 
 func pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	settingKey := utils.Req(r, "setting_key", "")
 	if settingKey == "" {

@@ -43,6 +43,8 @@ github.com/gouniverse/cachestore v0.11.0 h1:oRMls2N182GUaQ+tvLcAHKMSxDf0Mq32dp56
 github.com/gouniverse/cachestore v0.11.0/go.mod h1:PDKNvFQs3oYHg7PWIH75AL0VXlnx5BPE6Yo5HtvULsQ=
 github.com/gouniverse/entitystore v0.47.0 h1:LbH283eZRJiIstJ/NzrP8UblTuNmwLU3OA9z0BX6c+c=
 github.com/gouniverse/entitystore v0.47.0/go.mod h1:KW1vtUF9P1vM4hY9+FeDtg5u3qCdEsQe8XrdydgafQU=
+github.com/gouniverse/entitystore v0.48.0 h1:cAuMzklGhkJjYkTECUBVHWyKZK8wT6asm9iZFFV2l6o=
+github.com/gouniverse/entitystore v0.48.0/go.mod h1:KW1vtUF9P1vM4hY9+FeDtg5u3qCdEsQe8XrdydgafQU=
 github.com/gouniverse/hb v1.33.0 h1:XZDDmP161Gh1SAVYK5y/2t9V2o9poKhJwD/H7J1q/E4=
 github.com/gouniverse/hb v1.33.0/go.mod h1:bA0VeRyNIMjq2yrJe41CzXqPYTewlgD2aMV/Cadpiug=
 github.com/gouniverse/icons v1.1.0 h1:uE7Kc2I94EEX2OMaVxyrsVjvbSbqDub3uIXdHg+tomk=

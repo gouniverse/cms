@@ -2,7 +2,6 @@ package cms
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 
@@ -116,7 +115,7 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	pageID := utils.Req(r, "page_id", "")
 	if pageID == "" {
@@ -412,7 +411,7 @@ Vue.createApp(PageUpdate).mount('#page-update')
 
 func pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	pages, err := EntityStore.EntityList("page", 0, 200, "", "id", "asc")
 

@@ -164,7 +164,7 @@ Vue.createApp(MenuManager).mount('#menu-manager')
 
 func pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	//log.Println(endpoint)
+	// log.Println(endpoint)
 
 	menuID := utils.Req(r, "menu_id", "")
 	if menuID == "" {
@@ -436,7 +436,7 @@ func pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
 
 func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	//log.Println(endpoint+"")
+	// log.Println(endpoint+"")
 
 	menuID := utils.Req(r, "menu_id", "")
 	if menuID == "" {

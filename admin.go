@@ -142,36 +142,33 @@ func cmsHeader(endpoint string) string {
 	linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
 	linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
 	linkTranslations := hb.NewHyperlink().HTML("Translations").Attr("href", "#").Attr("class", "nav-link")
-	blocksCount := EntityStore.EntityCount("block")
-	menusCount := EntityStore.EntityCount("menu")
-	pagesCount := EntityStore.EntityCount("page")
-	templatesCount := EntityStore.EntityCount("template")
-	widgetsCount := EntityStore.EntityCount("widget")
-	//log.Println(blocksCount)
-	//log.Println(pagesCount)
-	//log.Println(templatesCount)
+	blocksCount, _ := EntityStore.EntityCount("block")
+	menusCount, _ := EntityStore.EntityCount("menu")
+	pagesCount, _ := EntityStore.EntityCount("page")
+	templatesCount, _ := EntityStore.EntityCount("template")
+	widgetsCount, _ := EntityStore.EntityCount("widget")
 
 	ulNav := hb.NewUL().Attr("class", "nav  nav-pills justify-content-center")
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkHome))
 
 	if configuration.EnableTemplates {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(templatesCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(templatesCount, 10)))))
 	}
 
 	if configuration.EnablePages {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(pagesCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(pagesCount, 10)))))
 	}
 
 	if configuration.EnableMenus {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(menusCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(menusCount, 10)))))
 	}
 
 	if configuration.EnableBlocks {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(blocksCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(blocksCount, 10)))))
 	}
 
 	if configuration.EnableWidgets {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatUint(widgetsCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
 	}
 
 	if configuration.EnableTranslations == true {

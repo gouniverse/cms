@@ -38,7 +38,7 @@ func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
-	log.Println(endpoint)
+	// log.Println(endpoint)
 
 	header := cmsHeader(endpoint)
 	breadcrums := cmsBreadcrumbs(map[string]string{
