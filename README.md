@@ -171,9 +171,7 @@ cms.Init(cms.Config{
 
 There is a development directory that allows you to quickly start working on the project or simply to preview
 
-Instructions how to start are in the README file in the directory
-
-[README] https://github.com/gounverse/development/README.md
+Instructions how to start can be found <a href="https://github.com/gouniverse/cms/tree/main/development">in the directory</a>
 
 
 ## Similar Projects Built in GoLang
