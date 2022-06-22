@@ -23,11 +23,23 @@ This package allows to add a content management system as a module dependency, w
 
 # Simple Initialization
 
-In its simplest initialization the CMS package accepts a GORM DB instance
+In its simplest initialization the CMS package accepts a standard DB instance
 
 ```
+db, err := mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
+
+if err != nil {
+	log.Panic("Database is NIL: " + err.Error())
+	return
+}
+
+if db == nil {
+	log.Panic("Database is NIL")
+	return
+}
+
 cms.Init(cms.Config{
-		DbInstance: gormDB,
+	DbInstance: db,
 })
 ```
 
@@ -157,13 +169,11 @@ cms.Init(cms.Config{
 
 ## Development Instructions
 
-Follow the instructions bellow to quickly start working on the project
+There is a development directory that allows you to quickly start working on the project or simply to preview
 
-```
-cd development
-fresh
-```
+Instructions how to start are in the README file in the directory
 
+[README] https://github.com/gounverse/development/README.md
 
 
 ## Similar Projects Built in GoLang

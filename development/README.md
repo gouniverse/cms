@@ -1,4 +1,4 @@
-# Quick Development Enviromment for CMS
+# Quick Development / Preview Enviromment for CMS
 
 1. Copy .env_example to .env
 
