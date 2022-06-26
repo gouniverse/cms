@@ -3,9 +3,11 @@ package cms
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	"github.com/gouniverse/cachestore"
 	"github.com/gouniverse/entitystore"
+	"github.com/gouniverse/logstore"
 	"github.com/gouniverse/sessionstore"
 	"github.com/gouniverse/settingstore"
 )
@@ -21,6 +23,7 @@ type Config struct {
 	CustomEntityList   []CustomEntityStructure
 	EnableBlocks       bool
 	EnableCache        bool
+	EnableLogs         bool
 	EnableMenus        bool
 	EnablePages        bool
 	EnableSession      bool
@@ -34,9 +37,11 @@ var (
 	configuration       Config
 	EntityStore         *entitystore.Store
 	CacheStore          *cachestore.Store
+	LogStore            *logstore.Store
 	SessionStore        *sessionstore.Store
 	SettingStore        *settingstore.Store
 	cacheEnabled        bool
+	logsEnabled         bool
 	sessionEnabled      bool
 	settingsEnabled     bool
 	translationsEnabled bool
@@ -68,7 +73,19 @@ func Init(config Config) {
 			return
 		}
 
-		go CacheStore.ExpireCacheGoroutine()
+		time.AfterFunc(3*time.Second, func() {
+			go CacheStore.ExpireCacheGoroutine()
+		})
+	}
+
+	if config.EnableLogs {
+		logsEnabled = true
+		LogStore, err = logstore.NewStore(logstore.WithDb(config.DbInstance), logstore.WithTableName("cms_log"), logstore.WithAutoMigrate(true))
+
+		if err != nil {
+			log.Panicln("Log store failed to be intiated")
+			return
+		}
 	}
 
 	if config.EnableSession {
@@ -80,7 +97,9 @@ func Init(config Config) {
 			return
 		}
 
-		go SessionStore.ExpireSessionGoroutine()
+		time.AfterFunc(3*time.Second, func() {
+			go SessionStore.ExpireSessionGoroutine()
+		})
 	}
 
 	if config.EnableSettings {

@@ -21,6 +21,7 @@ This package allows to add a content management system as a module dependency, w
 - Settings (CMS)
 - Custom Types
 - Cache Store
+- Log Store
 - Session Store
 
 # Simple Initialization
