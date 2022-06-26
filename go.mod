@@ -13,7 +13,7 @@ require (
 	github.com/gouniverse/settingstore v0.8.0
 	github.com/gouniverse/utils v1.15.0
 	github.com/lib/pq v1.10.6
-	github.com/stretchr/testify v1.7.2
+	github.com/stretchr/testify v1.7.5
 	modernc.org/sqlite v1.17.3
 )
 
@@ -33,11 +33,11 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/stretchr/objx v0.4.0 // indirect
-	github.com/tdewolff/minify/v2 v2.11.7 // indirect
-	github.com/tdewolff/parse/v2 v2.5.32 // indirect
+	github.com/tdewolff/minify/v2 v2.11.11 // indirect
+	github.com/tdewolff/parse/v2 v2.6.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220617184016-355a448f1bc9 // indirect
-	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
+	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
+	golang.org/x/sys v0.0.0-20220624220833-87e55d714810 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.11 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
@@ -45,7 +45,7 @@ require (
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/cc/v3 v3.36.0 // indirect
 	modernc.org/ccgo/v3 v3.16.6 // indirect
-	modernc.org/libc v1.16.10 // indirect
+	modernc.org/libc v1.16.11 // indirect
 	modernc.org/mathutil v1.4.1 // indirect
 	modernc.org/memory v1.1.1 // indirect
 	modernc.org/opt v0.1.3 // indirect
