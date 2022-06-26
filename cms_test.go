@@ -54,8 +54,8 @@ func (suite *CmsTestSuite) SetupTest() {
 //TestAuth tests the auth page
 func (suite *CmsTestSuite) TestCmsInit() {
 	db, err := mainDb("sqlite", "", "", "test_init.db", "", "")
-	assert.Nil(suite.T(), err, "DB error")
 	defer db.Close()
+	assert.Nil(suite.T(), err, "DB error")
 
 	assert.False(suite.T(), configuration.EnableBlocks, "Enable blocks MUST BE false before init")
 	assert.False(suite.T(), configuration.EnableCache, "Enable cache MUST BE false before init")
@@ -65,21 +65,21 @@ func (suite *CmsTestSuite) TestCmsInit() {
 	assert.False(suite.T(), configuration.EnableTemplates, "Enable templates MUST BE false before init")
 
 	Init(Config{
-		DbInstance:      db,
-		EnableCache:     true,
-		EnablePages:     true,
-		EnableBlocks:    true,
-		EnableSettings:  true,
-		EnableSession:   true,
+		DbInstance: db,
+		// EnableCache:    true,
+		EnablePages:    true,
+		EnableBlocks:   true,
+		EnableSettings: true,
+		// EnableSession:   true,
 		EnableTemplates: true,
 		// CustomEntityList: entityList(),
 	})
 
 	assert.True(suite.T(), configuration.EnableBlocks, "Enable blocks MUST BE true after init")
-	assert.True(suite.T(), configuration.EnableCache, "Enable cache MUST BE true after init")
+	// assert.True(suite.T(), configuration.EnableCache, "Enable cache MUST BE true after init")
 	assert.True(suite.T(), configuration.EnablePages, "Enable pages MUST BE true after init")
 	assert.True(suite.T(), configuration.EnableSettings, "Enable pages MUST BE true after init")
-	assert.True(suite.T(), configuration.EnableSession, "Enable pages MUST BE true after init")
+	// assert.True(suite.T(), configuration.EnableSession, "Enable pages MUST BE true after init")
 	assert.True(suite.T(), configuration.EnableTemplates, "Enable templates MUST BE true after init")
 
 	// pages, err := EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
