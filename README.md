@@ -227,6 +227,7 @@ Instructions how to start can be found <a href="https://github.com/gouniverse/cm
 - https://github.com/uberswe/beubo - last update 2021
 - https://github.com/digimakergo
 - https://github.com/jlelse/GoBlog
+- https://github.com/daptin/daptin
 
 # Notable
 - https://github.com/tenox7/wfm - stabdalone file manager
