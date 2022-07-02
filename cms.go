@@ -2,13 +2,21 @@ package cms
 
 import (
 	"database/sql"
+	"log"
+	"time"
+
+	"github.com/gouniverse/cachestore"
+	"github.com/gouniverse/entitystore"
+	"github.com/gouniverse/logstore"
+	"github.com/gouniverse/sessionstore"
+	"github.com/gouniverse/settingstore"
 )
 
 // Cms defines the cms
 type Cms struct {
-	DbInstance   *sql.DB
-	DbDriverName string
-	DbDsn        string
+	DbInstance *sql.DB
+	DbDriver   string
+	DbDsn      string
 	// 	CustomEntityList   []CustomEntityStructure
 	EnableBlocks       bool
 	EnableCache        bool
@@ -21,6 +29,16 @@ type Cms struct {
 	EnableTranslations bool
 	EnableWidgets      bool
 	AutomigrateEnabled bool
+	Prefix             string
+	cacheEnabled       bool
+	logsEnabled        bool
+	sessionEnabled     bool
+	settingsEnabled     bool
+	CacheStore         *cachestore.Store
+	EntityStore        *entitystore.Store
+	LogStore           *logstore.Store
+	SessionStore       *sessionstore.Store
+	SettingStore       *settingstore.Store
 }
 
 // Cmsption defines an option for the CMS store
@@ -69,6 +87,75 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 	//if cms.automigrateEnabled {
 	//	cms.AutoMigrate()
 	//}
+
+	if cms.DbInstance == nil && (cms.DbDriver == "" || cms.DbDsn == "") {
+		log.Panicln("Either DbInstance or DnDriver and DbDsn are required field")
+	}
+
+	if cms.Prefix == "" {
+		cms.Prefix = "cms_"
+	}
+
+	var err error
+	cms.EntityStore, err = entitystore.NewStore(entitystore.WithDb(cms.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
+
+	if err != nil {
+		// log.Panicln("Entity store failed to be intiated")
+		return nil, err
+	}
+
+	if cms.EnableCache {
+		cms.cacheEnabled = true
+		cms.CacheStore, err = cachestore.NewStore(cachestore.WithDb(cms.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
+
+		if err != nil {
+			// log.Panicln("Cache store failed to be intiated")
+			return nil, err
+		}
+
+		time.AfterFunc(3*time.Second, func() {
+			go cms.CacheStore.ExpireCacheGoroutine()
+		})
+	}
+
+	if cms.EnableLogs {
+		cms.logsEnabled = true
+		cms.LogStore, err = logstore.NewStore(logstore.WithDb(cms.DbInstance), logstore.WithTableName("cms_log"), logstore.WithAutoMigrate(true))
+
+		if err != nil {
+			// log.Panicln("Log store failed to be intiated")
+			return nil, err
+		}
+	}
+
+	if cms.EnableSession {
+		cms.sessionEnabled = true
+		cms.SessionStore, err = sessionstore.NewStore(sessionstore.WithDb(cms.DbInstance), sessionstore.WithTableName("cms_session"), sessionstore.WithAutoMigrate(true))
+
+		if err != nil {
+			// log.Panicln("Session store failed to be intiated")
+			return nil, err
+		}
+
+		time.AfterFunc(3*time.Second, func() {
+			go cms.SessionStore.ExpireSessionGoroutine()
+		})
+	}
+
+	if cms.EnableSettings {
+		cms.settingsEnabled = true
+		cms.SettingStore, err = settingstore.NewStore(settingstore.WithDb(cms.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
+
+		if err != nil {
+			// log.Panicln("Setting store failed to be intiated")
+			return nil, err
+		}
+	}
+
+	// 	// Migrate the schema
+	// 	// cms.DbInstance.AutoMigrate(&Entity{})
+	// 	// cms.DbInstance.AutoMigrate(&EntityAttribute{})
+	// 	configuration = config
 
 	return cms, nil
 }
@@ -123,23 +210,23 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 
 // // Init initializes the CMS
 // func Init(config Config) {
-// 	if config.DbInstance == nil && (config.DbDriver == "" || config.DbDsn == "") {
+// 	if cms.DbInstance == nil && (cms.DbDriver == "" || cms.DbDsn == "") {
 // 		log.Panicln("Either DbInstance or DnDriver and DbDsn are required field")
 // 	}
 
 // 	prefix = "cms_"
 
 // 	var err error
-// 	EntityStore, err = entitystore.NewStore(entitystore.WithDb(config.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
+// 	EntityStore, err = entitystore.NewStore(entitystore.WithDb(cms.DbInstance), entitystore.WithEntityTableName("cms_entities_entity"), entitystore.WithAttributeTableName("cms_entities_attribute"), entitystore.WithAutoMigrate(true))
 
 // 	if err != nil {
 // 		log.Panicln("Entity store failed to be intiated")
 // 		return
 // 	}
 
-// 	if config.EnableCache {
+// 	if cms.EnableCache {
 // 		cacheEnabled = true
-// 		CacheStore, err = cachestore.NewStore(cachestore.WithDb(config.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
+// 		CacheStore, err = cachestore.NewStore(cachestore.WithDb(cms.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
 
 // 		if err != nil {
 // 			log.Panicln("Cache store failed to be intiated")
@@ -151,9 +238,9 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 // 		})
 // 	}
 
-// 	if config.EnableLogs {
+// 	if cms.EnableLogs {
 // 		logsEnabled = true
-// 		LogStore, err = logstore.NewStore(logstore.WithDb(config.DbInstance), logstore.WithTableName("cms_log"), logstore.WithAutoMigrate(true))
+// 		LogStore, err = logstore.NewStore(logstore.WithDb(cms.DbInstance), logstore.WithTableName("cms_log"), logstore.WithAutoMigrate(true))
 
 // 		if err != nil {
 // 			log.Panicln("Log store failed to be intiated")
@@ -161,9 +248,9 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 // 		}
 // 	}
 
-// 	if config.EnableSession {
+// 	if cms.EnableSession {
 // 		sessionEnabled = true
-// 		SessionStore, err = sessionstore.NewStore(sessionstore.WithDb(config.DbInstance), sessionstore.WithTableName("cms_session"), sessionstore.WithAutoMigrate(true))
+// 		SessionStore, err = sessionstore.NewStore(sessionstore.WithDb(cms.DbInstance), sessionstore.WithTableName("cms_session"), sessionstore.WithAutoMigrate(true))
 
 // 		if err != nil {
 // 			log.Panicln("Session store failed to be intiated")
@@ -175,9 +262,9 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 // 		})
 // 	}
 
-// 	if config.EnableSettings {
+// 	if cms.EnableSettings {
 // 		settingsEnabled = true
-// 		SettingStore, err = settingstore.NewStore(settingstore.WithDb(config.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
+// 		SettingStore, err = settingstore.NewStore(settingstore.WithDb(cms.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
 
 // 		if err != nil {
 // 			log.Panicln("Setting store failed to be intiated")
@@ -186,8 +273,8 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 // 	}
 
 // 	// Migrate the schema
-// 	// config.DbInstance.AutoMigrate(&Entity{})
-// 	// config.DbInstance.AutoMigrate(&EntityAttribute{})
+// 	// cms.DbInstance.AutoMigrate(&Entity{})
+// 	// cms.DbInstance.AutoMigrate(&EntityAttribute{})
 // 	configuration = config
 // }
 
