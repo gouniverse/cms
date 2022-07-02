@@ -34,7 +34,7 @@ func main() {
 	}
 
 	log.Println("3. Initializing CMS...")
-	myCms, err := cms.NewCms(cms.WithDb(db), cms.WithPages(), cms.WithTemplates(), cms.WithBlocks(), cms.WithWidgets())
+	myCms, err := cms.NewCms(cms.WithDb(db), cms.WithPages(), cms.WithTemplates(), cms.WithBlocks(), cms.WithWidgets(), cms.WithMenus(), cms.WithSession(), cms.WithSettings(), cms.WithCustomEntityList(entityList()))
 	// .Init(cms.Config{
 	// 	DbInstance:       db,
 	// 	EnableTemplates:  true,
@@ -103,190 +103,190 @@ func mainDb(driverName string, dbHost string, dbPort string, dbName string, dbUs
 	return db, nil
 }
 
-// func entityList() []cms.CustomEntityStructure {
-// 	list := []cms.CustomEntityStructure{}
-// 	list = append(list, cms.CustomEntityStructure{
-// 		Group:     "Users",
-// 		Type:      "user",
-// 		TypeLabel: "User",
-// 		AttributeList: []cms.CustomAttributeStructure{
-// 			{
-// 				Name:             "first_name",
-// 				Type:             "string",
-// 				FormControlLabel: "First Name",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The first name of the user",
-// 			},
-// 			{
-// 				Name:             "last_name",
-// 				Type:             "string",
-// 				FormControlLabel: "Last Name",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The last name of the user",
-// 			},
-// 			{
-// 				Name:             "email",
-// 				Type:             "string",
-// 				FormControlLabel: "E-mail",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The e-mail address of the user",
-// 			},
-// 			{
-// 				Name:             "image_url",
-// 				Type:             "string",
-// 				FormControlLabel: "Image URL",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The image of the product",
-// 			},
-// 		},
-// 	})
-// 	list = append(list, cms.CustomEntityStructure{
-// 		Group:     "Shop",
-// 		Type:      "shop_product",
-// 		TypeLabel: "Product",
-// 		AttributeList: []cms.CustomAttributeStructure{
-// 			{
-// 				Name:             "title",
-// 				Type:             "string",
-// 				FormControlLabel: "Title",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The title which will be displayed to the customer",
-// 			},
-// 			{
-// 				Name:             "description",
-// 				Type:             "string",
-// 				FormControlLabel: "Description",
-// 				FormControlType:  "textarea",
-// 				FormControlHelp:  "The description which will be displayed to the customer",
-// 			},
-// 			{
-// 				Name:             "price",
-// 				Type:             "string",
-// 				FormControlLabel: "Price",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The price of the product",
-// 			},
-// 			{
-// 				Name:             "image_url",
-// 				Type:             "string",
-// 				FormControlLabel: "Image URL",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The image of the product",
-// 			},
-// 		},
-// 	})
-// 	list = append(list, cms.CustomEntityStructure{
-// 		Type:      "makeawish",
-// 		TypeLabel: "Make-a-Wish",
-// 		AttributeList: []cms.CustomAttributeStructure{
-// 			{
-// 				Name:             "wish",
-// 				Type:             "string",
-// 				FormControlLabel: "Wish",
-// 				FormControlType:  "textarea",
-// 				FormControlHelp:  "The wish that was made",
-// 			},
-// 			{
-// 				Name:             "referral",
-// 				Type:             "string",
-// 				FormControlLabel: "Referral",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "Whare the wish was made from",
-// 			},
-// 		},
-// 	})
-// 	list = append(list, cms.CustomEntityStructure{
-// 		Group:     "Shop",
-// 		Type:      "shop_order",
-// 		TypeLabel: "Order",
-// 		AttributeList: []cms.CustomAttributeStructure{
-// 			{
-// 				Name:             "user_id",
-// 				Type:             "string",
-// 				FormControlLabel: "User ID",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The ID of the user who made the purchase",
-// 				BelongsToType:    "user",
-// 			},
-// 			{
-// 				Name:             "total",
-// 				Type:             "string",
-// 				FormControlLabel: "Total",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "Total amount of the order",
-// 			},
-// 		},
-// 	})
-// 	list = append(list, cms.CustomEntityStructure{
-// 		Group:     "Shop",
-// 		Type:      "shop_order_line_item",
-// 		TypeLabel: "Order Line Item",
-// 		AttributeList: []cms.CustomAttributeStructure{
-// 			{
-// 				Name:             "order_id",
-// 				Type:             "string",
-// 				FormControlLabel: "Order ID",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The order the item belongs to",
-// 				BelongsToType:    "shop_order",
-// 			},
-// 			{
-// 				Name:             "product_id",
-// 				Type:             "string",
-// 				FormControlLabel: "Product ID",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "The ID of the product that is ordered",
-// 			},
-// 			{
-// 				Name:             "quantity",
-// 				Type:             "string",
-// 				FormControlLabel: "Quantity",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "How many products are ordered (quantity) in this order item",
-// 			},
-// 			{
-// 				Name:             "subtotal",
-// 				Type:             "string",
-// 				FormControlLabel: "Subtotal",
-// 				FormControlType:  "input",
-// 				FormControlHelp:  "Subtotal amount of the order item",
-// 			},
-// 		},
-// 	})
-// 	return list
-// 	// {
-// 	// 	"type":"product",
-// 	// 	"price":"12.00",
-// 	// }
-// 	// list := []map[string]interface{}{
-// 	// 	{
-// 	// 		"type": "product",
-// 	// 		"attributes": []map[string]interface{}{
-// 	// 			{
-// 	// 				"name": "title",
-// 	// 				"type": "string",
-// 	// 				"rule": "required",
-// 	// 				// type - one of text, textarea, select, hidden, html
-// 	// 				// name - name of the input field as seen in the request
-// 	// 				// label - publicly visible name
-// 	// 				// width - width of the field - min 1, max 12
-// 	// 				// rule - rules for the field, used when validating
-// 	// 				// value - value of the field
-// 	// 				// options - array of options (used by the select type)
-// 	// 				// html - raw HTML to be displayed as-is (used by the html type)
+func entityList() []cms.CustomEntityStructure {
+	list := []cms.CustomEntityStructure{}
+	list = append(list, cms.CustomEntityStructure{
+		Group:     "Users",
+		Type:      "user",
+		TypeLabel: "User",
+		AttributeList: []cms.CustomAttributeStructure{
+			{
+				Name:             "first_name",
+				Type:             "string",
+				FormControlLabel: "First Name",
+				FormControlType:  "input",
+				FormControlHelp:  "The first name of the user",
+			},
+			{
+				Name:             "last_name",
+				Type:             "string",
+				FormControlLabel: "Last Name",
+				FormControlType:  "input",
+				FormControlHelp:  "The last name of the user",
+			},
+			{
+				Name:             "email",
+				Type:             "string",
+				FormControlLabel: "E-mail",
+				FormControlType:  "input",
+				FormControlHelp:  "The e-mail address of the user",
+			},
+			{
+				Name:             "image_url",
+				Type:             "string",
+				FormControlLabel: "Image URL",
+				FormControlType:  "input",
+				FormControlHelp:  "The image of the product",
+			},
+		},
+	})
+	list = append(list, cms.CustomEntityStructure{
+		Group:     "Shop",
+		Type:      "shop_product",
+		TypeLabel: "Product",
+		AttributeList: []cms.CustomAttributeStructure{
+			{
+				Name:             "title",
+				Type:             "string",
+				FormControlLabel: "Title",
+				FormControlType:  "input",
+				FormControlHelp:  "The title which will be displayed to the customer",
+			},
+			{
+				Name:             "description",
+				Type:             "string",
+				FormControlLabel: "Description",
+				FormControlType:  "textarea",
+				FormControlHelp:  "The description which will be displayed to the customer",
+			},
+			{
+				Name:             "price",
+				Type:             "string",
+				FormControlLabel: "Price",
+				FormControlType:  "input",
+				FormControlHelp:  "The price of the product",
+			},
+			{
+				Name:             "image_url",
+				Type:             "string",
+				FormControlLabel: "Image URL",
+				FormControlType:  "input",
+				FormControlHelp:  "The image of the product",
+			},
+		},
+	})
+	list = append(list, cms.CustomEntityStructure{
+		Type:      "makeawish",
+		TypeLabel: "Make-a-Wish",
+		AttributeList: []cms.CustomAttributeStructure{
+			{
+				Name:             "wish",
+				Type:             "string",
+				FormControlLabel: "Wish",
+				FormControlType:  "textarea",
+				FormControlHelp:  "The wish that was made",
+			},
+			{
+				Name:             "referral",
+				Type:             "string",
+				FormControlLabel: "Referral",
+				FormControlType:  "input",
+				FormControlHelp:  "Whare the wish was made from",
+			},
+		},
+	})
+	list = append(list, cms.CustomEntityStructure{
+		Group:     "Shop",
+		Type:      "shop_order",
+		TypeLabel: "Order",
+		AttributeList: []cms.CustomAttributeStructure{
+			{
+				Name:             "user_id",
+				Type:             "string",
+				FormControlLabel: "User ID",
+				FormControlType:  "input",
+				FormControlHelp:  "The ID of the user who made the purchase",
+				BelongsToType:    "user",
+			},
+			{
+				Name:             "total",
+				Type:             "string",
+				FormControlLabel: "Total",
+				FormControlType:  "input",
+				FormControlHelp:  "Total amount of the order",
+			},
+		},
+	})
+	list = append(list, cms.CustomEntityStructure{
+		Group:     "Shop",
+		Type:      "shop_order_line_item",
+		TypeLabel: "Order Line Item",
+		AttributeList: []cms.CustomAttributeStructure{
+			{
+				Name:             "order_id",
+				Type:             "string",
+				FormControlLabel: "Order ID",
+				FormControlType:  "input",
+				FormControlHelp:  "The order the item belongs to",
+				BelongsToType:    "shop_order",
+			},
+			{
+				Name:             "product_id",
+				Type:             "string",
+				FormControlLabel: "Product ID",
+				FormControlType:  "input",
+				FormControlHelp:  "The ID of the product that is ordered",
+			},
+			{
+				Name:             "quantity",
+				Type:             "string",
+				FormControlLabel: "Quantity",
+				FormControlType:  "input",
+				FormControlHelp:  "How many products are ordered (quantity) in this order item",
+			},
+			{
+				Name:             "subtotal",
+				Type:             "string",
+				FormControlLabel: "Subtotal",
+				FormControlType:  "input",
+				FormControlHelp:  "Subtotal amount of the order item",
+			},
+		},
+	})
+	return list
+	// {
+	// 	"type":"product",
+	// 	"price":"12.00",
+	// }
+	// list := []map[string]interface{}{
+	// 	{
+	// 		"type": "product",
+	// 		"attributes": []map[string]interface{}{
+	// 			{
+	// 				"name": "title",
+	// 				"type": "string",
+	// 				"rule": "required",
+	// 				// type - one of text, textarea, select, hidden, html
+	// 				// name - name of the input field as seen in the request
+	// 				// label - publicly visible name
+	// 				// width - width of the field - min 1, max 12
+	// 				// rule - rules for the field, used when validating
+	// 				// value - value of the field
+	// 				// options - array of options (used by the select type)
+	// 				// html - raw HTML to be displayed as-is (used by the html type)
 
-// 	// 			},
-// 	// 			{
-// 	// 				"name": "price",
-// 	// 				"type": "float",
-// 	// 				"rule": "required",
-// 	// 			},
-// 	// 			{
-// 	// 				"name": "image_url",
-// 	// 				"type": "string",
-// 	// 			},
-// 	// 		},
-// 	// 	},
-// 	// }
-// 	// return list
-// }
+	// 			},
+	// 			{
+	// 				"name": "price",
+	// 				"type": "float",
+	// 				"rule": "required",
+	// 			},
+	// 			{
+	// 				"name": "image_url",
+	// 				"type": "string",
+	// 			},
+	// 		},
+	// 	},
+	// }
+	// return list
+}

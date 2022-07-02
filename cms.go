@@ -16,10 +16,10 @@ import (
 
 // Cms defines the cms
 type Cms struct {
-	DbInstance *sql.DB
-	DbDriver   string
-	DbDsn      string
-	// 	CustomEntityList   []CustomEntityStructure
+	DbInstance         *sql.DB
+	DbDriver           string
+	DbDsn              string
+	CustomEntityList   []CustomEntityStructure
 	EnableBlocks       bool
 	EnableCache        bool
 	EnableLogs         bool
@@ -69,17 +69,17 @@ func WithDebug(debug bool) CmsOption {
 	}
 }
 
-// WithTemplates enables pages
-func WithTemplates() CmsOption {
-	return func(cms *Cms) {
-		cms.EnableTemplates = true
-	}
-}
-
 // WithBlocks enables blocks
 func WithBlocks() CmsOption {
 	return func(cms *Cms) {
 		cms.EnableBlocks = true
+	}
+}
+
+// WithMenus enables menus
+func WithMenus() CmsOption {
+	return func(cms *Cms) {
+		cms.EnableMenus = true
 	}
 }
 
@@ -90,10 +90,38 @@ func WithPages() CmsOption {
 	}
 }
 
-// WithWidgets enables blocks
+// WithSession enables session
+func WithSession() CmsOption {
+	return func(cms *Cms) {
+		cms.EnableSession = true
+	}
+}
+
+// WithSettings enables settings
+func WithSettings() CmsOption {
+	return func(cms *Cms) {
+		cms.EnableSettings = true
+	}
+}
+
+// WithTemplates enables templates
+func WithTemplates() CmsOption {
+	return func(cms *Cms) {
+		cms.EnableTemplates = true
+	}
+}
+
+// WithWidgets enables widgets
 func WithWidgets() CmsOption {
 	return func(cms *Cms) {
 		cms.EnableWidgets = true
+	}
+}
+
+// WithCustomEntityList adds custom entities
+func WithCustomEntityList(customEntityList []CustomEntityStructure) CmsOption {
+	return func(cms *Cms) {
+		cms.CustomEntityList = customEntityList
 	}
 }
 
@@ -314,34 +342,34 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 // 	return configuration.DbInstance
 // }
 
-// type CustomEntityStructure struct {
-// 	// Type of the entity
-// 	Type string
-// 	// Label to display referencing the entity
-// 	TypeLabel string
-// 	// Name of the entity
-// 	Name string
-// 	// AttributeList list of attributes
-// 	AttributeList []CustomAttributeStructure
-// 	// Group to which this entity belongs (i.e. Shop, Users, etc)
-// 	Group string
-// }
+type CustomEntityStructure struct {
+	// Type of the entity
+	Type string
+	// Label to display referencing the entity
+	TypeLabel string
+	// Name of the entity
+	Name string
+	// AttributeList list of attributes
+	AttributeList []CustomAttributeStructure
+	// Group to which this entity belongs (i.e. Shop, Users, etc)
+	Group string
+}
 
-// type CustomAttributeStructure struct {
-// 	// Name the name of the attribute
-// 	Name string
-// 	// Type of the attribute - string, float, int
-// 	Type string
-// 	// FormControlLabel label to display for the control
-// 	FormControlLabel string
-// 	// FormControlType the type of form control - input, textarea. etc
-// 	FormControlType string
-// 	// FormControlHelp help message to display for the control
-// 	FormControlHelp string
-// 	// BelongsToType describes a Belong To relationsip
-// 	BelongsToType string
-// 	// HasOneType describes a Has One relationsip
-// 	HasOneType string
-// 	// HasManyType describes a Has Many relationsip
-// 	HasManyType string
-// }
+type CustomAttributeStructure struct {
+	// Name the name of the attribute
+	Name string
+	// Type of the attribute - string, float, int
+	Type string
+	// FormControlLabel label to display for the control
+	FormControlLabel string
+	// FormControlType the type of form control - input, textarea. etc
+	FormControlType string
+	// FormControlHelp help message to display for the control
+	FormControlHelp string
+	// BelongsToType describes a Belong To relationsip
+	BelongsToType string
+	// HasOneType describes a Has One relationsip
+	HasOneType string
+	// HasManyType describes a Has Many relationsip
+	HasManyType string
+}

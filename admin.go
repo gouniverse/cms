@@ -9,16 +9,6 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-// import (
-// 	"context"
-// 	"net/http"
-
-// 	"strconv"
-
-// 	"github.com/gouniverse/hb"
-// 	"github.com/gouniverse/utils"
-// )
-
 // Router shows the admin page
 func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
 	path := utils.Req(r, "path", "home")
@@ -39,7 +29,7 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		PathHome: cms.pageHome,
 		// // START: Blocks
 		PathBlocksBlockCreateAjax: cms.pageBlocksBlockCreateAjax,
-		//PathBlocksBlockDeleteAjax: pageBlocksBlockDeleteAjax,
+		PathBlocksBlockDeleteAjax: cms.pageBlocksBlockDeleteAjax,
 		PathBlocksBlockManager:    cms.pageBlocksBlockManager,
 		PathBlocksBlockUpdate:     cms.pageBlocksBlockUpdate,
 		PathBlocksBlockTrashAjax:  cms.pageBlocksBlockTrashAjax,
@@ -47,13 +37,13 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		// // END: Blocks
 
 		// // START: Menus
-		// PathMenusMenuCreateAjax:      pageMenusMenuCreateAjax,
-		// PathMenusMenuManager:         pageMenusMenuManager,
-		// PathMenusMenuUpdate:          pageMenusMenuUpdate,
-		// PathMenusMenuItemsFetchAjax:  pageMenusMenuItemsFetchAjax,
-		// PathMenusMenuItemsUpdate:     pageMenusMenuItemsUpdate,
-		// PathMenusMenuItemsUpdateAjax: pageMenusMenuItemsUpdateAjax,
-		// PathMenusMenuUpdateAjax:      pageMenusMenuUpdateAjax,
+		PathMenusMenuCreateAjax:      cms.pageMenusMenuCreateAjax,
+		PathMenusMenuManager:         cms.pageMenusMenuManager,
+		PathMenusMenuUpdate:          cms.pageMenusMenuUpdate,
+		PathMenusMenuItemsFetchAjax:  cms.pageMenusMenuItemsFetchAjax,
+		PathMenusMenuItemsUpdate:     cms.pageMenusMenuItemsUpdate,
+		PathMenusMenuItemsUpdateAjax: cms.pageMenusMenuItemsUpdateAjax,
+		PathMenusMenuUpdateAjax:      cms.pageMenusMenuUpdateAjax,
 		// // END: Menus
 
 		// // START: Pages
@@ -73,25 +63,25 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		// // END: Templates
 
 		// // START: Widgets
-		// PathWidgetsWidgetCreateAjax: pageWidgetsWidgetCreateAjax,
-		// PathWidgetsWidgetManager:    pageWidgetsWidgetManager,
-		// PathWidgetsWidgetUpdate:     pageWidgetsWidgetUpdate,
-		// PathWidgetsWidgetUpdateAjax: pageWidgetsWidgetUpdateAjax,
+		PathWidgetsWidgetCreateAjax: cms.pageWidgetsWidgetCreateAjax,
+		PathWidgetsWidgetManager:    cms.pageWidgetsWidgetManager,
+		PathWidgetsWidgetUpdate:     cms.pageWidgetsWidgetUpdate,
+		PathWidgetsWidgetUpdateAjax: cms.pageWidgetsWidgetUpdateAjax,
 		// // END: Widgets
 
 		// // START: Settings
-		// PathSettingsSettingCreateAjax: pageSettingsSettingCreateAjax,
-		// PathSettingsSettingDeleteAjax: pageSettingsSettingDeleteAjax,
-		// PathSettingsSettingManager:    pageSettingsSettingManager,
-		// PathSettingsSettingUpdate:     pageSettingsSettingUpdate,
-		// PathSettingsSettingUpdateAjax: pageSettingsSettingUpdateAjax,
+		PathSettingsSettingCreateAjax: cms.pageSettingsSettingCreateAjax,
+		PathSettingsSettingDeleteAjax: cms.pageSettingsSettingDeleteAjax,
+		PathSettingsSettingManager:    cms.pageSettingsSettingManager,
+		PathSettingsSettingUpdate:     cms.pageSettingsSettingUpdate,
+		PathSettingsSettingUpdateAjax: cms.pageSettingsSettingUpdateAjax,
 		// // END: Settings
 
 		// // START: Custom Entities
-		// PathEntitiesEntityCreateAjax: pageEntitiesEntityCreateAjax,
-		// PathEntitiesEntityManager:    pageEntitiesEntityManager,
-		// PathEntitiesEntityUpdate:     pageEntitiesEntityUpdate,
-		// PathEntitiesEntityUpdateAjax: pageEntitiesEntityUpdateAjax,
+		PathEntitiesEntityCreateAjax: cms.pageEntitiesEntityCreateAjax,
+		PathEntitiesEntityManager:    cms.pageEntitiesEntityManager,
+		PathEntitiesEntityUpdate:     cms.pageEntitiesEntityUpdate,
+		PathEntitiesEntityUpdateAjax: cms.pageEntitiesEntityUpdateAjax,
 		// // END: Custom Entities
 
 	}
@@ -145,17 +135,17 @@ func (cms Cms) cmsBreadcrumbs(breadcrumbs map[string]string) string {
 func (cms Cms) cmsHeader(endpoint string) string {
 	linkHome := hb.NewHyperlink().HTML("Dashboard").Attr("href", endpoint+"").Attr("class", "nav-link")
 	linkBlocks := hb.NewHyperlink().HTML("Blocks ").Attr("href", endpoint+"?path="+PathBlocksBlockManager).Attr("class", "nav-link")
-	// linkMenus := hb.NewHyperlink().HTML("Menus ").Attr("href", endpoint+"?path="+PathMenusMenuManager).Attr("class", "nav-link")
+	linkMenus := hb.NewHyperlink().HTML("Menus ").Attr("href", endpoint+"?path="+PathMenusMenuManager).Attr("class", "nav-link")
 	linkPages := hb.NewHyperlink().HTML("Pages ").Attr("href", endpoint+"?path="+PathPagesPageManager).Attr("class", "nav-link")
 	linkTemplates := hb.NewHyperlink().HTML("Templates ").Attr("href", endpoint+"?path="+PathTemplatesTemplateManager).Attr("class", "nav-link")
-	// linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
-	// linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
-	// linkTranslations := hb.NewHyperlink().HTML("Translations").Attr("href", "#").Attr("class", "nav-link")
+	linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
+	linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
+	linkTranslations := hb.NewHyperlink().HTML("Translations").Attr("href", "#").Attr("class", "nav-link")
 	blocksCount, _ := cms.EntityStore.EntityCount("block")
-	// menusCount, _ := EntityStore.EntityCount("menu")
+	menusCount, _ := cms.EntityStore.EntityCount("menu")
 	pagesCount, _ := cms.EntityStore.EntityCount("page")
 	templatesCount, _ := cms.EntityStore.EntityCount("template")
-	// widgetsCount, _ := cms.EntityStore.EntityCount("widget")
+	widgetsCount, _ := cms.EntityStore.EntityCount("widget")
 
 	ulNav := hb.NewUL().Attr("class", "nav  nav-pills justify-content-center")
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkHome))
@@ -168,31 +158,31 @@ func (cms Cms) cmsHeader(endpoint string) string {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(pagesCount, 10)))))
 	}
 
-	// if configuration.EnableMenus {
-	// 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(menusCount, 10)))))
-	// }
+	if cms.EnableMenus {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(menusCount, 10)))))
+	}
 
 	if cms.EnableBlocks {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(blocksCount, 10)))))
 	}
 
-	// if configuration.EnableWidgets {
-	// 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
-	// }
+	if cms.EnableWidgets {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
+	}
 
-	// if configuration.EnableTranslations == true {
-	// 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTranslations))
-	// }
+	if cms.EnableTranslations == true {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTranslations))
+	}
 
-	// if configuration.EnableSettings == true {
-	// 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
-	// }
-	// // add Translations
+	if cms.EnableSettings == true {
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
+	}
+	// add Translations
 
-	// for _, entity := range configuration.CustomEntityList {
-	// 	linkEntity := hb.NewHyperlink().HTML(entity.TypeLabel).Attr("href", endpoint+"?path=entities/entity-manager&type="+entity.Type).Attr("class", "nav-link")
-	// 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkEntity))
-	// }
+	for _, entity := range cms.CustomEntityList {
+		linkEntity := hb.NewHyperlink().HTML(entity.TypeLabel).Attr("href", endpoint+"?path=entities/entity-manager&type="+entity.Type).Attr("class", "nav-link")
+		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkEntity))
+	}
 
 	divCard := hb.NewDiv().Attr("class", "card card-default mt-3 mb-3")
 	divCardBody := hb.NewDiv().Attr("class", "card-body").Attr("style", "padding: 2px;")
