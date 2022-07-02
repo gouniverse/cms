@@ -9,6 +9,7 @@ require (
 	github.com/gouniverse/entitystore v0.48.0
 	github.com/gouniverse/hb v1.33.0
 	github.com/gouniverse/icons v1.1.0
+	github.com/gouniverse/logstore v1.2.0
 	github.com/gouniverse/sessionstore v0.13.0
 	github.com/gouniverse/settingstore v0.8.0
 	github.com/gouniverse/utils v1.15.0
@@ -23,7 +24,6 @@ require (
 	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/georgysavva/scany v1.0.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gouniverse/logstore v1.2.0 // indirect
 	github.com/gouniverse/uid v1.3.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
