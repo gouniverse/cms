@@ -3,6 +3,7 @@ package cms
 import (
 	"database/sql"
 	"errors"
+
 	//"log"
 	"time"
 
@@ -34,12 +35,13 @@ type Cms struct {
 	cacheEnabled       bool
 	logsEnabled        bool
 	sessionEnabled     bool
-	settingsEnabled     bool
+	settingsEnabled    bool
 	CacheStore         *cachestore.Store
 	EntityStore        *entitystore.Store
 	LogStore           *logstore.Store
 	SessionStore       *sessionstore.Store
 	SettingStore       *settingstore.Store
+	debug              bool
 }
 
 // Cmsption defines an option for the CMS store
@@ -61,11 +63,39 @@ func WithDb(db *sql.DB) CmsOption {
 }
 
 // WithDebug prints the SQL queries
-//func WithDebug(debug bool) StoreOption {
-//	return func(cms *Cms) {
-//		cms.debug = debug
-//	}
-//}
+func WithDebug(debug bool) CmsOption {
+	return func(cms *Cms) {
+		cms.debug = debug
+	}
+}
+
+// WithTemplates enables pages
+func WithTemplates() CmsOption {
+	return func(cms *Cms) {
+		cms.EnableTemplates = true
+	}
+}
+
+// WithBlocks enables blocks
+func WithBlocks() CmsOption {
+	return func(cms *Cms) {
+		cms.EnableBlocks = true
+	}
+}
+
+// WithPages enables pages
+func WithPages() CmsOption {
+	return func(cms *Cms) {
+		cms.EnablePages = true
+	}
+}
+
+// WithWidgets enables blocks
+func WithWidgets() CmsOption {
+	return func(cms *Cms) {
+		cms.EnableWidgets = true
+	}
+}
 
 // WithTableName sets the table name for the cache store
 //func WithTableName(settingsTableName string) StoreOption {

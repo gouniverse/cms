@@ -23,11 +23,16 @@ require (
 	github.com/georgysavva/scany v1.0.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gouniverse/api v1.4.0 // indirect
+	github.com/gouniverse/icons v1.1.0
 	github.com/gouniverse/uid v1.3.0 // indirect
+	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
+	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/pilu/config v0.0.0-20131214182432-3eb99e6c0b9a // indirect
+	github.com/pilu/fresh v0.0.0-20190826141211-0fa698148017 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect

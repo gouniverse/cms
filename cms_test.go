@@ -34,7 +34,7 @@ func TestCmsTestSuite(t *testing.T) {
 
 type CmsTestSuite struct {
 	suite.Suite
-	VariableThatShouldStartAtFive int
+	// VariableThatShouldStartAtFive int
 }
 
 // Make sure that VariableThatShouldStartAtFive is set to five
@@ -44,7 +44,7 @@ func (suite *CmsTestSuite) SetupTest() {
 }
 
 func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
-	cms, err:=NewCms()
+	cms, err := NewCms()
 	assert.NotNil(suite.T(), err, err.Error())
 
 	assert.Contains(suite.T(), err.Error(), "DbInstance", err.Error())
@@ -61,7 +61,7 @@ func (suite *CmsTestSuite) TestCmsInit() {
 	cms, err := NewCms(WithDb(db))
 
 	assert.Nil(suite.T(), err)
-	
+
 	assert.NotNil(suite.T(), cms, "Cms MUST NOT be nil")
 }
 
