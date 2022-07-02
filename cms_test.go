@@ -40,16 +40,8 @@ type CmsTestSuite struct {
 // Make sure that VariableThatShouldStartAtFive is set to five
 // before each test
 func (suite *CmsTestSuite) SetupTest() {
-	// suite.VariableThatShouldStartAtFive = 5
-
 	// Setup()
 }
-
-// All methods that begin with "Test" are run as tests within a
-// suite.
-// func (suite *CmsTestSuite) TestExample() {
-// 	assert.Equal(suite.T(), 5, suite.VariableThatShouldStartAtFive)
-// }
 
 func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
 	cms, err:=NewCms()
@@ -60,7 +52,7 @@ func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
 	assert.Nil(suite.T(), cms, "cms must be nil")
 }
 
-//TestAuth tests the auth page
+//TestCmsInit tests CMS initialization
 func (suite *CmsTestSuite) TestCmsInit() {
 	db, err := mainDb("sqlite", "", "", "test_init.db", "", "")
 	defer db.Close()
@@ -71,14 +63,25 @@ func (suite *CmsTestSuite) TestCmsInit() {
 	assert.Nil(suite.T(), err)
 	
 	assert.NotNil(suite.T(), cms, "Cms MUST NOT be nil")
+}
 
-	// assert.False(suite.T(), configuration.EnableBlocks, "Enable blocks MUST BE false before init")
-	// assert.False(suite.T(), configuration.EnableCache, "Enable cache MUST BE false before init")
-	// assert.False(suite.T(), configuration.EnableLogs, "Enable logs MUST BE false before init")
-	// assert.False(suite.T(), configuration.EnablePages, "Enable pages MUST BE false before init")
-	// assert.False(suite.T(), configuration.EnableSettings, "Enable pages MUST BE false before init")
-	// assert.False(suite.T(), configuration.EnableSession, "Enable pages MUST BE false before init")
-	// assert.False(suite.T(), configuration.EnableTemplates, "Enable templates MUST BE false before init")
+//TestCmsInit tests CMS initialization
+func (suite *CmsTestSuite) TestCmsInitConfigs() {
+	db, err := mainDb("sqlite", "", "", "test_init_configs.db", "", "")
+	defer db.Close()
+	assert.Nil(suite.T(), err, "DB error")
+
+	cms, err := NewCms(WithDb(db))
+
+	assert.Nil(suite.T(), err)
+
+	assert.False(suite.T(), cms.EnableBlocks, "Enable blocks MUST BE false before init")
+	assert.False(suite.T(), cms.EnableCache, "Enable cache MUST BE false before init")
+	assert.False(suite.T(), cms.EnableLogs, "Enable logs MUST BE false before init")
+	assert.False(suite.T(), cms.EnablePages, "Enable pages MUST BE false before init")
+	assert.False(suite.T(), cms.EnableSettings, "Enable pages MUST BE false before init")
+	assert.False(suite.T(), cms.EnableSession, "Enable pages MUST BE false before init")
+	assert.False(suite.T(), cms.EnableTemplates, "Enable templates MUST BE false before init")
 
 	// Init(Config{
 	// 	DbInstance:      db,
@@ -92,13 +95,13 @@ func (suite *CmsTestSuite) TestCmsInit() {
 	// 	// CustomEntityList: entityList(),
 	// })
 
-	// assert.True(suite.T(), configuration.EnableBlocks, "Enable blocks MUST BE true after init")
-	// assert.True(suite.T(), configuration.EnableCache, "Enable cache MUST BE true after init")
-	// assert.True(suite.T(), configuration.EnableLogs, "Enable logs MUST BE true after init")
-	// assert.True(suite.T(), configuration.EnablePages, "Enable pages MUST BE true after init")
-	// assert.True(suite.T(), configuration.EnableSettings, "Enable pages MUST BE true after init")
-	// assert.True(suite.T(), configuration.EnableSession, "Enable pages MUST BE true after init")
-	// assert.True(suite.T(), configuration.EnableTemplates, "Enable templates MUST BE true after init")
+	// assert.True(suite.T(), cms.EnableBlocks, "Enable blocks MUST BE true after init")
+	// assert.True(suite.T(), cms.EnableCache, "Enable cache MUST BE true after init")
+	// assert.True(suite.T(), cms.EnableLogs, "Enable logs MUST BE true after init")
+	// assert.True(suite.T(), cms.EnablePages, "Enable pages MUST BE true after init")
+	// assert.True(suite.T(), cms.EnableSettings, "Enable pages MUST BE true after init")
+	// assert.True(suite.T(), cms.EnableSession, "Enable pages MUST BE true after init")
+	// assert.True(suite.T(), cms.EnableTemplates, "Enable templates MUST BE true after init")
 
 	// pages, err := EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
 	// assert.Nil(suite.T(), err, "Entity list MUST NOT throw errors")
