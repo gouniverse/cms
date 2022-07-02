@@ -2,7 +2,8 @@ package cms
 
 import (
 	"database/sql"
-	"log"
+	"errors"
+	//"log"
 	"time"
 
 	"github.com/gouniverse/cachestore"
@@ -51,13 +52,13 @@ func WithAutoMigrate(automigrateEnabled bool) CmsOption {
 	}
 }
 
-// WithDb sets the database for the setting store
-//func WithDb(db *sql.DB) CmsOption {
-//	return func(cms *Cms) {
-//		cms.DbInstance = db
-//		//cms.DbDriverName = cms.DriverName(cms.db)
-//	}
-//}
+// WithDb sets the database for the CMS
+func WithDb(db *sql.DB) CmsOption {
+	return func(cms *Cms) {
+		cms.DbInstance = db
+		//cms.DbDriverName = cms.DriverName(cms.db)
+	}
+}
 
 // WithDebug prints the SQL queries
 //func WithDebug(debug bool) StoreOption {
@@ -73,7 +74,7 @@ func WithAutoMigrate(automigrateEnabled bool) CmsOption {
 //	}
 //}
 
-// NewStore creates a new setting store
+// NewCms creates a new CMS
 func NewCms(opts ...CmsOption) (*Cms, error) {
 	cms := &Cms{}
 	for _, opt := range opts {
@@ -89,7 +90,7 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 	//}
 
 	if cms.DbInstance == nil && (cms.DbDriver == "" || cms.DbDsn == "") {
-		log.Panicln("Either DbInstance or DnDriver and DbDsn are required field")
+		return nil, errors.New("either DbInstance or DnDriver and DbDsn are required field")
 	}
 
 	if cms.Prefix == "" {

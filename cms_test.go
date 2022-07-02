@@ -51,11 +51,26 @@ func (suite *CmsTestSuite) SetupTest() {
 // 	assert.Equal(suite.T(), 5, suite.VariableThatShouldStartAtFive)
 // }
 
+func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
+	cms, err:=NewCms()
+	assert.NotNil(suite.T(), err, err.Error())
+
+	assert.Contains(suite.T(), err.Error(), "DbInstance", err.Error())
+
+	assert.Nil(suite.T(), cms, "cms must be nil")
+}
+
 //TestAuth tests the auth page
 func (suite *CmsTestSuite) TestCmsInit() {
 	db, err := mainDb("sqlite", "", "", "test_init.db", "", "")
 	defer db.Close()
 	assert.Nil(suite.T(), err, "DB error")
+
+	cms, err := NewCms(WithDb(db))
+
+	assert.Nil(suite.T(), err)
+	
+	assert.NotNil(suite.T(), cms, "Cms MUST NOT be nil")
 
 	// assert.False(suite.T(), configuration.EnableBlocks, "Enable blocks MUST BE false before init")
 	// assert.False(suite.T(), configuration.EnableCache, "Enable cache MUST BE false before init")
