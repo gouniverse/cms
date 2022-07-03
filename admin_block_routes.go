@@ -11,7 +11,7 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
 
 	if name == "" {
@@ -19,7 +19,7 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := EntityStore.EntityCreate("block")
+	block, err := cms.EntityStore.EntityCreate("block")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be created: "+err.Error()))
@@ -37,12 +37,12 @@ func pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathBlocksBlockManager): "Blocks",
 	})
@@ -56,10 +56,10 @@ func pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
 
-	container.AddChild(pageBlocksBlockCreateModal())
-	container.AddChild(pageBlocksBlockTrashModal())
+	container.AddChild(cms.pageBlocksBlockCreateModal())
+	container.AddChild(cms.pageBlocksBlockTrashModal())
 
-	blocks, err := EntityStore.EntityList("block", 0, 200, "", "id", "asc")
+	blocks, err := cms.EntityStore.EntityList("block", 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Blocks failed to be listed"))
@@ -206,7 +206,7 @@ Vue.createApp(BlockManager).mount('#block-manager')
 	w.Write([]byte(webpage.ToHTML()))
 }
 
-func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
@@ -216,7 +216,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := EntityStore.EntityFindByID(blockID)
+	block, err := cms.EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be retrieved: "+err.Error()))
@@ -228,8 +228,8 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathBlocksBlockManager):                         "Blocks",
 		(endpoint + "?path=" + PathBlocksBlockUpdate + "&block_id=" + blockID): "Edit block",
@@ -282,7 +282,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		api.Respond(w, r, api.Error("Name failed to be retrieved: "+err.Error()))
 		return
 	}
-	statusAttribute, err := EntityStore.AttributeFind(block.ID, "status")
+	statusAttribute, err := cms.EntityStore.AttributeFind(block.ID, "status")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be pulled"))
@@ -293,7 +293,7 @@ func pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := EntityStore.AttributeFind(block.ID, "content")
+	contentAttribute, err := cms.EntityStore.AttributeFind(block.ID, "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be fetched"))
@@ -416,7 +416,7 @@ Vue.createApp(BlockUpdate).mount('#block-update')
 	w.Write([]byte(webtemplate.ToHTML()))
 }
 
-func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	blockID := strings.Trim(utils.Req(r, "block_id", ""), " ")
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
@@ -428,7 +428,7 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := EntityStore.EntityFindByID(blockID)
+	block, err := cms.EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block not found: "+err.Error()))
@@ -464,7 +464,7 @@ func pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 	blockID := strings.Trim(utils.Req(r, "block_id", ""), " ")
 
 	if blockID == "" {
@@ -472,7 +472,7 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := EntityStore.EntityFindByID(blockID)
+	block, err := cms.EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Database error: "+err.Error()))
@@ -484,7 +484,7 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := EntityStore.EntityDelete(blockID)
+	isOk, err := cms.EntityStore.EntityDelete(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be deleted: "+err.Error()))
@@ -500,7 +500,7 @@ func pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 	blockID := strings.Trim(utils.Req(r, "block_id", ""), " ")
 
 	if blockID == "" {
@@ -508,7 +508,7 @@ func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := EntityStore.EntityFindByID(blockID)
+	block, err := cms.EntityStore.EntityFindByID(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Error: "+err.Error()))
@@ -520,7 +520,7 @@ func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := EntityStore.EntityTrash(blockID)
+	isOk, err := cms.EntityStore.EntityTrash(blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be trashed"))
@@ -536,7 +536,7 @@ func pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageBlocksBlockTrashModal() *hb.Tag {
+func (cms Cms) pageBlocksBlockTrashModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalBlockTrash").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
 	modalContent := hb.NewDiv().Attr("class", "modal-content")
@@ -552,7 +552,7 @@ func pageBlocksBlockTrashModal() *hb.Tag {
 	return modal
 }
 
-func pageBlocksBlockCreateModal() *hb.Tag {
+func (cms Cms) pageBlocksBlockCreateModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalBlockCreate").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
 	modalContent := hb.NewDiv().Attr("class", "modal-content")

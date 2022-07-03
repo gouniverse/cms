@@ -10,7 +10,7 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-func pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
 	entityType := utils.Req(r, "type", "")
 
 	if entityType == "" {
@@ -25,7 +25,7 @@ func pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity, err := EntityStore.EntityCreate(entityType)
+	entity, err := cms.EntityStore.EntityCreate(entityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity failed to be created"))
@@ -43,7 +43,7 @@ func pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
@@ -53,8 +53,8 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathWidgetsWidgetManager): "Custom Entities",
 	})
@@ -80,10 +80,10 @@ func pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
 	// modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	// modalDialog.AddChild(modalContent)
 	// modal.AddChild(modalDialog)
-	container.AddChild(pageEntitiesEntityCreateModal())
-	container.AddChild(pageEntitiesEntityTrashModal())
+	container.AddChild(cms.pageEntitiesEntityCreateModal())
+	container.AddChild(cms.pageEntitiesEntityTrashModal())
 
-	entities, err := EntityStore.EntityList(entityType, 0, 200, "", "id", "asc")
+	entities, err := cms.EntityStore.EntityList(entityType, 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entities failed to be retrieved"))
@@ -186,7 +186,7 @@ Vue.createApp(EntityManager).mount('#entity-manager')
 	w.Write([]byte(webpage.ToHTML()))
 }
 
-func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
@@ -196,17 +196,17 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity, _ := EntityStore.EntityFindByID(entityID)
+	entity, _ := cms.EntityStore.EntityFindByID(entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))
 		return
 	}
 
-	entityAttributeList := customEntityAttributeList(entity.Type)
+	entityAttributeList := cms.customEntityAttributeList(entity.Type)
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathEntitiesEntityManager + "&type=" + entity.Type):  "Custom Entities",
 		(endpoint + "?path=" + PathEntitiesEntityUpdate + "&entity_id=" + entityID): "Edit Entity",
@@ -255,7 +255,7 @@ func pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}
 		if attr.BelongsToType != "" {
-			entities, _ := EntityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
+			entities, _ := cms.EntityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
 			formGroupAttrInput = hb.NewSelect().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
 			for _, ent := range entities {
 				entName, _ := ent.GetString("name", "")
@@ -343,7 +343,7 @@ Vue.createApp(EntityUpdate).mount('#entity-update')
 	w.Write([]byte(webpage.ToHTML()))
 }
 
-func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	entityID := strings.Trim(utils.Req(r, "entity_id", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
@@ -354,7 +354,7 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entity, err := EntityStore.EntityFindByID(entityID)
+	entity, err := cms.EntityStore.EntityFindByID(entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))
@@ -371,7 +371,7 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entityAttributeList := customEntityAttributeList(entity.Type)
+	entityAttributeList := cms.customEntityAttributeList(entity.Type)
 	for _, attr := range entityAttributeList {
 		attrValue := strings.Trim(utils.Req(r, attr.Name, ""), " ")
 		// attrLabel := attr.Label
@@ -396,8 +396,8 @@ func pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func customEntityAttributeList(entityType string) []CustomAttributeStructure {
-	for _, entity := range configuration.CustomEntityList {
+func (cms Cms) customEntityAttributeList(entityType string) []CustomAttributeStructure {
+	for _, entity := range cms.customEntityList {
 		if entity.Type == entityType {
 			if entity.AttributeList == nil {
 				return []CustomAttributeStructure{}
@@ -408,7 +408,7 @@ func customEntityAttributeList(entityType string) []CustomAttributeStructure {
 	return []CustomAttributeStructure{}
 }
 
-func pageEntitiesEntityTrashModal() *hb.Tag {
+func (cms Cms) pageEntitiesEntityTrashModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalEntityTrash").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
 	modalContent := hb.NewDiv().Attr("class", "modal-content")
@@ -424,7 +424,7 @@ func pageEntitiesEntityTrashModal() *hb.Tag {
 	return modal
 }
 
-func pageEntitiesEntityCreateModal() *hb.Tag {
+func (cms Cms) pageEntitiesEntityCreateModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalEntityCreate").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
 	modalContent := hb.NewDiv().Attr("class", "modal-content")

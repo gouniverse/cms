@@ -11,7 +11,7 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-func pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Request) {
 	key := strings.Trim(utils.Req(r, "key", ""), " ")
 
 	if key == "" {
@@ -19,7 +19,7 @@ func pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := SettingStore.Set(key, "")
+	isOk, err := cms.SettingStore.Set(key, "")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Setting failed to be created: "+err.Error()))
@@ -35,12 +35,12 @@ func pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathSettingsSettingManager): "Settings",
 	})
@@ -54,10 +54,10 @@ func pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrums))
 
-	container.AddChild(pageSettingsSettingDeleteModal())
-	container.AddChild(pageSettingsSettingCreateModal())
+	container.AddChild(cms.pageSettingsSettingDeleteModal())
+	container.AddChild(cms.pageSettingsSettingCreateModal())
 
-	settingKeys, err := SettingStore.Keys()
+	settingKeys, err := cms.SettingStore.Keys()
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Setting keys failed to be retrieved "+err.Error()))
@@ -169,7 +169,7 @@ Vue.createApp(SettingManager).mount('#setting-manager')
 	w.Write([]byte(webpage.ToHTML()))
 }
 
-func pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
@@ -179,15 +179,15 @@ func pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	settingValue := SettingStore.Get(settingKey, "%%NOTFOUND%%")
+	settingValue := cms.SettingStore.Get(settingKey, "%%NOTFOUND%%")
 
 	if settingValue == "%%NOTFOUND%%" {
 		api.Respond(w, r, api.Error("Setting NOT FOUND with key "+settingKey))
 		return
 	}
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathSettingsSettingManager):                               "Settings",
 		(endpoint + "?path=" + PathSettingsSettingUpdate + "&setting_key=" + settingKey): "Edit setting",
@@ -313,7 +313,7 @@ Vue.createApp(SettingUpdate).mount('#setting-update')
 	w.Write([]byte(webtemplate.ToHTML()))
 }
 
-func pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	settingKey := utils.Req(r, "setting_key", "")
 	settingValue := utils.Req(r, "setting_value", "%%NOTSENT%%")
 	if settingKey == "" {
@@ -325,7 +325,7 @@ func pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := SettingStore.Set(settingKey, settingValue)
+	isOk, err := cms.SettingStore.Set(settingKey, settingValue)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Settings failed to be updated "+err.Error()))
@@ -341,7 +341,7 @@ func pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
 	settingKey := utils.Req(r, "setting_key", "")
 
 	if settingKey == "" {
@@ -349,7 +349,7 @@ func pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SettingStore.Remove(settingKey)
+	cms.SettingStore.Remove(settingKey)
 
 	// if isOk == false {
 	// 	api.Respond(w, r, api.Error("Setting failed to be deleted"))
@@ -360,7 +360,7 @@ func pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageSettingsSettingDeleteModal() *hb.Tag {
+func (cms Cms) pageSettingsSettingDeleteModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalSettingDelete").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
 	modalContent := hb.NewDiv().Attr("class", "modal-content")
@@ -377,7 +377,7 @@ func pageSettingsSettingDeleteModal() *hb.Tag {
 	return modal
 }
 
-func pageSettingsSettingCreateModal() *hb.Tag {
+func (cms Cms) pageSettingsSettingCreateModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalSettingCreate").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
 	modalContent := hb.NewDiv().Attr("class", "modal-content")

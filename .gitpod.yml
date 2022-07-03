@@ -3,7 +3,13 @@
 # and commit this file to your remote git repository to share the goodness with others.
 
 tasks:
-  - init: go get && go build ./... && go test ./...
-    command: go run
+  - name: Install Taskfile
+    command: go install github.com/go-task/task/v3/cmd/task@latest
 
+  - name: Install Fresh
+    command: go install github.com/pilu/fresh
+
+  - name: Install Dependencies and Run
+    init: go get && go build ./... && go test ./...
+    command: go run
 

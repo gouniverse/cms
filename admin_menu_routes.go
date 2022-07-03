@@ -14,7 +14,7 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-func pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
 
 	if name == "" {
@@ -22,7 +22,7 @@ func pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, err := EntityStore.EntityCreate("menu")
+	menu, err := cms.EntityStore.EntityCreate("menu")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu failed to be created "+err.Error()))
@@ -40,12 +40,12 @@ func pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	//log.Println(endpoint)
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager): "Menus",
 	})
@@ -73,7 +73,7 @@ func pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	menus, err := EntityStore.EntityList("menu", 0, 200, "", "id", "asc")
+	menus, err := cms.EntityStore.EntityList("menu", 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
@@ -162,7 +162,7 @@ Vue.createApp(MenuManager).mount('#menu-manager')
 	w.Write([]byte(webmenu.ToHTML()))
 }
 
-func pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
@@ -172,15 +172,15 @@ func pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, _ := EntityStore.EntityFindByID(menuID)
+	menu, _ := cms.EntityStore.EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
 		return
 	}
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
 		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Edit menu",
@@ -279,7 +279,7 @@ Vue.createApp(MenuUpdate).mount('#menu-update')
 	w.Write([]byte(webmenu.ToHTML()))
 }
 
-func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	menuID := strings.Trim(utils.Req(r, "menu_id", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
@@ -290,7 +290,7 @@ func pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, _ := EntityStore.EntityFindByID(menuID)
+	menu, _ := cms.EntityStore.EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -376,8 +376,8 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 	return out
 }
 
-func buildTree(menuID string) []map[string]interface{} {
-	menuitems, err := EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
+func (cms Cms) buildTree(menuID string) []map[string]interface{} {
+	menuitems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
 
 	if err != nil {
 		log.Panicln("Menu items failed to be retrieved " + err.Error())
@@ -410,7 +410,7 @@ func buildTree(menuID string) []map[string]interface{} {
 	return tree
 }
 
-func pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
 	menuID := strings.Trim(utils.Req(r, "menu_id", ""), " ")
 
 	if menuID == "" {
@@ -418,14 +418,14 @@ func pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, _ := EntityStore.EntityFindByID(menuID)
+	menu, _ := cms.EntityStore.EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
 		return
 	}
 
-	tree := buildTree(menuID)
+	tree := cms.buildTree(menuID)
 
 	api.Respond(w, r, api.SuccessWithData("Menu items found successfully", map[string]interface{}{
 		"menu_id":   menu.ID,
@@ -434,7 +434,7 @@ func pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint+"")
 
@@ -444,7 +444,7 @@ func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, _ := EntityStore.EntityFindByID(menuID)
+	menu, _ := cms.EntityStore.EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -453,8 +453,8 @@ func pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 
 	menuName, _ := menu.GetString("name", "")
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
 		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Menu",
@@ -734,7 +734,7 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 	return flatTree
 }
 
-func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	menuID := strings.Trim(utils.Req(r, "menu_id", ""), " ")
 	data := strings.Trim(utils.Req(r, "data", ""), " ")
 
@@ -748,7 +748,7 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, _ := EntityStore.EntityFindByID(menuID)
+	menu, _ := cms.EntityStore.EntityFindByID(menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -791,9 +791,9 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 			sequence = node["sequence"].(string)
 		}
 
-		menuitem, _ := EntityStore.EntityFindByID(id)
+		menuitem, _ := cms.EntityStore.EntityFindByID(id)
 		if menuitem == nil {
-			menuitem, err = EntityStore.EntityCreate("menuitem")
+			menuitem, err = cms.EntityStore.EntityCreate("menuitem")
 			if err != nil {
 				api.Respond(w, r, api.Error("Menu item failed to be created "+err.Error()))
 				return
@@ -820,7 +820,7 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		newIDs = append(newIDs, menuitem.ID)
 	}
 
-	allMenuItems, err := EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
+	allMenuItems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu items failed to be fetched: "+err.Error()))
@@ -831,7 +831,7 @@ func pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		//allIDs = append(allIDs, menuitem.ID)
 		exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
 		if exists == false {
-			EntityStore.EntityDelete(menuitem.ID)
+			cms.EntityStore.EntityDelete(menuitem.ID)
 		}
 	}
 

@@ -10,7 +10,7 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
 
 	if name == "" {
@@ -18,7 +18,7 @@ func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, err := EntityStore.EntityCreate("widget")
+	widget, err := cms.EntityStore.EntityCreate("widget")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widget failed to be created: "+err.Error()))
@@ -36,12 +36,12 @@ func pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathWidgetsWidgetManager): "Widgets",
 	})
@@ -69,7 +69,7 @@ func pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	widgets, err := EntityStore.EntityList("widget", 0, 200, "", "id", "asc")
+	widgets, err := cms.EntityStore.EntityList("widget", 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widgets failed to be fetched: "+err.Error()))
@@ -148,7 +148,7 @@ Vue.createApp(WidgetManager).mount('#widget-manager')
 	w.Write([]byte(webwidget.ToHTML()))
 }
 
-func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	log.Println(endpoint)
 
@@ -158,15 +158,15 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, _ := EntityStore.EntityFindByID(widgetID)
+	widget, _ := cms.EntityStore.EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))
 		return
 	}
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathWidgetsWidgetManager):                           "Widgets",
 		(endpoint + "?path=" + PathWidgetsWidgetUpdate + "&widget_id=" + widgetID): "Edit widget",
@@ -214,7 +214,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	name, _ := widget.GetString("name", "")
-	statusAttribute, err := EntityStore.AttributeFind(widget.ID, "status")
+	statusAttribute, err := cms.EntityStore.AttributeFind(widget.ID, "status")
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be found: "+err.Error()))
 		return
@@ -224,7 +224,7 @@ func pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := EntityStore.AttributeFind(widget.ID, "content")
+	contentAttribute, err := cms.EntityStore.AttributeFind(widget.ID, "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be found: "+err.Error()))
@@ -299,7 +299,7 @@ Vue.createApp(WidgetUpdate).mount('#widget-update')
 	w.Write([]byte(webwidget.ToHTML()))
 }
 
-func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	widgetID := strings.Trim(utils.Req(r, "widget_id", ""), " ")
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
 	status := strings.Trim(utils.Req(r, "status", ""), " ")
@@ -311,7 +311,7 @@ func pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, _ := EntityStore.EntityFindByID(widgetID)
+	widget, _ := cms.EntityStore.EntityFindByID(widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))

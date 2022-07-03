@@ -10,7 +10,7 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
 
 	if name == "" {
@@ -18,7 +18,7 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, err := EntityStore.EntityCreate("template")
+	template, err := cms.EntityStore.EntityCreate("template")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be created: "+err.Error()))
@@ -33,24 +33,24 @@ func pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
 	template.SetString("name", name)
 	template.SetString("status", "inactive")
 	template.Status = "inactive"
-	EntityStore.EntityUpdate(*template)
+	cms.EntityStore.EntityUpdate(*template)
 
 	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
 }
 
-func pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	templates, err := EntityStore.EntityList("template", 0, 200, "", "id", "asc")
+	templates, err := cms.EntityStore.EntityList("template", 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Templates failed to be fetched: "+err.Error()))
 		return
 	}
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathTemplatesTemplateManager): "Templates",
 	})
@@ -185,7 +185,7 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 }
 
 // pageTemplatesTemplateUpdate shows the template edit page
-func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
@@ -195,15 +195,15 @@ func pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := EntityStore.EntityFindByID(templateID)
+	template, _ := cms.EntityStore.EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
 		return
 	}
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathTemplatesTemplateManager):                               "Templates",
 		(endpoint + "?path=" + PathTemplatesTemplateUpdate + "&template_id=" + templateID): "Edit template",
@@ -369,7 +369,7 @@ Vue.createApp(TemplateUpdate).mount('#template-update')
 }
 
 // pageTemplatesTemplateTrashAjax - moves the template to the trash
-func pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
 	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
 
 	if templateID == "" {
@@ -377,14 +377,14 @@ func pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := EntityStore.EntityFindByID(templateID)
+	template, _ := cms.EntityStore.EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
 		return
 	}
 
-	isOk, err := EntityStore.EntityTrash(templateID)
+	isOk, err := cms.EntityStore.EntityTrash(templateID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be moved to trash "+err.Error()))
@@ -401,7 +401,7 @@ func pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
 }
 
 // pageTemplatesTemplateUpdateAjax - saves the template via Ajax
-func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
@@ -413,7 +413,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := EntityStore.EntityFindByID(templateID)
+	template, _ := cms.EntityStore.EntityFindByID(templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -433,13 +433,13 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	// template.SetString("content", content)
 	// template.SetString("name", name)
 	// template.SetString("handle", handle)
-	_, err := EntityStore.AttributeSetString(template.ID, "content", content)
+	_, err := cms.EntityStore.AttributeSetString(template.ID, "content", content)
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be updated: "+err.Error()))
 		return
 	}
 
-	_, err = EntityStore.AttributeSetString(template.ID, "name", name)
+	_, err = cms.EntityStore.AttributeSetString(template.ID, "name", name)
 	if err != nil {
 		api.Respond(w, r, api.Error("Name failed to be updated: "+err.Error()))
 		return
@@ -447,7 +447,7 @@ func pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	template.Status = status
 	template.Handle = handle
-	isOk, err := EntityStore.EntityUpdate(*template)
+	isOk, err := cms.EntityStore.EntityUpdate(*template)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be updated: "+err.Error()))

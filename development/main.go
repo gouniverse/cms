@@ -34,20 +34,34 @@ func main() {
 	}
 
 	log.Println("3. Initializing CMS...")
-	cms.Init(cms.Config{
-		DbInstance:       db,
-		EnableTemplates:  true,
-		EnablePages:      true,
-		EnableBlocks:     true,
-		EnableSettings:   true,
-		CustomEntityList: entityList(),
+	myCms, err := cms.NewCms(cms.Config{
+		DbInstance:          db,
+		BlocksEnable:        true,
+		CacheAutomigrate:    true,
+		CacheEnable:         true,
+		EntitiesAutomigrate: true,
+		LogsAutomigrate:     true,
+		LogsEnable:          true,
+		MenusEnable:         true,
+		PagesEnable:         true,
+		SettingsAutomigate:  true,
+		SettingsEnable:      true,
+		SessionAutomigrate:  true,
+		SessionEnable:       true,
+		TemplatesEnable:     true,
+		Prefix:              "cms2",
+		CustomEntityList:    entityList(),
 	})
+
+	if err != nil {
+		log.Panicln(err.Error())
+	}
 
 	log.Println("4. Starting server on http://" + utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT") + " ...")
 	log.Println("URL: http://" + utils.Env("APP_URL") + " ...")
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", cms.Router)
-	mux.HandleFunc("/cms", cms.Router)
+	mux.HandleFunc("/", myCms.Router)
+	mux.HandleFunc("/cms", myCms.Router)
 	mux.HandleFunc("/embeddedcms", pageDashboardWithEmbeddedCms)
 
 	srv := &http.Server{

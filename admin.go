@@ -3,7 +3,6 @@ package cms
 import (
 	"context"
 	"net/http"
-
 	"strconv"
 
 	"github.com/gouniverse/hb"
@@ -11,7 +10,7 @@ import (
 )
 
 // Router shows the admin page
-func Router(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
 	path := utils.Req(r, "path", "home")
 
 	if path == "" {
@@ -20,70 +19,70 @@ func Router(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.WithValue(r.Context(), keyEndpoint, r.URL.Path)
 
-	routeFunc := getRoute(path)
+	routeFunc := cms.getRoute(path)
 	routeFunc(w, r.WithContext(ctx))
 	return
 }
 
-func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
-		PathHome: pageHome,
-		// START: Blocks
-		PathBlocksBlockCreateAjax: pageBlocksBlockCreateAjax,
-		//PathBlocksBlockDeleteAjax: pageBlocksBlockDeleteAjax,
-		PathBlocksBlockManager:    pageBlocksBlockManager,
-		PathBlocksBlockUpdate:     pageBlocksBlockUpdate,
-		PathBlocksBlockTrashAjax:  pageBlocksBlockTrashAjax,
-		PathBlocksBlockUpdateAjax: pageBlocksBlockUpdateAjax,
-		// END: Blocks
+		PathHome: cms.pageHome,
+		// // START: Blocks
+		PathBlocksBlockCreateAjax: cms.pageBlocksBlockCreateAjax,
+		PathBlocksBlockDeleteAjax: cms.pageBlocksBlockDeleteAjax,
+		PathBlocksBlockManager:    cms.pageBlocksBlockManager,
+		PathBlocksBlockUpdate:     cms.pageBlocksBlockUpdate,
+		PathBlocksBlockTrashAjax:  cms.pageBlocksBlockTrashAjax,
+		PathBlocksBlockUpdateAjax: cms.pageBlocksBlockUpdateAjax,
+		// // END: Blocks
 
-		// START: Menus
-		PathMenusMenuCreateAjax:      pageMenusMenuCreateAjax,
-		PathMenusMenuManager:         pageMenusMenuManager,
-		PathMenusMenuUpdate:          pageMenusMenuUpdate,
-		PathMenusMenuItemsFetchAjax:  pageMenusMenuItemsFetchAjax,
-		PathMenusMenuItemsUpdate:     pageMenusMenuItemsUpdate,
-		PathMenusMenuItemsUpdateAjax: pageMenusMenuItemsUpdateAjax,
-		PathMenusMenuUpdateAjax:      pageMenusMenuUpdateAjax,
-		// END: Menus
+		// // START: Menus
+		PathMenusMenuCreateAjax:      cms.pageMenusMenuCreateAjax,
+		PathMenusMenuManager:         cms.pageMenusMenuManager,
+		PathMenusMenuUpdate:          cms.pageMenusMenuUpdate,
+		PathMenusMenuItemsFetchAjax:  cms.pageMenusMenuItemsFetchAjax,
+		PathMenusMenuItemsUpdate:     cms.pageMenusMenuItemsUpdate,
+		PathMenusMenuItemsUpdateAjax: cms.pageMenusMenuItemsUpdateAjax,
+		PathMenusMenuUpdateAjax:      cms.pageMenusMenuUpdateAjax,
+		// // END: Menus
 
-		// START: Pages
-		PathPagesPageCreateAjax: pagePagesPageCreateAjax,
-		PathPagesPageManager:    pagePagesPageManager,
-		PathPagesPageTrashAjax:  pagePagesPageTrashAjax,
-		PathPagesPageUpdate:     pagePagesPageUpdate,
-		PathPagesPageUpdateAjax: pagePagesPageUpdateAjax,
-		// END: Pages
+		// // START: Pages
+		PathPagesPageCreateAjax: cms.pagePagesPageCreateAjax,
+		PathPagesPageManager:    cms.pagePagesPageManager,
+		PathPagesPageTrashAjax:  cms.pagePagesPageTrashAjax,
+		PathPagesPageUpdate:     cms.pagePagesPageUpdate,
+		PathPagesPageUpdateAjax: cms.pagePagesPageUpdateAjax,
+		// // END: Pages
 
-		// START: Templates
-		PathTemplatesTemplateCreateAjax: pageTemplatesTemplateCreateAjax,
-		PathTemplatesTemplateManager:    pageTemplatesTemplateManager,
-		PathTemplatesTemplateTrashAjax:  pageTemplatesTemplateTrashAjax,
-		PathTemplatesTemplateUpdate:     pageTemplatesTemplateUpdate,
-		PathTemplatesTemplateUpdateAjax: pageTemplatesTemplateUpdateAjax,
-		// END: Templates
+		// // START: Templates
+		PathTemplatesTemplateCreateAjax: cms.pageTemplatesTemplateCreateAjax,
+		PathTemplatesTemplateManager:    cms.pageTemplatesTemplateManager,
+		PathTemplatesTemplateTrashAjax:  cms.pageTemplatesTemplateTrashAjax,
+		PathTemplatesTemplateUpdate:     cms.pageTemplatesTemplateUpdate,
+		PathTemplatesTemplateUpdateAjax: cms.pageTemplatesTemplateUpdateAjax,
+		// // END: Templates
 
-		// START: Widgets
-		PathWidgetsWidgetCreateAjax: pageWidgetsWidgetCreateAjax,
-		PathWidgetsWidgetManager:    pageWidgetsWidgetManager,
-		PathWidgetsWidgetUpdate:     pageWidgetsWidgetUpdate,
-		PathWidgetsWidgetUpdateAjax: pageWidgetsWidgetUpdateAjax,
-		// END: Widgets
+		// // START: Widgets
+		PathWidgetsWidgetCreateAjax: cms.pageWidgetsWidgetCreateAjax,
+		PathWidgetsWidgetManager:    cms.pageWidgetsWidgetManager,
+		PathWidgetsWidgetUpdate:     cms.pageWidgetsWidgetUpdate,
+		PathWidgetsWidgetUpdateAjax: cms.pageWidgetsWidgetUpdateAjax,
+		// // END: Widgets
 
-		// START: Settings
-		PathSettingsSettingCreateAjax: pageSettingsSettingCreateAjax,
-		PathSettingsSettingDeleteAjax: pageSettingsSettingDeleteAjax,
-		PathSettingsSettingManager:    pageSettingsSettingManager,
-		PathSettingsSettingUpdate:     pageSettingsSettingUpdate,
-		PathSettingsSettingUpdateAjax: pageSettingsSettingUpdateAjax,
-		// END: Settings
+		// // START: Settings
+		PathSettingsSettingCreateAjax: cms.pageSettingsSettingCreateAjax,
+		PathSettingsSettingDeleteAjax: cms.pageSettingsSettingDeleteAjax,
+		PathSettingsSettingManager:    cms.pageSettingsSettingManager,
+		PathSettingsSettingUpdate:     cms.pageSettingsSettingUpdate,
+		PathSettingsSettingUpdateAjax: cms.pageSettingsSettingUpdateAjax,
+		// // END: Settings
 
-		// START: Custom Entities
-		PathEntitiesEntityCreateAjax: pageEntitiesEntityCreateAjax,
-		PathEntitiesEntityManager:    pageEntitiesEntityManager,
-		PathEntitiesEntityUpdate:     pageEntitiesEntityUpdate,
-		PathEntitiesEntityUpdateAjax: pageEntitiesEntityUpdateAjax,
-		// END: Custom Entities
+		// // START: Custom Entities
+		PathEntitiesEntityCreateAjax: cms.pageEntitiesEntityCreateAjax,
+		PathEntitiesEntityManager:    cms.pageEntitiesEntityManager,
+		PathEntitiesEntityUpdate:     cms.pageEntitiesEntityUpdate,
+		PathEntitiesEntityUpdateAjax: cms.pageEntitiesEntityUpdateAjax,
+		// // END: Custom Entities
 
 	}
 	// log.Println(route)
@@ -94,12 +93,12 @@ func getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 	return routes[PathHome]
 }
 
-func pageHome(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 	})
 
@@ -118,7 +117,7 @@ func pageHome(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(webpage.ToHTML()))
 }
 
-func cmsBreadcrumbs(breadcrumbs map[string]string) string {
+func (cms Cms) cmsBreadcrumbs(breadcrumbs map[string]string) string {
 	nav := hb.NewNav().Attr("aria-label", "breadcrumb")
 	ol := hb.NewOL().Attr("class", "breadcrumb")
 	for k, v := range breadcrumbs {
@@ -133,7 +132,7 @@ func cmsBreadcrumbs(breadcrumbs map[string]string) string {
 	return nav.ToHTML()
 }
 
-func cmsHeader(endpoint string) string {
+func (cms Cms) cmsHeader(endpoint string) string {
 	linkHome := hb.NewHyperlink().HTML("Dashboard").Attr("href", endpoint+"").Attr("class", "nav-link")
 	linkBlocks := hb.NewHyperlink().HTML("Blocks ").Attr("href", endpoint+"?path="+PathBlocksBlockManager).Attr("class", "nav-link")
 	linkMenus := hb.NewHyperlink().HTML("Menus ").Attr("href", endpoint+"?path="+PathMenusMenuManager).Attr("class", "nav-link")
@@ -142,45 +141,45 @@ func cmsHeader(endpoint string) string {
 	linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
 	linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
 	linkTranslations := hb.NewHyperlink().HTML("Translations").Attr("href", "#").Attr("class", "nav-link")
-	blocksCount, _ := EntityStore.EntityCount("block")
-	menusCount, _ := EntityStore.EntityCount("menu")
-	pagesCount, _ := EntityStore.EntityCount("page")
-	templatesCount, _ := EntityStore.EntityCount("template")
-	widgetsCount, _ := EntityStore.EntityCount("widget")
+	blocksCount, _ := cms.EntityStore.EntityCount("block")
+	menusCount, _ := cms.EntityStore.EntityCount("menu")
+	pagesCount, _ := cms.EntityStore.EntityCount("page")
+	templatesCount, _ := cms.EntityStore.EntityCount("template")
+	widgetsCount, _ := cms.EntityStore.EntityCount("widget")
 
 	ulNav := hb.NewUL().Attr("class", "nav  nav-pills justify-content-center")
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkHome))
 
-	if configuration.EnableTemplates {
+	if cms.templatesEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(templatesCount, 10)))))
 	}
 
-	if configuration.EnablePages {
+	if cms.pagesEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(pagesCount, 10)))))
 	}
 
-	if configuration.EnableMenus {
+	if cms.menusEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(menusCount, 10)))))
 	}
 
-	if configuration.EnableBlocks {
+	if cms.blocksEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(blocksCount, 10)))))
 	}
 
-	if configuration.EnableWidgets {
+	if cms.widgetsEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
 	}
 
-	if configuration.EnableTranslations == true {
+	if cms.translationsEnabled == true {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTranslations))
 	}
 
-	if configuration.EnableSettings == true {
+	if cms.settingsEnabled == true {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
 	}
 	// add Translations
 
-	for _, entity := range configuration.CustomEntityList {
+	for _, entity := range cms.customEntityList {
 		linkEntity := hb.NewHyperlink().HTML(entity.TypeLabel).Attr("href", endpoint+"?path=entities/entity-manager&type="+entity.Type).Attr("class", "nav-link")
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkEntity))
 	}

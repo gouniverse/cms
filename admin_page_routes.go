@@ -10,7 +10,7 @@ import (
 	"github.com/gouniverse/utils"
 )
 
-func pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 	name := strings.Trim(utils.Req(r, "name", ""), " ")
 
 	if name == "" {
@@ -18,7 +18,7 @@ func pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, err := EntityStore.EntityCreate("page")
+	page, err := cms.EntityStore.EntityCreate("page")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page failed to be created: "+err.Error()))
@@ -41,7 +41,7 @@ func pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	pageID := strings.Trim(utils.Req(r, "page_id", ""), " ")
 	alias := strings.Trim(utils.Req(r, "alias", ""), " ")
 	canonicalURL := strings.Trim(utils.Req(r, "canonical_url", ""), " ")
@@ -60,7 +60,7 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, _ := EntityStore.EntityFindByID(pageID)
+	page, _ := cms.EntityStore.EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
@@ -113,7 +113,7 @@ func pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
@@ -123,15 +123,15 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, _ := EntityStore.EntityFindByID(pageID)
+	page, _ := cms.EntityStore.EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
 		return
 	}
 
-	header := cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathPagesPageManager):                       "Pages",
 		(endpoint + "?path=" + PathPagesPageUpdate + "&page_id=" + pageID): "Edit page",
@@ -209,7 +209,7 @@ func pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupMetaRobots.AddChild(formGroupMetaRobotsLabel).AddChild(formGroupMetaRobotsInput)
 
 	// Template
-	templateList, err := EntityStore.EntityList("template", 0, 100, "", "id", "asc")
+	templateList, err := cms.EntityStore.EntityList("template", 0, 100, "", "id", "asc")
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
 		return
@@ -409,19 +409,19 @@ Vue.createApp(PageUpdate).mount('#page-update')
 	w.Write([]byte(webpage.ToHTML()))
 }
 
-func pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	pages, err := EntityStore.EntityList("page", 0, 200, "", "id", "asc")
+	pages, err := cms.EntityStore.EntityList("page", 0, 200, "", "id", "asc")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page list failed to be retrieved "+err.Error()))
 		return
 	}
 
-	header := cmsHeader(endpoint)
-	breadcrums := cmsBreadcrumbs(map[string]string{
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathPagesPageManager): "Pages",
 	})
@@ -561,7 +561,7 @@ Vue.createApp(PageManager).mount('#page-manager')
 }
 
 // pagePagesPageTrashAjax - moves the template to the trash
-func pagePagesPageTrashAjax(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) pagePagesPageTrashAjax(w http.ResponseWriter, r *http.Request) {
 	pageID := strings.Trim(utils.Req(r, "page_id", ""), " ")
 
 	if pageID == "" {
@@ -569,14 +569,14 @@ func pagePagesPageTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, _ := EntityStore.EntityFindByID(pageID)
+	page, _ := cms.EntityStore.EntityFindByID(pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
 		return
 	}
 
-	isOk, err := EntityStore.EntityTrash(pageID)
+	isOk, err := cms.EntityStore.EntityTrash(pageID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity failed to be trashed "+err.Error()))
