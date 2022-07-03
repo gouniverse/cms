@@ -13,7 +13,7 @@ All of the existing GoLang CMSs require a full installations from scratch. Its i
 This package allows to add a content management system as a module dependency, which can be easily updated or removed as required to ANY Go app. It is fully self contained, and does not require any additional packages or dependencies. Removal is also a breeze just remove the module.
 
 ## Features
-
+- Entity types
 - Templates (CMS)
 - Pages (CMS)
 - Blocks (CMS)
@@ -24,9 +24,11 @@ This package allows to add a content management system as a module dependency, w
 - Log Store
 - Session Store
 
-# Simple Initialization
+# Simplest Initialization
 
-In its simplest initialization the CMS package accepts a standard DB instance
+In its simplest initialization the CMS package accepts a standard DB instance.
+
+However with this simplest initialization, the CMS basically has no capabilities (i.e no database stores can be accessed, no migrations are run, etc).
 
 ```
 db, err := mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
@@ -41,28 +43,43 @@ if db == nil {
 	return
 }
 
-cms.Init(cms.Config{
-	DbInstance: db,
+myCms := cms.NewCms(cms.Config{
+	DbInstance:           db,
 })
 ```
+
+# Initialization with entity types
+
+```
+myCms := cms.NewCms(cms.Config{
+	DbInstance:           db,
+	EntitiesAutomigrate:  true,
+})
+```
+
 
 # Initialization with CMS types
 
 ```
-cms.Init(cms.Config{
-    DbInstance:      db,
-    EnableTemplates: true,
-    EnablePages:     true,
-    EnableBlocks:    true,
+myCms := cms.NewCms(cms.Config{
+    DbInstance:           db,
+	EntitiesAutomigrate:  true,
+    BlocksEnable:         true,
+	MenusEnable:          true,
+	PagesEnable:          true,
+    TemplatesEnable:      true,
+	WidgetsEnable:        true,
+	Prefix:               "cms_"
 })
 ```
 
 # Initialization with Settings
 
 ```
-cms.Init(cms.Config{
-    DbInstance:      db,
-    EnableSettings:  true,
+myCms := cms.NewCms(cms.Config{
+    DbInstance:           db,
+	SettingsAutomigrate:  true,
+    SettingsEnable:       true,
 })
 ```
 
@@ -164,9 +181,10 @@ func entityList() []cms.CustomEntityStructure {
 	return list
 }
 
-cms.Init(cms.Config{
-    DbInstance:      db,
-    CustomEntityList: entityList(),
+myCms := cms.NewCms(cms.Config{
+    DbInstance:           db,
+	EntitiesAutomigrate:  true,
+    CustomEntityList:     entityList(),
 })
 ```
 
@@ -180,9 +198,10 @@ https://github.com/gouniverse/cachestore
 1. Initialization with Cache Store
 
 ```
-cms.Init(cms.Config{
-    DbInstance:      db,
-    EnableSettings:  true,
+myCms := cms.NewCms(cms.Config{
+    DbInstance:        db,
+	CacheAutomigrate:  true,
+    CacheEnable:       true,
 })
 ```
 
