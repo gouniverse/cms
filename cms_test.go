@@ -44,7 +44,7 @@ func (suite *CmsTestSuite) SetupTest() {
 }
 
 func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
-	cms, err := NewCms()
+	cms, err := NewCms(Config{})
 	assert.NotNil(suite.T(), err, err.Error())
 
 	assert.Contains(suite.T(), err.Error(), "DbInstance", err.Error())
@@ -58,7 +58,9 @@ func (suite *CmsTestSuite) TestCmsInit() {
 	defer db.Close()
 	assert.Nil(suite.T(), err, "DB error")
 
-	cms, err := NewCms(WithDb(db))
+	cms, err := NewCms(Config{
+		DbInstance: db,
+	})
 
 	assert.Nil(suite.T(), err)
 
@@ -71,7 +73,9 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	defer db.Close()
 	assert.Nil(suite.T(), err, "DB error")
 
-	cms, err := NewCms(WithDb(db))
+	cms, err := NewCms(Config{
+		DbInstance: db,
+	})
 
 	assert.Nil(suite.T(), err)
 
@@ -83,18 +87,24 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	assert.False(suite.T(), cms.sessionEnabled, "Enable pages MUST BE false before init")
 	assert.False(suite.T(), cms.templatesEnabled, "Enable templates MUST BE false before init")
 
-	// cms2 = NewCms(Config{
-	// 	DbInstance:      db,
-	// 	EnableCache:     true,
-	// 	EnableLogs:      true,
-	// 	EnablePages:     true,
-	// 	EnableBlocks:    true,
-	// 	EnableSettings:  true,
-	// 	EnableSession:   true,
-	// 	EnableTemplates: true,
-	// 	// CustomEntityList: entityList(),
-	// })
-	cms2, err := NewCms(WithDb(db), WithBlocks(), WithCache(), WithLogs(), WithMenus(), WithPages(), WithPrefix("cms2"), WithSession(), WithSettings(), WithTemplates())
+	cms2, err := NewCms(Config{
+		DbInstance:          db,
+		BlocksEnable:        true,
+		CacheAutomigrate:    true,
+		CacheEnable:         true,
+		EntitiesAutomigrate: true,
+		LogsAutomigrate:     true,
+		LogsEnable:          true,
+		MenusEnable:         true,
+		PagesEnable:         true,
+		SettingsAutomigate:  true,
+		SettingsEnable:      true,
+		SessionAutomigrate:  true,
+		SessionEnable:       true,
+		TemplatesEnable:     true,
+		Prefix:              "cms2",
+		// CustomEntityList: entityList(),
+	})
 	assert.Nil(suite.T(), err)
 	assert.True(suite.T(), cms2.blocksEnabled, "Enable blocks MUST BE true after init")
 	assert.True(suite.T(), cms2.cacheEnabled, "Enable cache MUST BE true after init")
@@ -115,7 +125,24 @@ func (suite *CmsTestSuite) TestCmsPages() {
 	assert.Nil(suite.T(), err, "DB error")
 	defer db.Close()
 
-	cms, err := NewCms(WithDb(db), WithBlocks(), WithCache(), WithLogs(), WithMenus(), WithPages(), WithPrefix("cms2"), WithSession(), WithSettings(), WithTemplates())
+	cms, err := NewCms(Config{
+		DbInstance:          db,
+		BlocksEnable:        true,
+		CacheAutomigrate:    true,
+		CacheEnable:         true,
+		EntitiesAutomigrate: true,
+		LogsAutomigrate:     true,
+		LogsEnable:          true,
+		MenusEnable:         true,
+		PagesEnable:         true,
+		SettingsAutomigate:  true,
+		SettingsEnable:      true,
+		SessionAutomigrate:  true,
+		SessionEnable:       true,
+		TemplatesEnable:     true,
+		Prefix:              "cms2",
+		// CustomEntityList: entityList(),
+	})
 	assert.Nil(suite.T(), err)
 
 	pages, err := cms.EntityStore.EntityList("page", 0, 10, "", "name", "ASC")

@@ -34,7 +34,24 @@ func main() {
 	}
 
 	log.Println("3. Initializing CMS...")
-	myCms, err := cms.NewCms(cms.WithDb(db), cms.WithPages(), cms.WithTemplates(), cms.WithBlocks(), cms.WithWidgets(), cms.WithMenus(), cms.WithSession(), cms.WithSettings(), cms.WithCustomEntityList(entityList()))
+	myCms, err := cms.NewCms(cms.Config{
+		DbInstance:          db,
+		BlocksEnable:        true,
+		CacheAutomigrate:    true,
+		CacheEnable:         true,
+		EntitiesAutomigrate: true,
+		LogsAutomigrate:     true,
+		LogsEnable:          true,
+		MenusEnable:         true,
+		PagesEnable:         true,
+		SettingsAutomigate:  true,
+		SettingsEnable:      true,
+		SessionAutomigrate:  true,
+		SessionEnable:       true,
+		TemplatesEnable:     true,
+		Prefix:              "cms2",
+		CustomEntityList:    entityList(),
+	})
 
 	if err != nil {
 		log.Panicln(err.Error())
