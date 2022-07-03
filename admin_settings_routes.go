@@ -179,7 +179,12 @@ func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	settingValue := cms.SettingStore.Get(settingKey, "%%NOTFOUND%%")
+	settingValue, err := cms.SettingStore.Get(settingKey, "%%NOTFOUND%%")
+
+	if err != nil {
+		api.Respond(w, r, api.Error("There was an error: "+err.Error()))
+		return
+	}
 
 	if settingValue == "%%NOTFOUND%%" {
 		api.Respond(w, r, api.Error("Setting NOT FOUND with key "+settingKey))
