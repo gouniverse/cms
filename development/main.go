@@ -35,20 +35,10 @@ func main() {
 
 	log.Println("3. Initializing CMS...")
 	myCms, err := cms.NewCms(cms.WithDb(db), cms.WithPages(), cms.WithTemplates(), cms.WithBlocks(), cms.WithWidgets(), cms.WithMenus(), cms.WithSession(), cms.WithSettings(), cms.WithCustomEntityList(entityList()))
-	// .Init(cms.Config{
-	// 	DbInstance:       db,
-	// 	EnableTemplates:  true,
-	// 	EnablePages:      true,
-	// 	EnableBlocks:     true,
-	// 	EnableSettings:   true,
-	// 	CustomEntityList: entityList(),
-	// })
 
 	if err != nil {
 		log.Panicln(err.Error())
 	}
-
-	log.Println(myCms.EnableBlocks)
 
 	log.Println("4. Starting server on http://" + utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT") + " ...")
 	log.Println("URL: http://" + utils.Env("APP_URL") + " ...")

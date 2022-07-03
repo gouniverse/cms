@@ -150,36 +150,36 @@ func (cms Cms) cmsHeader(endpoint string) string {
 	ulNav := hb.NewUL().Attr("class", "nav  nav-pills justify-content-center")
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkHome))
 
-	if cms.EnableTemplates {
+	if cms.templatesEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(templatesCount, 10)))))
 	}
 
-	if cms.EnablePages {
+	if cms.pagesEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(pagesCount, 10)))))
 	}
 
-	if cms.EnableMenus {
+	if cms.menusEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(menusCount, 10)))))
 	}
 
-	if cms.EnableBlocks {
+	if cms.blocksEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(blocksCount, 10)))))
 	}
 
-	if cms.EnableWidgets {
+	if cms.widgetsEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
 	}
 
-	if cms.EnableTranslations == true {
+	if cms.translationsEnabled == true {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTranslations))
 	}
 
-	if cms.EnableSettings == true {
+	if cms.settingsEnabled == true {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
 	}
 	// add Translations
 
-	for _, entity := range cms.CustomEntityList {
+	for _, entity := range cms.customEntityList {
 		linkEntity := hb.NewHyperlink().HTML(entity.TypeLabel).Attr("href", endpoint+"?path=entities/entity-manager&type="+entity.Type).Attr("class", "nav-link")
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkEntity))
 	}

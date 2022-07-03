@@ -75,15 +75,15 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 
 	assert.Nil(suite.T(), err)
 
-	assert.False(suite.T(), cms.EnableBlocks, "Enable blocks MUST BE false before init")
-	assert.False(suite.T(), cms.EnableCache, "Enable cache MUST BE false before init")
-	assert.False(suite.T(), cms.EnableLogs, "Enable logs MUST BE false before init")
-	assert.False(suite.T(), cms.EnablePages, "Enable pages MUST BE false before init")
-	assert.False(suite.T(), cms.EnableSettings, "Enable pages MUST BE false before init")
-	assert.False(suite.T(), cms.EnableSession, "Enable pages MUST BE false before init")
-	assert.False(suite.T(), cms.EnableTemplates, "Enable templates MUST BE false before init")
+	assert.False(suite.T(), cms.blocksEnabled, "Enable blocks MUST BE false before init")
+	assert.False(suite.T(), cms.cacheEnabled, "Enable cache MUST BE false before init")
+	assert.False(suite.T(), cms.logsEnabled, "Enable logs MUST BE false before init")
+	assert.False(suite.T(), cms.pagesEnabled, "Enable pages MUST BE false before init")
+	assert.False(suite.T(), cms.settingsEnabled, "Enable pages MUST BE false before init")
+	assert.False(suite.T(), cms.sessionEnabled, "Enable pages MUST BE false before init")
+	assert.False(suite.T(), cms.templatesEnabled, "Enable templates MUST BE false before init")
 
-	// Init(Config{
+	// cms2 = NewCms(Config{
 	// 	DbInstance:      db,
 	// 	EnableCache:     true,
 	// 	EnableLogs:      true,
@@ -94,41 +94,45 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	// 	EnableTemplates: true,
 	// 	// CustomEntityList: entityList(),
 	// })
+	cms2, err := NewCms(WithDb(db), WithBlocks(), WithCache(), WithLogs(), WithMenus(), WithPages(), WithPrefix("cms2"), WithSession(), WithSettings(), WithTemplates())
+	assert.Nil(suite.T(), err)
+	assert.True(suite.T(), cms2.blocksEnabled, "Enable blocks MUST BE true after init")
+	assert.True(suite.T(), cms2.cacheEnabled, "Enable cache MUST BE true after init")
+	assert.True(suite.T(), cms2.logsEnabled, "Enable logs MUST BE true after init")
+	assert.True(suite.T(), cms2.pagesEnabled, "Enable pages MUST BE true after init")
+	assert.True(suite.T(), cms2.settingsEnabled, "Enable pages MUST BE true after init")
+	assert.True(suite.T(), cms2.sessionEnabled, "Enable pages MUST BE true after init")
+	assert.True(suite.T(), cms2.templatesEnabled, "Enable templates MUST BE true after init")
 
-	// assert.True(suite.T(), cms.EnableBlocks, "Enable blocks MUST BE true after init")
-	// assert.True(suite.T(), cms.EnableCache, "Enable cache MUST BE true after init")
-	// assert.True(suite.T(), cms.EnableLogs, "Enable logs MUST BE true after init")
-	// assert.True(suite.T(), cms.EnablePages, "Enable pages MUST BE true after init")
-	// assert.True(suite.T(), cms.EnableSettings, "Enable pages MUST BE true after init")
-	// assert.True(suite.T(), cms.EnableSession, "Enable pages MUST BE true after init")
-	// assert.True(suite.T(), cms.EnableTemplates, "Enable templates MUST BE true after init")
-
-	// pages, err := EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
-	// assert.Nil(suite.T(), err, "Entity list MUST NOT throw errors")
-	// assert.Equal(suite.T(), 0, len(pages), "Pages must be 0 - %s found", len(pages))
-	//assert.HTTPBodyContainsf(suite.T(), routes.Routes().ServeHTTP, "GET", "/auth", url.Values{}, "api key is required", "%")
+	pages, err := cms2.EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
+	assert.Nil(suite.T(), err, "Entity list MUST NOT throw errors")
+	assert.Equal(suite.T(), 0, len(pages), "Pages must be 0 - %s found", len(pages))
+	//assert.HTTPBodyContainsf(suite.T(), cms2.Routes().ServeHTTP, "GET", "/auth", url.Values{}, "api key is required", "%")
 }
 
-// func (suite *CmsTestSuite) TestCmsPages() {
-// 	db, err := mainDb("sqlite", "", "", "test_pages.db", "", "")
-// 	assert.Nil(suite.T(), err, "DB error")
-// 	defer db.Close()
+func (suite *CmsTestSuite) TestCmsPages() {
+	db, err := mainDb("sqlite", "", "", "test_pages.db", "", "")
+	assert.Nil(suite.T(), err, "DB error")
+	defer db.Close()
 
-// 	Init(Config{
-// 		DbInstance:      db,
-// 		EnableCache:     true,
-// 		EnablePages:     true,
-// 		EnableBlocks:    true,
-// 		EnableSettings:  true,
-// 		EnableSession:   true,
-// 		EnableTemplates: true,
-// 		// CustomEntityList: entityList(),
-// 	})
+	cms, err := NewCms(WithDb(db), WithBlocks(), WithCache(), WithLogs(), WithMenus(), WithPages(), WithPrefix("cms2"), WithSession(), WithSettings(), WithTemplates())
+	assert.Nil(suite.T(), err)
 
-// 	pages, err := EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
-// 	assert.Nil(suite.T(), err, "Entity list MUST NOT throw errors")
-// 	assert.Equal(suite.T(), 0, len(pages), "Pages must be 0 - %s found", len(pages))
-// }
+	pages, err := cms.EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
+	assert.Nil(suite.T(), err, "Entity list MUST NOT throw errors")
+	assert.Equal(suite.T(), 0, len(pages), "Pages must be 0 - %s found", len(pages))
+
+	// Init(Config{
+	// 	DbInstance:      db,
+	// 	EnableCache:     true,
+	// 	EnablePages:     true,
+	// 	EnableBlocks:    true,
+	// 	EnableSettings:  true,
+	// 	EnableSession:   true,
+	// 	EnableTemplates: true,
+	// 	// CustomEntityList: entityList(),
+	// })
+}
 
 func mainDb(driverName string, dbHost string, dbPort string, dbName string, dbUser string, dbPass string) (*sql.DB, error) {
 	var db *sql.DB

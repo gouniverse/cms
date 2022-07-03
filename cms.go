@@ -16,43 +16,39 @@ import (
 
 // Cms defines the cms
 type Cms struct {
-	DbInstance         *sql.DB
-	DbDriver           string
-	DbDsn              string
-	CustomEntityList   []CustomEntityStructure
-	EnableBlocks       bool
-	EnableCache        bool
-	EnableLogs         bool
-	EnableMenus        bool
-	EnablePages        bool
-	EnableSession      bool
-	EnableSettings     bool
-	EnableTemplates    bool
-	EnableTranslations bool
-	EnableWidgets      bool
-	AutomigrateEnabled bool
-	Prefix             string
-	cacheEnabled       bool
-	logsEnabled        bool
-	sessionEnabled     bool
-	settingsEnabled    bool
-	CacheStore         *cachestore.Store
-	EntityStore        *entitystore.Store
-	LogStore           *logstore.Store
-	SessionStore       *sessionstore.Store
-	SettingStore       *settingstore.Store
-	debug              bool
+	DbInstance *sql.DB
+	// DbDriver           string
+	// DbDsn              string
+	customEntityList    []CustomEntityStructure
+	blocksEnabled       bool
+	menusEnabled        bool
+	pagesEnabled        bool
+	templatesEnabled    bool
+	translationsEnabled bool
+	widgetsEnabled      bool
+	//AutomigrateEnabled bool
+	CacheStore      *cachestore.Store
+	EntityStore     *entitystore.Store
+	LogStore        *logstore.Store
+	SessionStore    *sessionstore.Store
+	SettingStore    *settingstore.Store
+	cacheEnabled    bool
+	debug           bool
+	prefix          string
+	logsEnabled     bool
+	sessionEnabled  bool
+	settingsEnabled bool
 }
 
 // Cmsption defines an option for the CMS store
 type CmsOption func(*Cms)
 
 // WithAutoMigrate sets the table name for the cache store
-func WithAutoMigrate(automigrateEnabled bool) CmsOption {
-	return func(cms *Cms) {
-		cms.AutomigrateEnabled = automigrateEnabled
-	}
-}
+// func WithAutoMigrate(automigrateEnabled bool) CmsOption {
+// 	return func(cms *Cms) {
+// 		cms.AutomigrateEnabled = automigrateEnabled
+// 	}
+// }
 
 // WithDb sets the database for the CMS
 func WithDb(db *sql.DB) CmsOption {
@@ -72,56 +68,77 @@ func WithDebug(debug bool) CmsOption {
 // WithBlocks enables blocks
 func WithBlocks() CmsOption {
 	return func(cms *Cms) {
-		cms.EnableBlocks = true
+		cms.blocksEnabled = true
+	}
+}
+
+// WithBlocks enables blocks
+func WithCache() CmsOption {
+	return func(cms *Cms) {
+		cms.cacheEnabled = true
+	}
+}
+
+// WithBlocks enables blocks
+func WithLogs() CmsOption {
+	return func(cms *Cms) {
+		cms.logsEnabled = true
 	}
 }
 
 // WithMenus enables menus
 func WithMenus() CmsOption {
 	return func(cms *Cms) {
-		cms.EnableMenus = true
+		cms.menusEnabled = true
 	}
 }
 
 // WithPages enables pages
 func WithPages() CmsOption {
 	return func(cms *Cms) {
-		cms.EnablePages = true
+		cms.pagesEnabled = true
+	}
+}
+
+// WithPrefix enables pages
+func WithPrefix(prefix string) CmsOption {
+	return func(cms *Cms) {
+		cms.prefix = prefix
 	}
 }
 
 // WithSession enables session
 func WithSession() CmsOption {
 	return func(cms *Cms) {
-		cms.EnableSession = true
+		cms.sessionEnabled = true
 	}
 }
 
 // WithSettings enables settings
 func WithSettings() CmsOption {
 	return func(cms *Cms) {
-		cms.EnableSettings = true
+		cms.settingsEnabled = true
 	}
 }
 
 // WithTemplates enables templates
 func WithTemplates() CmsOption {
 	return func(cms *Cms) {
-		cms.EnableTemplates = true
+		cms.templatesEnabled = true
 	}
 }
 
 // WithWidgets enables widgets
 func WithWidgets() CmsOption {
 	return func(cms *Cms) {
-		cms.EnableWidgets = true
+		cms.widgetsEnabled = true
 	}
 }
 
 // WithCustomEntityList adds custom entities
 func WithCustomEntityList(customEntityList []CustomEntityStructure) CmsOption {
 	return func(cms *Cms) {
-		cms.CustomEntityList = customEntityList
+		cms.customEntityList = customEntityList
 	}
 }
 
@@ -147,12 +164,12 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 	//	cms.AutoMigrate()
 	//}
 
-	if cms.DbInstance == nil && (cms.DbDriver == "" || cms.DbDsn == "") {
-		return nil, errors.New("either DbInstance or DnDriver and DbDsn are required field")
+	if cms.DbInstance == nil {
+		return nil, errors.New("DbInstance is required field")
 	}
 
-	if cms.Prefix == "" {
-		cms.Prefix = "cms_"
+	if cms.prefix == "" {
+		cms.prefix = "cms_"
 	}
 
 	var err error
@@ -163,8 +180,7 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 		return nil, err
 	}
 
-	if cms.EnableCache {
-		cms.cacheEnabled = true
+	if cms.cacheEnabled {
 		cms.CacheStore, err = cachestore.NewStore(cachestore.WithDb(cms.DbInstance), cachestore.WithTableName("cms_cache"), cachestore.WithAutoMigrate(true))
 
 		if err != nil {
@@ -177,8 +193,7 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 		})
 	}
 
-	if cms.EnableLogs {
-		cms.logsEnabled = true
+	if cms.logsEnabled {
 		cms.LogStore, err = logstore.NewStore(logstore.WithDb(cms.DbInstance), logstore.WithTableName("cms_log"), logstore.WithAutoMigrate(true))
 
 		if err != nil {
@@ -187,8 +202,7 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 		}
 	}
 
-	if cms.EnableSession {
-		cms.sessionEnabled = true
+	if cms.sessionEnabled {
 		cms.SessionStore, err = sessionstore.NewStore(sessionstore.WithDb(cms.DbInstance), sessionstore.WithTableName("cms_session"), sessionstore.WithAutoMigrate(true))
 
 		if err != nil {
@@ -201,8 +215,7 @@ func NewCms(opts ...CmsOption) (*Cms, error) {
 		})
 	}
 
-	if cms.EnableSettings {
-		cms.settingsEnabled = true
+	if cms.settingsEnabled {
 		cms.SettingStore, err = settingstore.NewStore(settingstore.WithDb(cms.DbInstance), settingstore.WithTableName("cms_settings"), settingstore.WithAutoMigrate(true))
 
 		if err != nil {

@@ -397,7 +397,7 @@ func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Reque
 }
 
 func (cms Cms) customEntityAttributeList(entityType string) []CustomAttributeStructure {
-	for _, entity := range cms.CustomEntityList {
+	for _, entity := range cms.customEntityList {
 		if entity.Type == entityType {
 			if entity.AttributeList == nil {
 				return []CustomAttributeStructure{}
