@@ -14,6 +14,9 @@ import (
 	"github.com/gouniverse/settingstore"
 )
 
+type Config struct {
+}
+
 // Cms defines the cms
 type Cms struct {
 	DbInstance *sql.DB
