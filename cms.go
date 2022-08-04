@@ -113,7 +113,7 @@ func configToCms(config Config) *Cms {
 	cms.entityTableName = cms.prefix + "entities_entity"
 	cms.logTableName = cms.prefix + "log"
 	cms.sessionTableName = cms.prefix + "session"
-	cms.settingsTableName = cms.prefix + "settings"
+	cms.settingsTableName = cms.prefix + "setting"
 
 	return cms
 }
