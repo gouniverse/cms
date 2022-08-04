@@ -30,7 +30,7 @@ type Config struct {
 	PagesEnable         bool
 	SessionAutomigrate  bool
 	SessionEnable       bool
-	SettingsAutomigate  bool
+	SettingsAutomigrate bool
 	SettingsEnable      bool
 	TemplatesEnable     bool
 	TranslationsEnable  bool
@@ -99,7 +99,7 @@ func configToCms(config Config) *Cms {
 	cms.pagesEnabled = config.PagesEnable
 	cms.sessionAutomigrate = config.SessionAutomigrate
 	cms.sessionEnabled = config.SessionEnable
-	cms.settingsAutomigrate = config.SettingsAutomigate
+	cms.settingsAutomigrate = config.SettingsAutomigrate
 	cms.settingsEnabled = config.SettingsEnable
 	cms.templatesEnabled = config.TemplatesEnable
 	cms.translationsEnabled = config.TranslationsEnable

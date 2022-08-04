@@ -44,7 +44,7 @@ func main() {
 		LogsEnable:          true,
 		MenusEnable:         true,
 		PagesEnable:         true,
-		SettingsAutomigate:  true,
+		SettingsAutomigrate: true,
 		SettingsEnable:      true,
 		SessionAutomigrate:  true,
 		SessionEnable:       true,
