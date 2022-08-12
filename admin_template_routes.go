@@ -32,7 +32,6 @@ func (cms Cms) pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Re
 
 	template.SetString("name", name)
 	template.SetString("status", "inactive")
-	template.Status = "inactive"
 	cms.EntityStore.EntityUpdate(*template)
 
 	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
@@ -430,9 +429,6 @@ func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	// template.SetString("content", content)
-	// template.SetString("name", name)
-	// template.SetString("handle", handle)
 	_, err := cms.EntityStore.AttributeSetString(template.ID, "content", content)
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be updated: "+err.Error()))
@@ -445,7 +441,12 @@ func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	template.Status = status
+	_, err = cms.EntityStore.AttributeSetString(template.ID, "status", status)
+	if err != nil {
+		api.Respond(w, r, api.Error("Status failed to be updated: "+err.Error()))
+		return
+	}
+
 	template.Handle = handle
 	isOk, err := cms.EntityStore.EntityUpdate(*template)
 
