@@ -45,6 +45,8 @@ github.com/gouniverse/entitystore v0.48.0 h1:cAuMzklGhkJjYkTECUBVHWyKZK8wT6asm9i
 github.com/gouniverse/entitystore v0.48.0/go.mod h1:KW1vtUF9P1vM4hY9+FeDtg5u3qCdEsQe8XrdydgafQU=
 github.com/gouniverse/hb v1.35.0 h1:AwB+MCklFiNuJqlxiwSX26J7BZ4BsO/Q8OxjzmtJcQg=
 github.com/gouniverse/hb v1.35.0/go.mod h1:bA0VeRyNIMjq2yrJe41CzXqPYTewlgD2aMV/Cadpiug=
+github.com/gouniverse/hb v1.36.0 h1:mOF6SeSZxKrq8kOghNoCXEOjOuIYdiDIyUhpt+Z1NJg=
+github.com/gouniverse/hb v1.36.0/go.mod h1:bA0VeRyNIMjq2yrJe41CzXqPYTewlgD2aMV/Cadpiug=
 github.com/gouniverse/icons v1.1.0 h1:uE7Kc2I94EEX2OMaVxyrsVjvbSbqDub3uIXdHg+tomk=
 github.com/gouniverse/icons v1.1.0/go.mod h1:MJIS8jNScGeXKfyCbzOW+1OH9K6nfFlcIGciei1KDWI=
 github.com/gouniverse/logstore v1.2.0 h1:VplSDdL1pANSZT6p86SJ/0XRmTGGwe5w1RUjcgg3vh8=
@@ -60,6 +62,8 @@ github.com/gouniverse/utils v1.20.0 h1:BNPo4SOnPNVHJHevBYAWFU93jPoTfBJ3W/9MveMWL
 github.com/gouniverse/utils v1.20.0/go.mod h1:MmulnhhnxB7LaWnuGV/mHdP0hix4UeaJhvNj0wgxaRk=
 github.com/gouniverse/utils v1.22.0 h1:LBxfXjlg1jfjAeWV7woPL29sLUw6faYTJ/eWh25Siys=
 github.com/gouniverse/utils v1.22.0/go.mod h1:YgCa3tXYX8HhN8NKRCYumy+E5ehrAaWkQ9R+gTjhXI0=
+github.com/gouniverse/utils v1.23.0 h1:m9eUk+ZNhXpvd6zJD6Qra3GO38kHDSX0Kekb9EsSRLQ=
+github.com/gouniverse/utils v1.23.0/go.mod h1:xVK1uLXdTSoscCAFdOdYDNacZtmfVIh50bF/+heSt7M=
 github.com/jackc/chunkreader v1.0.0 h1:4s39bBR8ByfqH+DKm8rQA3E1LHZWB9XWcrz8fqaZbe0=
 github.com/jackc/chunkreader v1.0.0/go.mod h1:RT6O25fNZIuasFJRyZ4R/Y2BbhasbmZXF9QQ7T3kePo=
 github.com/jackc/chunkreader/v2 v2.0.0/go.mod h1:odVSm741yZoC3dpHEUXIqA9tQRhFrgOHwnPIn9lDKlk=

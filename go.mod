@@ -6,11 +6,11 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gouniverse/cachestore v0.12.0
 	github.com/gouniverse/entitystore v0.48.0
-	github.com/gouniverse/hb v1.35.0
+	github.com/gouniverse/hb v1.36.0
 	github.com/gouniverse/logstore v1.2.0
 	github.com/gouniverse/sessionstore v0.13.0
 	github.com/gouniverse/settingstore v0.9.0
-	github.com/gouniverse/utils v1.22.0
+	github.com/gouniverse/utils v1.23.0
 	github.com/lib/pq v1.10.6
 	github.com/stretchr/testify v1.8.0
 	modernc.org/sqlite v1.18.1
