@@ -1,20 +1,22 @@
 module github.com/gouniverse/cms
 
-go 1.18
+go 1.19
 
 require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gouniverse/cachestore v0.12.0
 	github.com/gouniverse/entitystore v0.48.0
-	github.com/gouniverse/hb v1.34.0
+	github.com/gouniverse/hb v1.35.0
 	github.com/gouniverse/logstore v1.2.0
 	github.com/gouniverse/sessionstore v0.13.0
 	github.com/gouniverse/settingstore v0.9.0
-	github.com/gouniverse/utils v1.20.0
+	github.com/gouniverse/utils v1.22.0
 	github.com/lib/pq v1.10.6
 	github.com/stretchr/testify v1.8.0
-	modernc.org/sqlite v1.18.0
+	modernc.org/sqlite v1.18.1
 )
+
+require golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 
 require (
 	github.com/darkoatanasovski/htmltags v1.0.0 // indirect
@@ -22,7 +24,7 @@ require (
 	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/georgysavva/scany v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gouniverse/api v1.4.0
+	github.com/gouniverse/api v1.5.0
 	github.com/gouniverse/icons v1.1.0
 	github.com/gouniverse/uid v1.4.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
@@ -35,8 +37,8 @@ require (
 	github.com/tdewolff/minify/v2 v2.12.0 // indirect
 	github.com/tdewolff/parse/v2 v2.6.2 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220802222814-0bcc04d9c69b // indirect
-	golang.org/x/sys v0.0.0-20220803195053-6e608f9ce704 // indirect
+	golang.org/x/net v0.0.0-20220811182439-13a9a731de15 // indirect
+	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
