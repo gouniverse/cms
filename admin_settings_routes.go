@@ -26,13 +26,12 @@ func (cms Cms) pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Setting failed to be created"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Setting saved successfully", map[string]interface{}{"setting_key": key}))
-	return
 }
 
 func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
@@ -337,13 +336,12 @@ func (cms Cms) pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Setting failed to be updated"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Setting saved successfully", map[string]interface{}{"setting_key": settingKey}))
-	return
 }
 
 func (cms Cms) pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
@@ -362,7 +360,6 @@ func (cms Cms) pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Requ
 	// }
 
 	api.Respond(w, r, api.SuccessWithData("Setting deleted successfully", map[string]interface{}{"setting_key": settingKey}))
-	return
 }
 
 func (cms Cms) pageSettingsSettingDeleteModal() *hb.Tag {

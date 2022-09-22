@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/cms/bs"
+	"github.com/gouniverse/cms/ve"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
@@ -35,10 +37,9 @@ func (cms Cms) pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 	page.SetString("name", name)
 	page.SetString("status", "inactive")
 	page.SetString("title", name)
-	page.SetString("alias", "/"+utils.Slugify(name+"-"+utils.RandStr(16), '-'))
+	page.SetString("alias", "/"+utils.StrSlugify(name+"-"+utils.StrRandom(16), '-'))
 
 	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID}))
-	return
 }
 
 func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -46,6 +47,7 @@ func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	alias := strings.Trim(utils.Req(r, "alias", ""), " ")
 	canonicalURL := strings.Trim(utils.Req(r, "canonical_url", ""), " ")
 	content := strings.Trim(utils.Req(r, "content", ""), " ")
+	contentEditor := strings.Trim(utils.Req(r, "content_editor", ""), " ")
 	metaDescription := strings.Trim(utils.Req(r, "meta_description", ""), " ")
 	metaKeywords := strings.Trim(utils.Req(r, "meta_keywords", ""), " ")
 	metaRobots := strings.Trim(utils.Req(r, "meta_robots", ""), " ")
@@ -90,6 +92,7 @@ func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	page.SetString("alias", alias)
 	page.SetString("canonical_url", canonicalURL)
 	page.SetString("content", content)
+	page.SetString("content_editor", contentEditor)
 	page.SetString("meta_description", metaDescription)
 	page.SetString("meta_keywords", metaKeywords)
 	page.SetString("meta_robots", metaRobots)
@@ -104,13 +107,12 @@ func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Page failed to be updated"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID}))
-	return
 }
 
 func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
@@ -137,70 +139,79 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 		(endpoint + "?path=" + PathPagesPageUpdate + "&page_id=" + pageID): "Edit page",
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-update")
+	container := hb.NewDiv().ID("page-update").Class("container")
 	heading := hb.NewHeading1().HTML("Edit Page")
-	button := hb.NewButton().HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "pageSave")
-	heading.AddChild(button)
+	saveButton := hb.NewButton().HTML("Save").Class("btn btn-success float-end").Attr("v-on:click", "pageSave")
+	heading.Child(saveButton)
 
-	tabNavigation := hb.NewUL().Attr("class", "nav nav-tabs").Attr("style", "margin-bottom: 3px;").Attr("role", "tablist")
-	tabNavigationContent := hb.NewLI().Attr("class", "nav-item").AddChild(hb.NewHyperlink().Attr("id", "TabContent-tab").Attr("class", "nav-link active").Attr("href", "#TabContent").Attr("v-on:click", "tab('TabContent')").HTML("Content"))
-	tabNavigationSeo := hb.NewLI().Attr("class", "nav-item").AddChild(hb.NewHyperlink().Attr("id", "TabSeo-tab").Attr("class", "nav-link").Attr("href", "#TabSeo").Attr("v-on:click", "tab('TabSeo')").HTML("SEO"))
-	tabNavigationSettings := hb.NewLI().Attr("class", "nav-item").AddChild(hb.NewHyperlink().Attr("id", "TabSettings-tab").Attr("class", "nav-link").Attr("href", "#TabSettings").Attr("v-on:click", "tab('TabSettings')").HTML("Settings"))
+	tabNavigation := bs.NavTabs().Style("margin-bottom: 3px;").Attr("role", "tablist")
+	tabNavigationContent := bs.NavItem().Child(bs.NavLink().ID("TabContent-tab").Attr("href", "#TabContent").Attr("v-on:click", "tab('TabContent')").HTML("Content"))
+	tabNavigationSeo := bs.NavItem().Child(bs.NavLink().ID("TabSeo-tab").Attr("href", "#TabSeo").Attr("v-on:click", "tab('TabSeo')").HTML("SEO"))
+	tabNavigationSettings := bs.NavItem().Child(bs.NavLink().ID("TabSettings-tab").Attr("href", "#TabSettings").Attr("v-on:click", "tab('TabSettings')").HTML("Settings"))
 	tabNavigation.AddChild(tabNavigationContent).AddChild(tabNavigationSeo).AddChild(tabNavigationSettings)
 
-	tabContent := hb.NewDiv().Attr("class", "tab-content")
-	tabContentContent := hb.NewDiv().Attr("id", "TabContent").Attr("class", "tab-pane fade show active").Attr("data-bs-toggle", "tab")
-	tabContentSeo := hb.NewDiv().Attr("id", "TabSeo").Attr("class", "tab-pane fade").Attr("data-bs-toggle", "tab")
-	tabContentSettings := hb.NewDiv().Attr("id", "TabSettings").Attr("class", "tab-pane fade").Attr("data-bs-toggle", "tab")
+	tabContent := hb.NewDiv().Class("tab-content")
+	tabContentContent := hb.NewDiv().ID("TabContent").Attr("class", "tab-pane fade show active").Attr("data-bs-toggle", "tab")
+	tabContentSeo := hb.NewDiv().ID("TabSeo").Attr("class", "tab-pane fade").Attr("data-bs-toggle", "tab")
+	tabContentSettings := hb.NewDiv().ID("TabSettings").Attr("class", "tab-pane fade").Attr("data-bs-toggle", "tab")
 	tabContent.AddChild(tabContentContent).AddChild(tabContentSeo).AddChild(tabContentSettings)
 
 	// <div class="form-group well" style="display:table;width:100%;margin-top:10px;padding:5px 10px;">
 	//                     Page address: <a href="<?php echo $page->url(); ?>" target="_blank"><?php echo $page->url(); ?></a> &nbsp;&nbsp;&nbsp; (to change click on Settings tab)
 	// 				</div>
 
-	// divPath := hb.NewDiv().Attr("class","form-group well").Attr("style","display:table;width:100%;margin-top:10px;padding:5px 10px;").HTML("Page address: ").HTML(" &nbsp;&nbsp;&nbsp; (to change click on Settings tab)")
-	formGroupStatus := hb.NewDiv().Attr("class", "form-group")
-	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "pageModel.status")
-	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
-	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
-	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")
-	formGroupStatus.AddChild(formGroupStatusLabel)
-	formGroupStatus.AddChild(formGroupStatusSelect.AddChild(formGroupOptionsActive).AddChild(formGroupOptionsInactive).AddChild(formGroupOptionsTrash))
+	// Status
+	formGroupStatus := bs.FormGroup().Children([]*hb.Tag{
+		bs.FormLabel("Status"),
+		bs.FormSelect().Attr("v-model", "pageModel.status").Children([]*hb.Tag{
+			bs.FormSelectOption("active", "Active"),
+			bs.FormSelectOption("inactive", "Inactive"),
+			bs.FormSelectOption("trash", "Trash"),
+		}),
+	})
 
-	formGroupName := hb.NewDiv().Attr("class", "form-group")
-	formGroupNameLabel := hb.NewLabel().HTML("Name").Attr("class", "form-label")
-	formGroupNameInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.name")
-	formGroupName.AddChild(formGroupNameLabel)
-	formGroupName.AddChild(formGroupNameInput)
+	// Content Editor
+	formGroupEditor := bs.FormGroup().Children([]*hb.Tag{
+		bs.FormLabel("Content Editor"),
+		bs.FormSelect().Attr("v-model", "pageModel.contentEditor").Children([]*hb.Tag{
+			bs.FormSelectOption("", "- none -"),
+			bs.FormSelectOption("codemirror", "CodeMirror"),
+			bs.FormSelectOption("visual", "Visual Editor (Experimental)"),
+		}),
+		bs.FormText("The content editor allows you to select the mode for editing the content. Note you will need to save and refresh to activate"),
+	})
 
-	formGroupAlias := hb.NewDiv().Attr("class", "form-group")
-	formGroupAliasLabel := hb.NewLabel().HTML("Alias / Path").Attr("class", "form-label")
-	formGroupAliasInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.alias")
-	formGroupAlias.AddChild(formGroupAliasLabel)
-	formGroupAlias.AddChild(formGroupAliasInput)
+	// Name
+	formGroupName := bs.FormGroup().Children([]*hb.Tag{
+		bs.FormLabel("Name"),
+		bs.FormInput().Attr("v-model", "pageModel.name"),
+		bs.FormText("The name of the page as visible in the admin panel. This is not vsible to the page vistors"),
+	})
 
-	// "PageMetaDescription": pageMetaDescription,
-	// "PageMetaKeywords":    pageMetaKeywords,
-	// "PageRobots":          pageMetaRobots,
+	// Alias
+	formGroupAlias := bs.FormGroup().Children([]*hb.Tag{
+		bs.FormLabel("Alias / Path"),
+		bs.FormInput().Attr("v-model", "pageModel.alias"),
+		bs.FormText("The relative path on the website where this page will be visible to the vistors"),
+	})
 
 	// Canonical Url
-	formGroupCanonicalURL := hb.NewDiv().Attr("class", "form-group")
+	formGroupCanonicalURL := bs.FormGroup()
 	formGroupCanonicalURLLabel := hb.NewLabel().HTML("Canonical Url").Attr("class", "form-label")
 	formGroupCanonicalURLInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.canonicalUrl")
 	formGroupCanonicalURL.AddChild(formGroupCanonicalURLLabel).AddChild(formGroupCanonicalURLInput)
 
 	// Meta Description
-	formGroupMetaDescription := hb.NewDiv().Attr("class", "form-group")
-	formGroupMetaDescriptionLabel := hb.NewLabel().HTML("Meta Description").Attr("class", "form-label")
-	formGroupMetaDescriptionInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.metaDescription")
+	formGroupMetaDescription := bs.FormGroup()
+	formGroupMetaDescriptionLabel := bs.FormLabel("Meta Description")
+	formGroupMetaDescriptionInput := bs.FormInput().Attr("v-model", "pageModel.metaDescription")
 	formGroupMetaDescription.AddChild(formGroupMetaDescriptionLabel).AddChild(formGroupMetaDescriptionInput)
 
 	// Meta Keywords
-	formGroupMetaKeywords := hb.NewDiv().Attr("class", "form-group")
-	formGroupMetaKeywordsLabel := hb.NewLabel().HTML("Meta Keywords").Attr("class", "form-label")
-	formGroupMetaKeywordsInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.metaKeywords")
-	formGroupMetaKeywords.AddChild(formGroupMetaKeywordsLabel).AddChild(formGroupMetaKeywordsInput)
+	formGroupMetaKeywords := hb.NewDiv().Attr("class", "form-group").Children([]*hb.Tag{
+		bs.FormLabel("Meta Keywords"),
+		bs.FormInput().Attr("v-model", "pageModel.metaKeywords"),
+	})
 
 	// Robots
 	formGroupMetaRobots := hb.NewDiv().Attr("class", "form-group")
@@ -214,44 +225,75 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
 		return
 	}
-	formGroupTemplate := hb.NewDiv().Attr("class", "form-group")
-	formGroupTemplateLabel := hb.NewLabel().HTML("Template").Attr("class", "form-label")
-	formGroupTemplateSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "pageModel.templateId")
-	formGroupTemplateOptionsEmpty := hb.NewOption().Attr("value", "").HTML("- none -")
-	formGroupTemplateSelect.AddChild(formGroupTemplateOptionsEmpty)
+	formGroupTemplateSelect := bs.FormSelect().Attr("v-model", "pageModel.templateId")
+	formGroupTemplateOptionsEmpty := bs.FormSelectOption("", "- none -")
+	formGroupTemplateSelect.Child(formGroupTemplateOptionsEmpty)
 	for _, template := range templateList {
 		templateName, _ := template.GetString("name", "n/a")
-		formGroupTemplateOptionsTemplate := hb.NewOption().Attr("value", template.ID).HTML(templateName)
-		formGroupTemplateSelect.AddChild(formGroupTemplateOptionsTemplate)
+		formGroupTemplateOptionsTemplate := bs.FormSelectOption(template.ID, templateName)
+		formGroupTemplateSelect.Child(formGroupTemplateOptionsTemplate)
 	}
-	formGroupTemplate.AddChild(formGroupTemplateLabel).AddChild(formGroupTemplateSelect)
+	formGroupTemplate := bs.FormGroup().Children([]*hb.Tag{
+		bs.FormLabel("Template").Class("form-label"),
+		formGroupTemplateSelect,
+		bs.FormText("Select the template that this page content will be displayed in. This feature is useful if you want to implement consistent layouts. Leaving the template field empty will display page as it is standalone"),
+	})
 
 	// Title
-	formGroupTitle := hb.NewDiv().Attr("class", "form-group")
-	formGroupTitleLabel := hb.NewLabel().HTML("Title").Attr("class", "form-label")
-	formGroupTitleInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.title")
-	formGroupTitle.AddChild(formGroupTitleLabel).AddChild(formGroupTitleInput)
+	formGroupTitle := hb.NewDiv().Class("form-group")
+	formGroupTitleLabel := hb.NewLabel().HTML("Title").Class("form-label")
+	formGroupTitleInput := hb.NewInput().Class("form-control").Attr("v-model", "pageModel.title")
+	formGroupTitle.Child(formGroupTitleLabel).Child(formGroupTitleInput)
 
-	formGroupContent := hb.NewDiv().Attr("class", "form-group")
-	formGroupContentLabel := hb.NewLabel().HTML("Content").Attr("class", "form-label")
-	formGroupContentInput := hb.NewTextArea().Attr("class", "form-control CodeMirror").Attr("v-model", "pageModel.content")
-	formGroupContent.AddChild(formGroupContentLabel)
-	formGroupContent.AddChild(formGroupContentInput)
+	// Content
+	editor, _ := page.GetString("content_editor", "")
+	formGroupContent := bs.FormGroup()
+	formGroupContentLabel := bs.FormLabel("Content")
+	formGroupContentInput := hb.NewTextArea().Class("form-control CodeMirror").Attr("v-model", "pageModel.content")
+	formGroupContentInputVisualData := hb.NewTextArea().Class("form-control").Attr("v-model", "pageModel.contentVisual")
+	if editor == "visualeditor" {
+		// formGroupContentInput.Style("display:none")
+	} else {
+		// formGroupContentInputVisualData.Style("display:none")
+	}
+	formGroupContent.Children([]*hb.Tag{
+		formGroupContentLabel,
+		formGroupContentInput,
+		formGroupContentInputVisualData,
+		hb.NewHTML(ve.VisualeditorContent()),
+	})
 
-	tabContentContent.AddChild(formGroupTitle).AddChild(formGroupContent)
-	tabContentSeo.AddChild(formGroupAlias).AddChild(formGroupMetaDescription).AddChild(formGroupMetaKeywords).AddChild(formGroupMetaRobots).AddChild(formGroupCanonicalURL)
-	tabContentSettings.AddChild(formGroupStatus).AddChild(formGroupTemplate).AddChild(formGroupName)
+	tabContentContent.Children([]*hb.Tag{
+		formGroupTitle,
+		formGroupContent,
+	})
+	tabContentSeo.Children([]*hb.Tag{
+		formGroupAlias,
+		formGroupMetaDescription,
+		formGroupMetaKeywords,
+		formGroupMetaRobots,
+		formGroupCanonicalURL,
+	})
+	tabContentSettings.Children([]*hb.Tag{
+		formGroupStatus,
+		formGroupTemplate,
+		formGroupName,
+		formGroupEditor,
+	})
 
-	container.AddChild(hb.NewHTML(header))
-	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
-	container.AddChild(tabNavigation)
-	container.AddChild(tabContent)
+	container.Children([]*hb.Tag{
+		hb.NewHTML(header),
+		heading,
+		hb.NewHTML(breadcrums),
+		tabNavigation,
+		tabContent,
+	})
 
 	h := container.ToHTML()
 
 	alias, _ := page.GetString("alias", "")
 	content, _ := page.GetString("content", "")
+	contentEditor, _ := page.GetString("content_editor", "")
 	name, _ := page.GetString("name", "")
 	status, _ := page.GetString("status", "")
 	templateID, _ := page.GetString("template_id", "")
@@ -263,6 +305,7 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 
 	canonicalURLJSON, _ := json.Marshal(canonicalURL)
 	contentJSON, _ := json.Marshal(content)
+	contentEditorJSON, _ := json.Marshal(contentEditor)
 	nameJSON, _ := json.Marshal(name)
 	templateIDJSON, _ := json.Marshal(templateID)
 	titleJSON, _ := json.Marshal(title)
@@ -280,6 +323,7 @@ var status = "` + status + `";
 var title = ` + string(titleJSON) + `;
 var canonicalUrl = ` + string(canonicalURLJSON) + `;
 var content = ` + string(contentJSON) + `;
+var contentEditor = ` + string(contentEditorJSON) + `;
 var templateId = ` + string(templateIDJSON) + `;
 const PageUpdate = {
 	data() {
@@ -289,6 +333,7 @@ const PageUpdate = {
 				alias: alias,
 				canonicalUrl:canonicalUrl,
 				content: content,
+				contentEditor: contentEditor,
 				metaDescription:metaDescription,
 				metaKeywords:metaKeywords,
 				metaRobots:metaRobots,
@@ -334,6 +379,7 @@ const PageUpdate = {
 			var alias = this.pageModel.alias;
 			var canonicalUrl = this.pageModel.canonicalUrl;
 			var content = this.pageModel.content;
+			var contentEditor = this.pageModel.contentEditor;
 			var metaDescription = this.pageModel.metaDescription;
 			var metaKeywords = this.pageModel.metaKeywords;
 			var metaRobots = this.pageModel.metaRobots;
@@ -347,6 +393,7 @@ const PageUpdate = {
 				page_id:pageId,
 				alias: alias,
 				content: content,
+				content_editor: contentEditor,
 				canonical_url:canonicalUrl,
 				meta_description:metaDescription,
 				meta_keywords:metaKeywords,
@@ -404,6 +451,7 @@ Vue.createApp(PageUpdate).mount('#page-update')
 }
 	`)
 	webpage.AddScript(inlineScript)
+	webpage.AddScript(ve.VisualeditorScripts())
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
 	w.Write([]byte(webpage.ToHTML()))
@@ -583,13 +631,12 @@ func (cms Cms) pagePagesPageTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Page failed to be moved to trash"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Page moved to trash successfully", map[string]interface{}{"page_id": page.ID}))
-	return
 }
 
 func pagePagesPageTrashModal() *hb.Tag {

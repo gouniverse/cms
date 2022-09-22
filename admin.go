@@ -21,7 +21,6 @@ func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
 
 	routeFunc := cms.getRoute(path)
 	routeFunc(w, r.WithContext(ctx))
-	return
 }
 
 func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
@@ -170,11 +169,11 @@ func (cms Cms) cmsHeader(endpoint string) string {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
 	}
 
-	if cms.translationsEnabled == true {
+	if cms.translationsEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTranslations))
 	}
 
-	if cms.settingsEnabled == true {
+	if cms.settingsEnabled {
 		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
 	}
 	// add Translations

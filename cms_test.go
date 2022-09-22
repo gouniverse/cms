@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"log"
 	"testing"
 
 	"database/sql"
@@ -52,9 +53,12 @@ func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
 	assert.Nil(suite.T(), cms, "cms must be nil")
 }
 
-//TestCmsInit tests CMS initialization
+// TestCmsInit tests CMS initialization
 func (suite *CmsTestSuite) TestCmsInit() {
 	db, err := mainDb("sqlite", "", "", "test_init.db", "", "")
+	if err != nil {
+		log.Panic("TestCmsInit error:", err.Error())
+	}
 	defer db.Close()
 	assert.Nil(suite.T(), err, "DB error")
 
@@ -67,9 +71,12 @@ func (suite *CmsTestSuite) TestCmsInit() {
 	assert.NotNil(suite.T(), cms, "Cms MUST NOT be nil")
 }
 
-//TestCmsInit tests CMS initialization
+// TestCmsInit tests CMS initialization
 func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	db, err := mainDb("sqlite", "", "", "test_init_configs.db", "", "")
+	if err != nil {
+		log.Panic("TestCmsInitConfigs error:", err.Error())
+	}
 	defer db.Close()
 	assert.Nil(suite.T(), err, "DB error")
 

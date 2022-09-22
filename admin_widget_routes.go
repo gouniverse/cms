@@ -33,7 +33,6 @@ func (cms Cms) pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Reques
 	widget.SetString("name", name)
 
 	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID}))
-	return
 }
 
 func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {

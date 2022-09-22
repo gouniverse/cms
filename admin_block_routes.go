@@ -34,7 +34,6 @@ func (cms Cms) pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request)
 	block.SetString("name", name)
 
 	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
-	return
 }
 
 func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
@@ -263,7 +262,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this block in your website use the following shortcode:"))
 
-	blockName, err := block.GetString("name", "")
+	blockName, _ := block.GetString("name", "")
 	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Block: ` + blockName + ` -->
 [[BLOCK_` + block.ID + `]]
 &lt;!-- END: Block: ` + blockName + ` -->`))
@@ -455,13 +454,12 @@ func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request)
 	block.SetString("handle", handle)
 	isOk, _ := block.SetString("status", status)
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Block failed to be updated"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
-	return
 }
 
 func (cms Cms) pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
@@ -491,13 +489,12 @@ func (cms Cms) pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Block failed to be deleted"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID}))
-	return
 }
 
 func (cms Cms) pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
@@ -527,13 +524,12 @@ func (cms Cms) pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Block failed to be trashed"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Block trashed successfully", map[string]interface{}{"block_id": block.ID}))
-	return
 }
 
 func (cms Cms) pageBlocksBlockTrashModal() *hb.Tag {

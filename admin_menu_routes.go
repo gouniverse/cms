@@ -37,7 +37,6 @@ func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 	menu.SetString("name", name)
 
 	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
-	return
 }
 
 func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
@@ -316,29 +315,28 @@ func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Menu failed to be updated"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
-	return
 }
 
 func getChildren(data []map[string]interface{}, parentID string) []map[string]interface{} {
 	children := []map[string]interface{}{}
-	sequences := []string{}
+	//sequences := []string{}
 	for _, node := range data {
 		nodeParentID := ""
-		sequence := ""
+		//sequence := ""
 		if keyExists(node, "parent_id") {
 			nodeParentID = node["parent_id"].(string)
 		}
 		if keyExists(node, "sequence") {
-			sequence = node["sequence"].(string)
+			//sequence = node["sequence"].(string)
 		}
 		if nodeParentID == parentID {
-			sequences = append(sequences, sequence)
+			//sequences = append(sequences, sequence)
 			children = append(children, node)
 		}
 	}
@@ -364,9 +362,7 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 		for childIndex, child := range children {
 			childID := child["id"].(string)
 			childrenTrees := buildTreeFromData(data, childID)
-			for _, childTree := range childrenTrees {
-				rootChildren = append(rootChildren, childTree)
-			}
+			rootChildren = append(rootChildren, childrenTrees...)
 			children[childIndex]["children"] = rootChildren
 		}
 		root["children"] = children
@@ -431,7 +427,6 @@ func (cms Cms) pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Reques
 		"menu_id":   menu.ID,
 		"menuitems": tree,
 	}))
-	return
 }
 
 func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
@@ -714,7 +709,7 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 		node["sequence"] = utils.ToString((index + 1))
 		flatTree = append(flatTree, node)
 
-		if hasChildren == false {
+		if !hasChildren {
 			continue
 		}
 
@@ -726,10 +721,7 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 			childrenMapArray = append(childrenMapArray, childMap)
 		}
 		childNodesList := flattenTree(childrenMapArray)
-		for _, childNode := range childNodesList {
-			//childNode["parent_id"] = node["id"]
-			flatTree = append(flatTree, childNode)
-		}
+		flatTree = append(flatTree, childNodesList...)
 	}
 	return flatTree
 }
@@ -812,7 +804,7 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		if isOk == false {
+		if !isOk {
 			api.Respond(w, r, api.Error("Menu items failed to be updated"))
 			return
 		}
@@ -830,13 +822,12 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 	for _, menuitem := range allMenuItems {
 		//allIDs = append(allIDs, menuitem.ID)
 		exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
-		if exists == false {
+		if !exists {
 			cms.EntityStore.EntityDelete(menuitem.ID)
 		}
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
-	return
 }
 
 func keyExists(decoded map[string]interface{}, key string) bool {

@@ -390,13 +390,12 @@ func (cms Cms) pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Template failed to be moved to trash"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Template moved to trash successfully", map[string]interface{}{"template_id": template.ID}))
-	return
 }
 
 // pageTemplatesTemplateUpdateAjax - saves the template via Ajax
@@ -461,7 +460,6 @@ func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Re
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
-	return
 }
 
 func pageTemplatesTemplateTrashModal() *hb.Tag {
