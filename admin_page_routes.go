@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
-	"github.com/gouniverse/cms/bs"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/cms/ve"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
