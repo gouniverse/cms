@@ -63,13 +63,13 @@ myCms := cms.NewCms(cms.Config{
 ```go
 myCms := cms.NewCms(cms.Config{
     DbInstance:           db,
-	EntitiesAutomigrate:  true,
+    EntitiesAutomigrate:  true,
     BlocksEnable:         true,
-	MenusEnable:          true,
-	PagesEnable:          true,
+    MenusEnable:          true,
+    PagesEnable:          true,
     TemplatesEnable:      true,
-	WidgetsEnable:        true,
-	Prefix:               "cms_"
+    WidgetsEnable:        true,
+    Prefix:               "cms_"
 })
 ```
 
@@ -78,7 +78,7 @@ myCms := cms.NewCms(cms.Config{
 ```go
 myCms := cms.NewCms(cms.Config{
     DbInstance:           db,
-	SettingsAutomigrate:  true,
+    SettingsAutomigrate:  true,
     SettingsEnable:       true,
 })
 ```
