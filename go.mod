@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gouniverse/bs v0.4.6
+	github.com/gouniverse/bs v0.4.7
 	github.com/gouniverse/cachestore v0.13.0
 	github.com/gouniverse/entitystore v0.49.0
 	github.com/gouniverse/hb v1.43.1

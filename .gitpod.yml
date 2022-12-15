@@ -6,8 +6,8 @@ tasks:
   - name: Install Taskfile
     command: go install github.com/go-task/task/v3/cmd/task@latest
 
-  - name: Install Fresh
-    command: go install github.com/pilu/fresh
+  - name: Install Air
+    command: go install github.com/cosmtrek/air@latest
 
   - name: Install Dependencies and Run
     init: go get && go build ./... && go test ./...
