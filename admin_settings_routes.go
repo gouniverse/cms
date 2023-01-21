@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/utils"
@@ -44,9 +45,9 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 		(endpoint + "?path=" + PathSettingsSettingManager): "Settings",
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "setting-manager")
+	container := bs.Container().ID("setting-manager")
 	heading := hb.NewHeading1().HTML("Setting Manager")
-	button := hb.NewButton().HTML("New setting").Attr("class", "btn btn-success float-end").Attr("v-on:click", "showSettingCreateModal")
+	button := bs.Button().HTML("New setting").Class("btn-success float-end").Attr("v-on:click", "showSettingCreateModal")
 	heading.AddChild(button)
 
 	container.AddChild(hb.NewHTML(header))
@@ -63,10 +64,10 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	table := hb.NewTable().Attr("id", "TableSettings").Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().ID("TableSettings").Class("table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
-	table.AddChild(thead).AddChild(tbody)
+	table.Child(thead).Child(tbody)
 
 	tr := hb.NewTR()
 	th1 := hb.NewTD().HTML("Name")
@@ -75,8 +76,8 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 
 	for _, settingKey := range settingKeys {
 		name := settingKey
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "settingEdit('"+settingKey+"')")
-		buttonDelete := hb.NewButton().HTML("Delete").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showSettingDeleteModal('"+settingKey+"')")
+		buttonEdit := bs.Button().HTML("Edit").Attr("type", "button").Class("btn-primary btn-sm").Attr("v-on:click", "settingEdit('"+settingKey+"')")
+		buttonDelete := bs.Button().HTML("Delete").Attr("type", "button").Class("btn-danger btn-sm").Attr("v-on:click", "showSettingDeleteModal('"+settingKey+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)

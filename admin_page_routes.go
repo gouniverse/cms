@@ -7,7 +7,8 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
-	"github.com/gouniverse/cms/ve"
+
+	// "github.com/gouniverse/cms/ve"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
@@ -176,7 +177,7 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 		bs.FormSelect().Attr("v-model", "pageModel.contentEditor").Children([]*hb.Tag{
 			bs.FormSelectOption("", "- none -"),
 			bs.FormSelectOption("codemirror", "CodeMirror"),
-			bs.FormSelectOption("visual", "Visual Editor (Experimental)"),
+			// bs.FormSelectOption("visual", "Visual Editor (Experimental)"),
 		}),
 		bs.FormText("The content editor allows you to select the mode for editing the content. Note you will need to save and refresh to activate"),
 	})
@@ -196,28 +197,28 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Canonical Url
-	formGroupCanonicalURL := bs.FormGroup()
-	formGroupCanonicalURLLabel := hb.NewLabel().HTML("Canonical Url").Attr("class", "form-label")
-	formGroupCanonicalURLInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.canonicalUrl")
-	formGroupCanonicalURL.AddChild(formGroupCanonicalURLLabel).AddChild(formGroupCanonicalURLInput)
+	formGroupCanonicalURL := bs.FormGroup().Children([]*hb.Tag{
+		bs.FormLabel("Canonical Url"),
+		bs.FormInput().Attr("v-model", "pageModel.canonicalUrl"),
+	})
 
 	// Meta Description
-	formGroupMetaDescription := bs.FormGroup()
-	formGroupMetaDescriptionLabel := bs.FormLabel("Meta Description")
-	formGroupMetaDescriptionInput := bs.FormInput().Attr("v-model", "pageModel.metaDescription")
-	formGroupMetaDescription.AddChild(formGroupMetaDescriptionLabel).AddChild(formGroupMetaDescriptionInput)
+	formGroupMetaDescription := bs.FormGroup().Children([]*hb.Tag{
+		bs.FormLabel("Meta Description"),
+		bs.FormInput().Attr("v-model", "pageModel.metaDescription"),
+	})
 
 	// Meta Keywords
-	formGroupMetaKeywords := hb.NewDiv().Attr("class", "form-group").Children([]*hb.Tag{
+	formGroupMetaKeywords := hb.NewDiv().Class("form-group").Children([]*hb.Tag{
 		bs.FormLabel("Meta Keywords"),
 		bs.FormInput().Attr("v-model", "pageModel.metaKeywords"),
 	})
 
 	// Robots
-	formGroupMetaRobots := hb.NewDiv().Attr("class", "form-group")
-	formGroupMetaRobotsLabel := hb.NewLabel().HTML("Meta Robots").Attr("class", "form-label")
-	formGroupMetaRobotsInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageModel.metaRobots")
-	formGroupMetaRobots.AddChild(formGroupMetaRobotsLabel).AddChild(formGroupMetaRobotsInput)
+	formGroupMetaRobots := hb.NewDiv().Class("form-group").Children([]*hb.Tag{
+		bs.FormLabel("Meta Robots"),
+		bs.FormInput().Attr("v-model", "pageModel.metaRobots"),
+	})
 
 	// Template
 	templateList, err := cms.EntityStore.EntityList("template", 0, 100, "", "id", "asc")
@@ -246,21 +247,21 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupTitle.Child(formGroupTitleLabel).Child(formGroupTitleInput)
 
 	// Content
-	editor, _ := page.GetString("content_editor", "")
+	// editor, _ := page.GetString("content_editor", "")
 	formGroupContent := bs.FormGroup()
 	formGroupContentLabel := bs.FormLabel("Content")
 	formGroupContentInput := hb.NewTextArea().Class("form-control CodeMirror").Attr("v-model", "pageModel.content")
-	formGroupContentInputVisualData := hb.NewTextArea().Class("form-control").Attr("v-model", "pageModel.contentVisual")
-	if editor == "visualeditor" {
-		// formGroupContentInput.Style("display:none")
-	} else {
-		// formGroupContentInputVisualData.Style("display:none")
-	}
+	// formGroupContentInputVisualData := hb.NewTextArea().Class("form-control").Attr("v-model", "pageModel.contentVisual")
+	// if editor == "visualeditor" {
+	// formGroupContentInput.Style("display:none")
+	// } else {
+	// formGroupContentInputVisualData.Style("display:none")
+	// }
 	formGroupContent.Children([]*hb.Tag{
 		formGroupContentLabel,
 		formGroupContentInput,
-		formGroupContentInputVisualData,
-		hb.NewHTML(ve.VisualeditorContent()),
+		// formGroupContentInputVisualData,
+		// hb.NewHTML(ve.VisualeditorContent()),
 	})
 
 	tabContentContent.Children([]*hb.Tag{
@@ -451,7 +452,7 @@ Vue.createApp(PageUpdate).mount('#page-update')
 }
 	`)
 	webpage.AddScript(inlineScript)
-	webpage.AddScript(ve.VisualeditorScripts())
+	// webpage.AddScript(ve.VisualeditorScripts())
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
 	w.Write([]byte(webpage.ToHTML()))
