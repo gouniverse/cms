@@ -34,6 +34,8 @@ type Config struct {
 	SettingsEnable      bool
 	TemplatesEnable     bool
 	TranslationsEnable  bool
+	UsersEnable         bool
+	DashboardEnable     bool
 	WidgetsEnable       bool
 }
 
@@ -45,6 +47,7 @@ type Cms struct {
 	LogStore     *logstore.Store
 	SessionStore *sessionstore.Store
 	SettingStore *settingstore.Store
+	UserStore    *entitystore.Store
 
 	entitiesAutoMigrate bool
 	entityTableName     string
@@ -78,6 +81,11 @@ type Cms struct {
 	settingsEnabled     bool
 	settingsAutomigrate bool
 	settingsTableName   string
+
+	usersEnabled           bool
+	usersAutoMigrate       bool
+	userEntityTableName    string
+	userAttributeTableName string
 }
 
 func configToCms(config Config) *Cms {
@@ -114,6 +122,8 @@ func configToCms(config Config) *Cms {
 	cms.logTableName = cms.prefix + "log"
 	cms.sessionTableName = cms.prefix + "session"
 	cms.settingsTableName = cms.prefix + "setting"
+	cms.userEntityTableName = cms.prefix + "users_entity"
+	cms.userAttributeTableName = cms.prefix + "users_attribute"
 
 	return cms
 }
@@ -141,8 +151,26 @@ func NewCms(config Config) (*Cms, error) {
 		}
 	}
 
+	if cms.usersEnabled {
+		cms.UserStore, err = entitystore.NewStore(entitystore.WithDb(cms.DbInstance), entitystore.WithEntityTableName(cms.userEntityTableName), entitystore.WithAttributeTableName(cms.userAttributeTableName))
+
+		if err != nil {
+			return nil, err
+		}
+
+		if cms.usersAutoMigrate {
+			err = cms.UserStore.AutoMigrate()
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	if cms.cacheEnabled {
-		cms.CacheStore, err = cachestore.NewStore(cachestore.WithDb(cms.DbInstance), cachestore.WithTableName(cms.cacheTableName))
+		cms.CacheStore, err = cachestore.NewStore(cachestore.NewStoreOptions{
+			DB:             cms.DbInstance,
+			CacheTableName: cms.cacheTableName,
+		})
 
 		if err != nil {
 			// log.Panicln("Cache store failed to be intiated")
@@ -178,7 +206,10 @@ func NewCms(config Config) (*Cms, error) {
 	}
 
 	if cms.sessionEnabled {
-		cms.SessionStore, err = sessionstore.NewStore(sessionstore.WithDb(cms.DbInstance), sessionstore.WithTableName(cms.sessionTableName))
+		cms.SessionStore, err = sessionstore.NewStore(sessionstore.NewStoreOptions{
+			DB:               cms.DbInstance,
+			SessionTableName: cms.sessionTableName,
+		})
 
 		if err != nil {
 			// log.Panicln("Session store failed to be intiated")
