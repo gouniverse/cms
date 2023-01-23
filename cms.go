@@ -35,6 +35,7 @@ type Config struct {
 	TemplatesEnable     bool
 	TranslationsEnable  bool
 	UsersEnable         bool
+	UsersAutomigrate    bool
 	DashboardEnable     bool
 	WidgetsEnable       bool
 }
@@ -112,6 +113,8 @@ func configToCms(config Config) *Cms {
 	cms.templatesEnabled = config.TemplatesEnable
 	cms.translationsEnabled = config.TranslationsEnable
 	cms.widgetsEnabled = config.WidgetsEnable
+	cms.usersEnabled = config.UsersEnable
+	cms.usersAutoMigrate = config.UsersAutomigrate
 	cms.DbInstance = config.DbInstance
 	cms.prefix = config.Prefix
 

@@ -50,6 +50,7 @@ func main() {
 		SessionEnable:       true,
 		TemplatesEnable:     true,
 		UsersEnable:         true,
+		UsersAutomigrate:    true,
 		Prefix:              "cms2",
 		CustomEntityList:    entityList(),
 	})

@@ -26,16 +26,17 @@ func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
 func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathHome: cms.pageHome,
-		// // START: Blocks
+
+		// START: Blocks
 		PathBlocksBlockCreateAjax: cms.pageBlocksBlockCreateAjax,
 		PathBlocksBlockDeleteAjax: cms.pageBlocksBlockDeleteAjax,
 		PathBlocksBlockManager:    cms.pageBlocksBlockManager,
 		PathBlocksBlockUpdate:     cms.pageBlocksBlockUpdate,
 		PathBlocksBlockTrashAjax:  cms.pageBlocksBlockTrashAjax,
 		PathBlocksBlockUpdateAjax: cms.pageBlocksBlockUpdateAjax,
-		// // END: Blocks
+		// END: Blocks
 
-		// // START: Menus
+		// START: Menus
 		PathMenusMenuCreateAjax:      cms.pageMenusMenuCreateAjax,
 		PathMenusMenuManager:         cms.pageMenusMenuManager,
 		PathMenusMenuUpdate:          cms.pageMenusMenuUpdate,
@@ -43,45 +44,53 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		PathMenusMenuItemsUpdate:     cms.pageMenusMenuItemsUpdate,
 		PathMenusMenuItemsUpdateAjax: cms.pageMenusMenuItemsUpdateAjax,
 		PathMenusMenuUpdateAjax:      cms.pageMenusMenuUpdateAjax,
-		// // END: Menus
+		// END: Menus
 
-		// // START: Pages
+		// START: Pages
 		PathPagesPageCreateAjax: cms.pagePagesPageCreateAjax,
 		PathPagesPageManager:    cms.pagePagesPageManager,
 		PathPagesPageTrashAjax:  cms.pagePagesPageTrashAjax,
 		PathPagesPageUpdate:     cms.pagePagesPageUpdate,
 		PathPagesPageUpdateAjax: cms.pagePagesPageUpdateAjax,
-		// // END: Pages
+		// END: Pages
 
-		// // START: Templates
+		// START: Templates
 		PathTemplatesTemplateCreateAjax: cms.pageTemplatesTemplateCreateAjax,
 		PathTemplatesTemplateManager:    cms.pageTemplatesTemplateManager,
 		PathTemplatesTemplateTrashAjax:  cms.pageTemplatesTemplateTrashAjax,
 		PathTemplatesTemplateUpdate:     cms.pageTemplatesTemplateUpdate,
 		PathTemplatesTemplateUpdateAjax: cms.pageTemplatesTemplateUpdateAjax,
-		// // END: Templates
+		// END: Templates
 
-		// // START: Widgets
+		// START: Widgets
 		PathWidgetsWidgetCreateAjax: cms.pageWidgetsWidgetCreateAjax,
 		PathWidgetsWidgetManager:    cms.pageWidgetsWidgetManager,
 		PathWidgetsWidgetUpdate:     cms.pageWidgetsWidgetUpdate,
 		PathWidgetsWidgetUpdateAjax: cms.pageWidgetsWidgetUpdateAjax,
-		// // END: Widgets
+		// END: Widgets
 
-		// // START: Settings
+		// START: Settings
 		PathSettingsSettingCreateAjax: cms.pageSettingsSettingCreateAjax,
 		PathSettingsSettingDeleteAjax: cms.pageSettingsSettingDeleteAjax,
 		PathSettingsSettingManager:    cms.pageSettingsSettingManager,
 		PathSettingsSettingUpdate:     cms.pageSettingsSettingUpdate,
 		PathSettingsSettingUpdateAjax: cms.pageSettingsSettingUpdateAjax,
-		// // END: Settings
+		// END: Settings
 
-		// // START: Custom Entities
+		// START: Users
+		PathUsersUserCreateAjax: cms.pageUsersUserCreateAjax,
+		PathUsersUserTrashAjax:  cms.pageUsersUserTrashAjax,
+		PathUsersUserManager:    cms.pageUsersUserManager,
+		PathUsersUserUpdate:     cms.pageUsersUserUpdate,
+		PathUsersUserUpdateAjax: cms.pageUsersUserUpdateAjax,
+		// END: Users
+
+		// START: Custom Entities
 		PathEntitiesEntityCreateAjax: cms.pageEntitiesEntityCreateAjax,
 		PathEntitiesEntityManager:    cms.pageEntitiesEntityManager,
 		PathEntitiesEntityUpdate:     cms.pageEntitiesEntityUpdate,
 		PathEntitiesEntityUpdateAjax: cms.pageEntitiesEntityUpdateAjax,
-		// // END: Custom Entities
+		// END: Custom Entities
 
 	}
 	// log.Println(route)
@@ -90,6 +99,30 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 	}
 
 	return routes[PathHome]
+}
+
+func (cms Cms) pageUserHome(w http.ResponseWriter, r *http.Request) {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+	// log.Println(endpoint)
+
+	header := cms.cmsHeader(endpoint)
+	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+		endpoint: "Home",
+	})
+
+	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")
+	heading := hb.NewHeading1().HTML("User Dashboard")
+
+	container.AddChild(hb.NewHTML(header))
+	container.AddChild(heading)
+	container.AddChild(hb.NewHTML(breadcrums))
+
+	h := container.ToHTML()
+
+	webpage := Webpage("Home", h)
+	w.WriteHeader(200)
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(webpage.ToHTML()))
 }
 
 func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {

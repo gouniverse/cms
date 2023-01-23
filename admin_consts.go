@@ -8,8 +8,11 @@ func (c contextKey) String() string {
 
 const (
 	keyEndpoint = contextKey("endpoint")
-	// PathHome contains the path to admin home page
+	// PathHome contains the path to admin CMS home page
 	PathHome string = "home"
+
+	// PathUsersHome contains the path to admin user home page
+	PathUsersHome string = "user-home"
 
 	// START: Blocks
 	// PathBlocksBlockCreateAjax contains the path to admin block create page
@@ -92,6 +95,19 @@ const (
 	// PathSettingsSettingUpdateAjax contains the path to admin settings update page
 	PathSettingsSettingUpdateAjax string = "settings/setting-update-ajax"
 	// END: Settings
+
+	// START: Users
+	// PathUsersUserManager contains the path to admin users manager page
+	PathUsersUserManager string = "users/user-manager"
+	// PathUsersUserCreateAjax contains the path to admin users create page
+	PathUsersUserCreateAjax string = "users/user-create-ajax"
+	// PathUsersUserDeleteAjax contains the path to admin users delete page
+	PathUsersUserTrashAjax string = "users/user-trash-ajax"
+	// PathUsersUserUpdate contains the path to admin users update page
+	PathUsersUserUpdate string = "users/user-update"
+	// PathUsersUserUpdateAjax contains the path to admin users update page
+	PathUsersUserUpdateAjax string = "users/user-update-ajax"
+	// END: Users
 
 	// START: Custom Entities
 	// PathEntitiesEntityManager contains the path to admin entities update page

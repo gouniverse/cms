@@ -7,19 +7,19 @@ require (
 	github.com/gouniverse/bs v0.5.1
 	github.com/gouniverse/cachestore v0.15.0
 	github.com/gouniverse/entitystore v0.49.0
-	github.com/gouniverse/hb v1.45.0
+	github.com/gouniverse/hb v1.46.0
 	github.com/gouniverse/logstore v1.2.0
 	github.com/gouniverse/sessionstore v0.17.0
 	github.com/gouniverse/settingstore v0.11.0
 	github.com/gouniverse/utils v1.27.1
 	github.com/lib/pq v1.10.7
 	github.com/stretchr/testify v1.8.1
-	modernc.org/sqlite v1.20.2
+	modernc.org/sqlite v1.20.3
 )
 
 require (
 	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
-	github.com/dustin/go-humanize v1.0.0 // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/georgysavva/scany v1.2.1 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 )
