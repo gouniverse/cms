@@ -6,12 +6,12 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gouniverse/bs v0.5.1
 	github.com/gouniverse/cachestore v0.15.0
-	github.com/gouniverse/entitystore v0.49.0
+	github.com/gouniverse/entitystore v0.50.0
 	github.com/gouniverse/hb v1.46.0
 	github.com/gouniverse/logstore v1.2.0
 	github.com/gouniverse/sessionstore v0.17.0
 	github.com/gouniverse/settingstore v0.11.0
-	github.com/gouniverse/utils v1.27.1
+	github.com/gouniverse/utils v1.29.0
 	github.com/lib/pq v1.10.7
 	github.com/stretchr/testify v1.8.1
 	modernc.org/sqlite v1.20.3
@@ -36,7 +36,7 @@ require (
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/remyoudompheng/bigfft v0.0.0-20220927061507-ef77025ab5aa // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/tdewolff/minify/v2 v2.12.4 // indirect
 	github.com/tdewolff/parse/v2 v2.6.5 // indirect
 	golang.org/x/mod v0.7.0 // indirect
