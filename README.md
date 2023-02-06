@@ -229,7 +229,7 @@ if token == "" {
 
 - Example router (using the Chi router)
 
-```
+```golang
 package routes
 
 import (
