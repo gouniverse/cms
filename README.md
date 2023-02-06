@@ -43,7 +43,7 @@ if db == nil {
 	return
 }
 
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
 	DbInstance:           db,
 })
 ```
@@ -51,7 +51,7 @@ myCms := cms.NewCms(cms.Config{
 # Initialization with entity types
 
 ```go
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
 	DbInstance:           db,
 	EntitiesAutomigrate:  true,
 })
@@ -61,7 +61,7 @@ myCms := cms.NewCms(cms.Config{
 # Initialization with CMS types
 
 ```go
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:           db,
     EntitiesAutomigrate:  true,
     BlocksEnable:         true,
@@ -76,7 +76,7 @@ myCms := cms.NewCms(cms.Config{
 # Initialization with Settings
 
 ```go
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:           db,
     SettingsAutomigrate:  true,
     SettingsEnable:       true,
@@ -181,7 +181,7 @@ func entityList() []cms.CustomEntityStructure {
 	return list
 }
 
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:           db,
     EntitiesAutomigrate:  true,
     CustomEntityList:     entityList(),
@@ -198,7 +198,7 @@ https://github.com/gouniverse/cachestore
 1. Initialization with Cache Store
 
 ```go
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:        db,
     CacheAutomigrate:  true,
     CacheEnable:       true,
