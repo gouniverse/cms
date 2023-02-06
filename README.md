@@ -225,6 +225,38 @@ if token == "" {
 }
 ```
 
+## CMS Setup
+
+- Example router (using the Chi router)
+
+```
+package routes
+
+import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+)
+
+// Routes returns the routes of the application
+func Routes(cmsRouter http.HandlerFunc) *chi.Mux {
+	router := chi.NewRouter()
+
+	router.Route("/admin", func(router chi.Router) {
+		router.Use(AdminOnlyMiddleware)
+		router.Get("/cms", cmsRouter)
+		router.Get("/cms/{catchall:.*}", cmsRouter)
+		router.Post("/cms", cmsRouter)
+		router.Post("/cms/{catchall:.*}", cmsRouter)
+	})
+
+	router.Get("/", CmsController{}.Frontend)
+	router.Get("/{catchall:.*}", CmsController{}.Frontend)
+	router.Post("/{catchall:.*}", CmsController{}.Frontend)
+	return router
+}
+```
+
 ## Development Instructions
 
 There is a development directory that allows you to quickly start working on the project or simply to preview
