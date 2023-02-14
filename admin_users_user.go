@@ -231,7 +231,7 @@ func (cms Cms) pageUsersUserTrashAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.Respond(w, r, api.SuccessWithData("User moved to trash successfully", map[string]interface{}{
-		"user_id": user.ID,
+		"user_id": user.ID(),
 	}))
 }
 
@@ -267,7 +267,7 @@ func (cms Cms) pageUsersUserCreateAjax(w http.ResponseWriter, r *http.Request) {
 	user.SetString("last_name", lastName)
 	user.SetString("status", "inactive")
 
-	api.Respond(w, r, api.SuccessWithData("User saved successfully", map[string]interface{}{"user_id": user.ID}))
+	api.Respond(w, r, api.SuccessWithData("User saved successfully", map[string]interface{}{"user_id": user.ID()}))
 }
 
 func (cms Cms) pageUsersUserUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -312,7 +312,7 @@ func (cms Cms) pageUsersUserUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("User saved successfully", map[string]interface{}{"user_id": user.ID}))
+	api.Respond(w, r, api.SuccessWithData("User saved successfully", map[string]interface{}{"user_id": user.ID()}))
 }
 
 func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
@@ -459,7 +459,7 @@ const UserUpdate = {
 Vue.createApp(UserUpdate).mount('#user-update')
 	`
 
-	webpage := Webpage("Edit Page", h)
+	webpage := Webpage("Edit User", h)
 	webpage.AddStyleURLs([]string{
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
 	})

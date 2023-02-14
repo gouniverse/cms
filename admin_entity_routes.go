@@ -40,7 +40,7 @@ func (cms Cms) pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Reque
 
 	entity.SetString("name", name)
 
-	api.Respond(w, r, api.SuccessWithData("Entity saved successfully", map[string]interface{}{"entity_id": entity.ID}))
+	api.Respond(w, r, api.SuccessWithData("Entity saved successfully", map[string]interface{}{"entity_id": entity.ID()}))
 }
 
 func (cms Cms) pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request) {
@@ -399,7 +399,7 @@ func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Entity saved successfully", map[string]interface{}{"entity_id": entity.ID}))
+	api.Respond(w, r, api.SuccessWithData("Entity saved successfully", map[string]interface{}{"entity_id": entity.ID()}))
 }
 
 func (cms Cms) customEntityAttributeList(entityType string) []CustomAttributeStructure {

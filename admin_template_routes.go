@@ -35,7 +35,7 @@ func (cms Cms) pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Re
 	template.SetString("status", "inactive")
 	cms.EntityStore.EntityUpdate(*template)
 
-	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
+	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID()}))
 }
 
 func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
@@ -402,7 +402,7 @@ func (cms Cms) pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Template moved to trash successfully", map[string]interface{}{"template_id": template.ID}))
+	api.Respond(w, r, api.SuccessWithData("Template moved to trash successfully", map[string]interface{}{"template_id": template.ID()}))
 }
 
 // pageTemplatesTemplateUpdateAjax - saves the template via Ajax
@@ -466,7 +466,7 @@ func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
+	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID()}))
 }
 
 func pageTemplatesTemplateTrashModal() *hb.Tag {

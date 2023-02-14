@@ -34,7 +34,7 @@ func (cms Cms) pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request)
 
 	block.SetString("name", name)
 
-	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
+	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
@@ -466,7 +466,7 @@ func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
+	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
@@ -501,7 +501,7 @@ func (cms Cms) pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID}))
+	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
@@ -536,7 +536,7 @@ func (cms Cms) pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Block trashed successfully", map[string]interface{}{"block_id": block.ID}))
+	api.Respond(w, r, api.SuccessWithData("Block trashed successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockTrashModal() *hb.Tag {

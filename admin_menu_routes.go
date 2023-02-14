@@ -37,7 +37,7 @@ func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 	menu.SetString("name", name)
 
-	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
+	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
 }
 
 func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
@@ -322,7 +322,7 @@ func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
+	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
 }
 
 func getChildren(data []map[string]interface{}, parentID string) []map[string]interface{} {
@@ -426,7 +426,7 @@ func (cms Cms) pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Reques
 	tree := cms.buildTree(menuID)
 
 	api.Respond(w, r, api.SuccessWithData("Menu items found successfully", map[string]interface{}{
-		"menu_id":   menu.ID,
+		"menu_id":   menu.ID(),
 		"menuitems": tree,
 	}))
 }

@@ -41,7 +41,7 @@ func (cms Cms) pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 	page.SetString("title", name)
 	page.SetString("alias", "/"+utils.StrSlugify(name+"-"+utils.StrRandom(16), '-'))
 
-	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID}))
+	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID()}))
 }
 
 func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -109,7 +109,7 @@ func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID}))
+	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID()}))
 }
 
 func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
@@ -645,7 +645,7 @@ func (cms Cms) pagePagesPageTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Page moved to trash successfully", map[string]interface{}{"page_id": page.ID}))
+	api.Respond(w, r, api.SuccessWithData("Page moved to trash successfully", map[string]interface{}{"page_id": page.ID()}))
 }
 
 func pagePagesPageTrashModal() *hb.Tag {

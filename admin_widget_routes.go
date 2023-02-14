@@ -33,7 +33,7 @@ func (cms Cms) pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Reques
 
 	widget.SetString("name", name)
 
-	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID}))
+	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID()}))
 }
 
 func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
@@ -344,5 +344,5 @@ func (cms Cms) pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID}))
+	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID()}))
 }
