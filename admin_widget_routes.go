@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
@@ -68,7 +69,13 @@ func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) 
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	widgets, err := cms.EntityStore.EntityList("widget", 0, 200, "", "id", "asc")
+	widgets, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "widget",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widgets failed to be fetched: "+err.Error()))
@@ -89,7 +96,7 @@ func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) 
 	for _, widget := range widgets {
 		name, _ := widget.GetString("name", "n/a")
 		status, _ := widget.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "widgetEdit('"+widget.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "widgetEdit('"+widget.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -200,7 +207,7 @@ func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this widget in your website use the following shortcode:"))
 	widgetName, _ := widget.GetString("name", "")
 	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Widget: ` + widgetName + ` -->
-[[BLOCK_` + widget.ID + `]]
+[[BLOCK_` + widget.ID() + `]]
 &lt;!-- END: Widget: ` + widgetName + ` -->`))
 	paragraphUsage.AddChild(code)
 
@@ -213,7 +220,7 @@ func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	name, _ := widget.GetString("name", "")
-	statusAttribute, err := cms.EntityStore.AttributeFind(widget.ID, "status")
+	statusAttribute, err := cms.EntityStore.AttributeFind(widget.ID(), "status")
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be found: "+err.Error()))
 		return
@@ -223,7 +230,7 @@ func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := cms.EntityStore.AttributeFind(widget.ID, "content")
+	contentAttribute, err := cms.EntityStore.AttributeFind(widget.ID(), "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be found: "+err.Error()))
@@ -330,15 +337,10 @@ func (cms Cms) pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Reques
 	widget.SetString("content", content)
 	widget.SetString("name", name)
 	widget.SetString("handle", handle)
-	isOk, err := widget.SetString("status", status)
+	err := widget.SetString("status", status)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widget failed to be updated: "+err.Error()))
-		return
-	}
-
-	if !isOk {
-		api.Respond(w, r, api.Error("Widget failed to be updated"))
 		return
 	}
 

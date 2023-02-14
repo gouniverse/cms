@@ -141,7 +141,11 @@ func NewCms(config Config) (*Cms, error) {
 	cms := configToCms(config)
 
 	var err error
-	cms.EntityStore, err = entitystore.NewStore(entitystore.WithDb(cms.DbInstance), entitystore.WithEntityTableName(cms.entityTableName), entitystore.WithAttributeTableName(cms.attributeTableName))
+	cms.EntityStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
+		DB:                 cms.DbInstance,
+		EntityTableName:    cms.entityTableName,
+		AttributeTableName: cms.attributeTableName,
+	})
 
 	if err != nil {
 		return nil, err
@@ -155,7 +159,11 @@ func NewCms(config Config) (*Cms, error) {
 	}
 
 	if cms.usersEnabled {
-		cms.UserStore, err = entitystore.NewStore(entitystore.WithDb(cms.DbInstance), entitystore.WithEntityTableName(cms.userEntityTableName), entitystore.WithAttributeTableName(cms.userAttributeTableName))
+		cms.UserStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
+			DB:                 cms.DbInstance,
+			EntityTableName:    cms.userAttributeTableName,
+			AttributeTableName: cms.userAttributeTableName,
+		})
 
 		if err != nil {
 			return nil, err

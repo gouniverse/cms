@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
@@ -173,11 +174,21 @@ func (cms Cms) cmsHeader(endpoint string) string {
 	linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
 	linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
 	linkTranslations := hb.NewHyperlink().HTML("Translations").Attr("href", "#").Attr("class", "nav-link")
-	blocksCount, _ := cms.EntityStore.EntityCount("block")
-	menusCount, _ := cms.EntityStore.EntityCount("menu")
-	pagesCount, _ := cms.EntityStore.EntityCount("page")
-	templatesCount, _ := cms.EntityStore.EntityCount("template")
-	widgetsCount, _ := cms.EntityStore.EntityCount("widget")
+	blocksCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+		EntityType: "block",
+	})
+	menusCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+		EntityType: "menu",
+	})
+	pagesCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+		EntityType: "page",
+	})
+	templatesCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+		EntityType: "template",
+	})
+	widgetsCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+		EntityType: "widget",
+	})
 
 	ulNav := hb.NewUL().Attr("class", "nav  nav-pills justify-content-center")
 	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkHome))

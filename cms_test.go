@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/gouniverse/entitystore"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
@@ -121,7 +122,13 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	assert.True(suite.T(), cms2.sessionEnabled, "Enable pages MUST BE true after init")
 	assert.True(suite.T(), cms2.templatesEnabled, "Enable templates MUST BE true after init")
 
-	pages, err := cms2.EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
+	pages, err := cms2.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "page",
+		Offset:     0,
+		Limit:      10,
+		SortBy:     "name",
+		SortOrder:  "ASC",
+	})
 	assert.Nil(suite.T(), err, "Entity list MUST NOT throw errors")
 	assert.Equal(suite.T(), 0, len(pages), "Pages must be 0 - %s found", len(pages))
 	//assert.HTTPBodyContainsf(suite.T(), cms2.Routes().ServeHTTP, "GET", "/auth", url.Values{}, "api key is required", "%")
@@ -152,7 +159,13 @@ func (suite *CmsTestSuite) TestCmsPages() {
 	})
 	assert.Nil(suite.T(), err)
 
-	pages, err := cms.EntityStore.EntityList("page", 0, 10, "", "name", "ASC")
+	pages, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "page",
+		Offset:     0,
+		Limit:      10,
+		SortBy:     "name",
+		SortOrder:  "ASC",
+	})
 	assert.Nil(suite.T(), err, "Entity list MUST NOT throw errors")
 	assert.Equal(suite.T(), 0, len(pages), "Pages must be 0 - %s found", len(pages))
 

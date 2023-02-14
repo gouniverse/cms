@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/utils"
@@ -72,7 +73,13 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	menus, err := cms.EntityStore.EntityList("menu", 0, 200, "", "id", "asc")
+	menus, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "menu",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
@@ -94,8 +101,8 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	for _, menu := range menus {
 		name, _ := menu.GetString("name", "n/a")
 		status, _ := menu.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID+"')")
-		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID()+"')")
+		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -308,15 +315,10 @@ func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	menu.SetString("name", name)
 	menu.SetString("handle", handle)
-	isOk, err := menu.SetString("status", status)
+	err := menu.SetString("status", status)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu failed to be updated "+err.Error()))
-		return
-	}
-
-	if !isOk {
-		api.Respond(w, r, api.Error("Menu failed to be updated"))
 		return
 	}
 
@@ -797,19 +799,14 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 		menuitem.SetString("sequence", sequence)
 		menuitem.SetString("page_id", pageID)
 		menuitem.SetString("url", url)
-		isOk, err := menuitem.SetString("target", target)
+		err := menuitem.SetString("target", target)
 
 		if err != nil {
 			api.Respond(w, r, api.Error("Menu items failed to be updated "+err.Error()))
 			return
 		}
 
-		if !isOk {
-			api.Respond(w, r, api.Error("Menu items failed to be updated"))
-			return
-		}
-
-		newIDs = append(newIDs, menuitem.ID)
+		newIDs = append(newIDs, menuitem.ID())
 	}
 
 	allMenuItems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
@@ -823,11 +820,11 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 		//allIDs = append(allIDs, menuitem.ID)
 		exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
 		if !exists {
-			cms.EntityStore.EntityDelete(menuitem.ID)
+			cms.EntityStore.EntityDelete(menuitem.ID())
 		}
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
+	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
 }
 
 func keyExists(decoded map[string]interface{}, key string) bool {

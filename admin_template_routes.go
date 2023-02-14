@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
@@ -41,7 +42,13 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	templates, err := cms.EntityStore.EntityList("template", 0, 200, "", "id", "asc")
+	templates, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "template",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Templates failed to be fetched: "+err.Error()))
@@ -88,8 +95,8 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 			api.Respond(w, r, api.Error("Attribute 'status' failed to be fetched: "+err.Error()))
 			return
 		}
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID()+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -428,25 +435,25 @@ func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	_, err := cms.EntityStore.AttributeSetString(template.ID, "content", content)
+	err := cms.EntityStore.AttributeSetString(template.ID(), "content", content)
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be updated: "+err.Error()))
 		return
 	}
 
-	_, err = cms.EntityStore.AttributeSetString(template.ID, "name", name)
+	err = cms.EntityStore.AttributeSetString(template.ID(), "name", name)
 	if err != nil {
 		api.Respond(w, r, api.Error("Name failed to be updated: "+err.Error()))
 		return
 	}
 
-	_, err = cms.EntityStore.AttributeSetString(template.ID, "status", status)
+	err = cms.EntityStore.AttributeSetString(template.ID(), "status", status)
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be updated: "+err.Error()))
 		return
 	}
 
-	template.Handle = handle
+	template.SetHandle(handle)
 	isOk, err := cms.EntityStore.EntityUpdate(*template)
 
 	if err != nil {

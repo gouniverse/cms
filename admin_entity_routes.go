@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
@@ -82,7 +83,13 @@ func (cms Cms) pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request)
 	container.AddChild(cms.pageEntitiesEntityCreateModal())
 	container.AddChild(cms.pageEntitiesEntityTrashModal())
 
-	entities, err := cms.EntityStore.EntityList(entityType, 0, 200, "", "id", "asc")
+	entities, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: entityType,
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entities failed to be retrieved"))
@@ -103,8 +110,8 @@ func (cms Cms) pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request)
 	for _, entity := range entities {
 		name, _ := entity.GetString("name", "n/a")
 		status, _ := entity.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "entityEdit('"+entity.ID+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showEntityTrashModal('"+entity.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "entityEdit('"+entity.ID()+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showEntityTrashModal('"+entity.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -202,17 +209,17 @@ func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	entityAttributeList := cms.customEntityAttributeList(entity.Type)
+	entityAttributeList := cms.customEntityAttributeList(entity.Type())
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
 	breadcrums := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
-		(endpoint + "?path=" + PathEntitiesEntityManager + "&type=" + entity.Type):  "Custom Entities",
-		(endpoint + "?path=" + PathEntitiesEntityUpdate + "&entity_id=" + entityID): "Edit Entity",
+		(endpoint + "?path=" + PathEntitiesEntityManager + "&type=" + entity.Type()): "Custom Entities",
+		(endpoint + "?path=" + PathEntitiesEntityUpdate + "&entity_id=" + entityID):  "Edit Entity",
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "entity-update")
-	heading := hb.NewHeading1().HTML("Edit Custom Entity (type: " + entity.Type + ")")
+	heading := hb.NewHeading1().HTML("Edit Custom Entity (type: " + entity.Type() + ")")
 	button := hb.NewButton().HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "entitySave")
 	heading.AddChild(button)
 
@@ -254,11 +261,17 @@ func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) 
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}
 		if attr.BelongsToType != "" {
-			entities, _ := cms.EntityStore.EntityList(attr.BelongsToType, 0, 300, "", "name", "ASC")
+			entities, _ := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+				EntityType: attr.BelongsToType,
+				Offset:     0,
+				Limit:      300,
+				SortBy:     "name",
+				SortOrder:  "ASC",
+			})
 			formGroupAttrInput = hb.NewSelect().Attr("class", "form-select").Attr("v-model", "entityModel."+attrName)
 			for _, ent := range entities {
 				entName, _ := ent.GetString("name", "")
-				formGroupAttrOption := hb.NewOption().Attr("value", ent.ID).HTML(entName + " (" + ent.ID + ")")
+				formGroupAttrOption := hb.NewOption().Attr("value", ent.ID()).HTML(entName + " (" + ent.ID() + ")")
 				formGroupAttrInput.AddChild(formGroupAttrOption)
 			}
 		}
@@ -370,7 +383,7 @@ func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	entityAttributeList := cms.customEntityAttributeList(entity.Type)
+	entityAttributeList := cms.customEntityAttributeList(entity.Type())
 	for _, attr := range entityAttributeList {
 		attrValue := strings.Trim(utils.Req(r, attr.Name, ""), " ")
 		// attrLabel := attr.Label
@@ -379,14 +392,9 @@ func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Reque
 
 	entity.SetString("name", name)
 	entity.SetString("handle", handle)
-	isOk, err := entity.SetString("status", status)
+	err := entity.SetString("status", status)
 
 	if err != nil {
-		api.Respond(w, r, api.Error("Entity failed to be updated"))
-		return
-	}
-
-	if !isOk {
 		api.Respond(w, r, api.Error("Entity failed to be updated"))
 		return
 	}

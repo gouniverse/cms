@@ -7,6 +7,7 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/entitystore"
 
 	// "github.com/gouniverse/cms/ve"
 	"github.com/gouniverse/hb"
@@ -101,15 +102,10 @@ func (cms Cms) pagePagesPageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 	page.SetString("status", status)
 	page.SetString("template_id", templateID)
 	page.SetString("handle", handle)
-	isOk, err := page.SetString("title", title)
+	err := page.SetString("title", title)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page failed to be updated: "+err.Error()))
-		return
-	}
-
-	if !isOk {
-		api.Respond(w, r, api.Error("Page failed to be updated"))
 		return
 	}
 
@@ -221,7 +217,13 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Template
-	templateList, err := cms.EntityStore.EntityList("template", 0, 100, "", "id", "asc")
+	templateList, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "template",
+		Offset:     0,
+		Limit:      100,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
 		return
@@ -231,7 +233,7 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	formGroupTemplateSelect.Child(formGroupTemplateOptionsEmpty)
 	for _, template := range templateList {
 		templateName, _ := template.GetString("name", "n/a")
-		formGroupTemplateOptionsTemplate := bs.FormSelectOption(template.ID, templateName)
+		formGroupTemplateOptionsTemplate := bs.FormSelectOption(template.ID(), templateName)
 		formGroupTemplateSelect.Child(formGroupTemplateOptionsTemplate)
 	}
 	formGroupTemplate := bs.FormGroup().Children([]*hb.Tag{
@@ -462,7 +464,13 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	pages, err := cms.EntityStore.EntityList("page", 0, 200, "", "id", "asc")
+	pages, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "page",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page list failed to be retrieved "+err.Error()))
@@ -514,8 +522,8 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 		name, _ := page.GetString("name", "n/a")
 		alias, _ := page.GetString("alias", "n/a")
 		status, _ := page.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "pageEdit('"+page.ID+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showPageTrashModal('"+page.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "pageEdit('"+page.ID()+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showPageTrashModal('"+page.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name).AddChild(hb.NewDiv().HTML(alias).Attr("style", "font-size:11px;"))

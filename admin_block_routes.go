@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/utils"
@@ -58,7 +59,13 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(cms.pageBlocksBlockCreateModal())
 	container.AddChild(cms.pageBlocksBlockTrashModal())
 
-	blocks, err := cms.EntityStore.EntityList("block", 0, 200, "", "id", "asc")
+	blocks, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "block",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Blocks failed to be listed"))
@@ -88,8 +95,8 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		//buttonDelete := hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger float-end").Attr("v-on:click", "showBlockDeleteModal('"+block.ID+"')")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "blockEdit('"+block.ID+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showBlockTrashModal('"+block.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "blockEdit('"+block.ID()+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showBlockTrashModal('"+block.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -264,7 +271,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	blockName, _ := block.GetString("name", "")
 	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Block: ` + blockName + ` -->
-[[BLOCK_` + block.ID + `]]
+[[BLOCK_` + block.ID() + `]]
 &lt;!-- END: Block: ` + blockName + ` -->`))
 	paragraphUsage.AddChild(code)
 
@@ -281,7 +288,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		api.Respond(w, r, api.Error("Name failed to be retrieved: "+err.Error()))
 		return
 	}
-	statusAttribute, err := cms.EntityStore.AttributeFind(block.ID, "status")
+	statusAttribute, err := cms.EntityStore.AttributeFind(block.ID(), "status")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be pulled"))
@@ -292,7 +299,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := cms.EntityStore.AttributeFind(block.ID, "content")
+	contentAttribute, err := cms.EntityStore.AttributeFind(block.ID(), "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be fetched"))
@@ -452,9 +459,9 @@ func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request)
 	block.SetString("content", content)
 	block.SetString("name", name)
 	block.SetString("handle", handle)
-	isOk, _ := block.SetString("status", status)
+	errSetString := block.SetString("status", status)
 
-	if !isOk {
+	if errSetString != nil {
 		api.Respond(w, r, api.Error("Block failed to be updated"))
 		return
 	}

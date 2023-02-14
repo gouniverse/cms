@@ -7,6 +7,7 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/utils"
 )
@@ -15,7 +16,13 @@ func (cms Cms) pageUsersUserManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	users, err := cms.UserStore.EntityList("user", 0, 200, "", "id", "asc")
+	users, err := cms.UserStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "user",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("User list failed to be retrieved "+err.Error()))
@@ -56,8 +63,8 @@ func (cms Cms) pageUsersUserManager(w http.ResponseWriter, r *http.Request) {
 		firstName, _ := user.GetString("first_name", "n/a")
 		lastName, _ := user.GetString("last_name", "n/a")
 		status, _ := user.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "userEdit('"+user.ID+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showUserTrashModal('"+user.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "userEdit('"+user.ID()+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showUserTrashModal('"+user.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(firstName + " " + lastName)
@@ -298,15 +305,10 @@ func (cms Cms) pageUsersUserUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	user.SetString("first_name", firstName)
 	user.SetString("last_name", lastName)
-	isOk, err := user.SetString("status", status)
+	err := user.SetString("status", status)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("User failed to be updated: "+err.Error()))
-		return
-	}
-
-	if !isOk {
-		api.Respond(w, r, api.Error("User failed to be updated"))
 		return
 	}
 
