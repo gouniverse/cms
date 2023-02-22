@@ -55,6 +55,8 @@ github.com/gouniverse/icons v1.3.0 h1:GzKzjfxDxSdJt7qFv3Qb2vr0O3NgfVBDmH7TJy+X3t
 github.com/gouniverse/icons v1.3.0/go.mod h1:s/8uu1UY8LL9e8hfJONQBTI0np9zG6FMqq2gbENqoZU=
 github.com/gouniverse/logstore v1.2.0 h1:VplSDdL1pANSZT6p86SJ/0XRmTGGwe5w1RUjcgg3vh8=
 github.com/gouniverse/logstore v1.2.0/go.mod h1:SXQxq2s8z6ASGvZrLOx72KTOoAdYyxk6keecZZpqFg4=
+github.com/gouniverse/responses v0.1.0 h1:jzVnYmXYT3CmEGtJIfgM4cXfttVDxYWpQGqHDtUWKvc=
+github.com/gouniverse/responses v0.1.0/go.mod h1:hszJpLrEiH5Hvv4DPBHFQYL0aPxMNgpjmajqCLeI/vE=
 github.com/gouniverse/sessionstore v0.17.0 h1:0ECqLkZHJFi2I983q6WIUVglL2RO2zzwWbGTUe41GJw=
 github.com/gouniverse/sessionstore v0.17.0/go.mod h1:f+Na8eJBCvsHR50/s4imXpSpUd7hKTLdl/nfXhdEa/E=
 github.com/gouniverse/settingstore v0.11.0 h1:cn84YxYYAPLtlgXfWiMMV+R4q5p26DFNyjLuSEbtP3E=

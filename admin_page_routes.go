@@ -8,6 +8,7 @@ import (
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
+	"github.com/gouniverse/responses"
 
 	// "github.com/gouniverse/cms/ve"
 	"github.com/gouniverse/hb"
@@ -455,9 +456,8 @@ Vue.createApp(PageUpdate).mount('#page-update')
 	`)
 	webpage.AddScript(inlineScript)
 	// webpage.AddScript(ve.VisualeditorScripts())
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
@@ -612,9 +612,8 @@ Vue.createApp(PageManager).mount('#page-manager')
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 // pagePagesPageTrashAjax - moves the template to the trash

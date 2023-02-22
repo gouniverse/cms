@@ -9,6 +9,7 @@ import (
 	"github.com/gouniverse/bs"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -164,9 +165,8 @@ Vue.createApp(SettingManager).mount('#setting-manager')
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
@@ -313,9 +313,8 @@ Vue.createApp(SettingUpdate).mount('#setting-update')
 }
 	`)
 	webtemplate.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webtemplate.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webtemplate.ToHTML()))
 }
 
 func (cms Cms) pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {

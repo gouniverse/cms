@@ -7,6 +7,7 @@ import (
 
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -139,10 +140,9 @@ func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	webpage := Webpage("Home", h)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+	webpage := Webpage("Home", h).ToHTML()
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage))
 }
 
 func (cms Cms) cmsBreadcrumbs(breadcrumbs map[string]string) string {

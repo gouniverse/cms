@@ -38,6 +38,7 @@ type Config struct {
 	UsersAutomigrate    bool
 	DashboardEnable     bool
 	WidgetsEnable       bool
+	FuncLayout          func(content string) string
 }
 
 // Cms defines the cms
@@ -87,6 +88,8 @@ type Cms struct {
 	usersAutoMigrate       bool
 	userEntityTableName    string
 	userAttributeTableName string
+
+	funcLayout func(content string) string
 }
 
 func configToCms(config Config) *Cms {
@@ -95,6 +98,10 @@ func configToCms(config Config) *Cms {
 
 	if config.Prefix == "" {
 		cms.prefix = "cms_"
+	}
+
+	if config.FuncLayout == nil {
+		config.FuncLayout = cms.layout
 	}
 
 	cms.blocksEnabled = config.BlocksEnable
@@ -117,6 +124,7 @@ func configToCms(config Config) *Cms {
 	cms.usersAutoMigrate = config.UsersAutomigrate
 	cms.DbInstance = config.DbInstance
 	cms.prefix = config.Prefix
+	cms.funcLayout = config.FuncLayout
 
 	// Table Names
 	cms.attributeTableName = cms.prefix + "entities_attribute"
@@ -387,3 +395,18 @@ func NewCms(config Config) (*Cms, error) {
 // func GetDb() *sql.DB {
 // 	return configuration.DbInstance
 // }
+
+func (Cms) layout(content string) string {
+	return content
+	// font := hb.NewStyleURL("https://fonts.bunny.net/css?family=Nunito").ToHTML()
+	// style := hb.NewStyle(`
+	// html, body {
+	// 	background: #f8fafc;
+	// 	font-family: Nunito, sans-serif;;
+	// }
+	// `).ToHTML()
+	// h := hb.NewSection().
+	// 	Attr("style", "padding:120px 0px").
+	// 	AddChild(hb.NewHTML(content))
+	// return font + style + h.ToHTML()
+}

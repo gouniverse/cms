@@ -22,6 +22,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/georgysavva/scany v1.2.1 // indirect
 	github.com/golang-module/carbon/v2 v2.2.3 // indirect
+	github.com/gouniverse/responses v0.1.0 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
 )
 
