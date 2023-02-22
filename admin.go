@@ -102,36 +102,31 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 	return routes[PathHome]
 }
 
-func (cms Cms) pageUserHome(w http.ResponseWriter, r *http.Request) {
-	endpoint := r.Context().Value(keyEndpoint).(string)
-	// log.Println(endpoint)
-
-	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-	})
-
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")
-	heading := hb.NewHeading1().HTML("User Dashboard")
-
-	container.AddChild(hb.NewHTML(header))
-	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
-
-	h := container.ToHTML()
-
-	webpage := Webpage("Home", h)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
-}
+// func (cms Cms) pageUserHome(w http.ResponseWriter, r *http.Request) {
+// 	endpoint := r.Context().Value(keyEndpoint).(string)
+// 	// log.Println(endpoint)
+// 	header := cms.cmsHeader(endpoint)
+// 	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
+// 		endpoint: "Home",
+// 	})
+// 	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")
+// 	heading := hb.NewHeading1().HTML("User Dashboard")
+// 	container.AddChild(hb.NewHTML(header))
+// 	container.AddChild(heading)
+// 	container.AddChild(hb.NewHTML(breadcrumbs))
+// 	h := container.ToHTML()
+// 	webpage := Webpage("Home", h)
+// 	w.WriteHeader(200)
+// 	w.Header().Set("Content-Type", "text/html")
+// 	w.Write([]byte(webpage.ToHTML()))
+// }
 
 func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 	})
 
@@ -140,7 +135,7 @@ func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	h := container.ToHTML()
 

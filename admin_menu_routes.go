@@ -45,7 +45,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	//log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager): "Menus",
 	})
@@ -57,7 +57,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	modal := hb.NewDiv().Attr("id", "ModalMenuCreate").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
@@ -66,7 +66,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	modalBody := hb.NewDiv().Attr("class", "modal-body")
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuCreateModel.name")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "menuCreate"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)
@@ -161,11 +161,11 @@ const MenuManager = {
 Vue.createApp(MenuManager).mount('#menu-manager')
 	`
 
-	webmenu := Webpage("Menu Manager", h)
-	webmenu.AddScript(inlineScript)
+	menu := Webpage("Menu Manager", h)
+	menu.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webmenu.ToHTML()))
+	w.Write([]byte(menu.ToHTML()))
 }
 
 func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
@@ -186,7 +186,7 @@ func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
 		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Edit menu",
@@ -214,7 +214,7 @@ func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(formGroupStatus).AddChild(formGroupName)
 
 	h := container.ToHTML()
@@ -278,11 +278,11 @@ const MenuUpdate = {
 Vue.createApp(MenuUpdate).mount('#menu-update')
 	`
 
-	webmenu := Webpage("Edit Menu", h)
-	webmenu.AddScript(inlineScript)
+	webMenu := Webpage("Edit Menu", h)
+	webMenu.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webmenu.ToHTML()))
+	w.Write([]byte(webMenu.ToHTML()))
 }
 
 func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -334,9 +334,9 @@ func getChildren(data []map[string]interface{}, parentID string) []map[string]in
 		if keyExists(node, "parent_id") {
 			nodeParentID = node["parent_id"].(string)
 		}
-		if keyExists(node, "sequence") {
-			//sequence = node["sequence"].(string)
-		}
+		//if keyExists(node, "sequence") {
+		//sequence = node["sequence"].(string)
+		//}
 		if nodeParentID == parentID {
 			//sequences = append(sequences, sequence)
 			children = append(children, node)
@@ -451,7 +451,7 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 	menuName, _ := menu.GetString("name", "")
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
 		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Menu",
@@ -479,7 +479,7 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(actionsCard)
 
 	modal := hb.NewDiv().Attr("id", "ModalItemUpdate").Attr("class", "modal fade")
@@ -492,7 +492,7 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("URL")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.url")))
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Target")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.target")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Update").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemUpdate").Attr("data-bs-dismiss", "modal"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)

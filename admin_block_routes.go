@@ -42,7 +42,7 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathBlocksBlockManager): "Blocks",
 	})
@@ -54,7 +54,7 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	container.AddChild(cms.pageBlocksBlockCreateModal())
 	container.AddChild(cms.pageBlocksBlockTrashModal())
@@ -235,7 +235,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathBlocksBlockManager):                         "Blocks",
 		(endpoint + "?path=" + PathBlocksBlockUpdate + "&block_id=" + blockID): "Edit block",
@@ -277,7 +277,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(formGroupStatus).AddChild(formGroupName).AddChild(formGroupContent)
 	container.AddChild(paragraphUsage)
 
@@ -395,11 +395,11 @@ const BlockUpdate = {
 Vue.createApp(BlockUpdate).mount('#block-update')
 	`
 
-	webtemplate := Webpage("Edit Block", h)
-	webtemplate.AddStyleURLs([]string{
+	template := Webpage("Edit Block", h)
+	template.AddStyleURLs([]string{
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
 	})
-	webtemplate.AddScriptURLs([]string{
+	template.AddScriptURLs([]string{
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
@@ -410,16 +410,16 @@ Vue.createApp(BlockUpdate).mount('#block-update')
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
 	})
-	webtemplate.AddStyle(`	
+	template.AddStyle(`	
 .CodeMirror {
 	border: 1px solid #eee;
 	height: auto;
 }
 	`)
-	webtemplate.AddScript(inlineScript)
+	template.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webtemplate.ToHTML()))
+	w.Write([]byte(template.ToHTML()))
 }
 
 func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -563,7 +563,7 @@ func (cms Cms) pageBlocksBlockCreateModal() *hb.Tag {
 	modalBody := hb.NewDiv().Attr("class", "modal-body")
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "blockCreateModel.name")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "blockCreate"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)
