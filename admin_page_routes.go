@@ -131,7 +131,7 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathPagesPageManager):                       "Pages",
 		(endpoint + "?path=" + PathPagesPageUpdate + "&page_id=" + pageID): "Edit page",
@@ -288,7 +288,7 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	container.Children([]*hb.Tag{
 		hb.NewHTML(header),
 		heading,
-		hb.NewHTML(breadcrums),
+		hb.NewHTML(breadcrumbs),
 		tabNavigation,
 		tabContent,
 	})

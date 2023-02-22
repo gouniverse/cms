@@ -12,6 +12,7 @@ import (
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -280,9 +281,8 @@ Vue.createApp(MenuUpdate).mount('#menu-update')
 
 	webMenu := Webpage("Edit Menu", h)
 	webMenu.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webMenu.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webMenu.ToHTML()))
 }
 
 func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {

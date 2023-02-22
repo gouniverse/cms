@@ -8,6 +8,7 @@ import (
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -187,9 +188,8 @@ Vue.createApp(EntityManager).mount('#entity-manager')
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
@@ -350,9 +350,8 @@ Vue.createApp(EntityUpdate).mount('#entity-update')
 
 	webpage := Webpage("Edit Custom Entity", h)
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {

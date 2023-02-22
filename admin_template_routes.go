@@ -8,6 +8,7 @@ import (
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -56,7 +57,7 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathTemplatesTemplateManager): "Templates",
 	})
@@ -68,7 +69,7 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	container.AddChild(pageTemplatesTemplateTrashModal())
 	container.AddChild(pageTemplatesTemplateCreateModal())
@@ -185,9 +186,8 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
 	//webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 // pageTemplatesTemplateUpdate shows the template edit page
@@ -369,9 +369,8 @@ Vue.createApp(TemplateUpdate).mount('#template-update')
 }
 	`)
 	webtemplate.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webtemplate.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webtemplate.ToHTML()))
 }
 
 // pageTemplatesTemplateTrashAjax - moves the template to the trash

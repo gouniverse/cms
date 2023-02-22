@@ -9,6 +9,7 @@ import (
 	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -155,9 +156,8 @@ Vue.createApp(UserManager).mount('#user-manager')
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func pageUsersUserTrashModal() *hb.Tag {
@@ -333,7 +333,7 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathUsersUserManager):                       "Users",
 		(endpoint + "?path=" + PathUsersUserUpdate + "&user_id=" + userID): "Edit user",
@@ -386,7 +386,7 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	container.Children([]*hb.Tag{
 		hb.NewHTML(header),
 		heading,
-		hb.NewHTML(breadcrums),
+		hb.NewHTML(breadcrumbs),
 		formGroupStatus,
 		formGroupFirstName,
 		formGroupLastName,
@@ -476,7 +476,6 @@ Vue.createApp(UserUpdate).mount('#user-update')
 	})
 	webpage.AddScript(inlineScript)
 	// webpage.AddScript(ve.VisualeditorScripts())
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
