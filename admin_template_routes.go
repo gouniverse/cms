@@ -453,15 +453,10 @@ func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Re
 	}
 
 	template.SetHandle(handle)
-	isOk, err := cms.EntityStore.EntityUpdate(*template)
+	errUpdate := cms.EntityStore.EntityUpdate(*template)
 
-	if err != nil {
-		api.Respond(w, r, api.Error("Template failed to be updated: "+err.Error()))
-		return
-	}
-
-	if !isOk {
-		api.Respond(w, r, api.Error("Template failed to be updated"))
+	if errUpdate != nil {
+		api.Respond(w, r, api.Error("Template failed to be updated: "+errUpdate.Error()))
 		return
 	}
 
