@@ -8,3 +8,6 @@ development/tmp/
 development/tmp/runner-build.exe
 development/database11.db
 *.db
+ve/ve.go
+oryxBuildBinary
+.vscode/settings.json

@@ -30,7 +30,7 @@ In its simplest initialization the CMS package accepts a standard DB instance.
 
 However with this simplest initialization, the CMS basically has no capabilities (i.e no database stores can be accessed, no migrations are run, etc).
 
-```
+```go
 db, err := mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
 
 if err != nil {
@@ -43,15 +43,15 @@ if db == nil {
 	return
 }
 
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
 	DbInstance:           db,
 })
 ```
 
 # Initialization with entity types
 
-```
-myCms := cms.NewCms(cms.Config{
+```go
+myCms, errCms := cms.NewCms(cms.Config{
 	DbInstance:           db,
 	EntitiesAutomigrate:  true,
 })
@@ -60,32 +60,32 @@ myCms := cms.NewCms(cms.Config{
 
 # Initialization with CMS types
 
-```
-myCms := cms.NewCms(cms.Config{
+```go
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:           db,
-	EntitiesAutomigrate:  true,
+    EntitiesAutomigrate:  true,
     BlocksEnable:         true,
-	MenusEnable:          true,
-	PagesEnable:          true,
+    MenusEnable:          true,
+    PagesEnable:          true,
     TemplatesEnable:      true,
-	WidgetsEnable:        true,
-	Prefix:               "cms_"
+    WidgetsEnable:        true,
+    Prefix:               "cms_"
 })
 ```
 
 # Initialization with Settings
 
-```
-myCms := cms.NewCms(cms.Config{
+```go
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:           db,
-	SettingsAutomigrate:  true,
+    SettingsAutomigrate:  true,
     SettingsEnable:       true,
 })
 ```
 
 # Initialization with Custom Entity types
 
-```
+```go
 func entityList() []cms.CustomEntityStructure {
 	list := []cms.CustomEntityStructure{}
 	list = append(list, cms.CustomEntityStructure{
@@ -181,9 +181,9 @@ func entityList() []cms.CustomEntityStructure {
 	return list
 }
 
-myCms := cms.NewCms(cms.Config{
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:           db,
-	EntitiesAutomigrate:  true,
+    EntitiesAutomigrate:  true,
     CustomEntityList:     entityList(),
 })
 ```
@@ -197,17 +197,17 @@ https://github.com/gouniverse/cachestore
 
 1. Initialization with Cache Store
 
-```
-myCms := cms.NewCms(cms.Config{
+```go
+myCms, errCms := cms.NewCms(cms.Config{
     DbInstance:        db,
-	CacheAutomigrate:  true,
+    CacheAutomigrate:  true,
     CacheEnable:       true,
 })
 ```
 
 2. Setting a cache key
 
-```
+```go
 isSaved, err := cms.CacheStore.Set("token", "ABCD", 60*60) // 1 hour (60 min * 60 sec)
 if isSaved == false {
 	log.Println("Saving failed")
@@ -217,11 +217,43 @@ if isSaved == false {
 
 3. Getting a cache key
 
-```
+```go
 token, err := cms.CacheStore.Get("token", "") // "" (default)
 if token == "" {
 	log.Println("Token does not exist or expired")
 	return
+}
+```
+
+## CMS Setup
+
+- Example router (using the Chi router)
+
+```golang
+package routes
+
+import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+)
+
+// Routes returns the routes of the application
+func Routes(cmsRouter http.HandlerFunc) *chi.Mux {
+	router := chi.NewRouter()
+
+	router.Route("/admin", func(router chi.Router) {
+		router.Use(AdminOnlyMiddleware)
+		router.Get("/cms", cmsRouter)
+		router.Get("/cms/{catchall:.*}", cmsRouter)
+		router.Post("/cms", cmsRouter)
+		router.Post("/cms/{catchall:.*}", cmsRouter)
+	})
+
+	router.Get("/", CmsController{}.Frontend)
+	router.Get("/{catchall:.*}", CmsController{}.Frontend)
+	router.Post("/{catchall:.*}", CmsController{}.Frontend)
+	return router
 }
 ```
 

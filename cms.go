@@ -30,11 +30,15 @@ type Config struct {
 	PagesEnable         bool
 	SessionAutomigrate  bool
 	SessionEnable       bool
-	SettingsAutomigate  bool
+	SettingsAutomigrate bool
 	SettingsEnable      bool
 	TemplatesEnable     bool
 	TranslationsEnable  bool
+	UsersEnable         bool
+	UsersAutomigrate    bool
+	DashboardEnable     bool
 	WidgetsEnable       bool
+	FuncLayout          func(content string) string
 }
 
 // Cms defines the cms
@@ -45,6 +49,7 @@ type Cms struct {
 	LogStore     *logstore.Store
 	SessionStore *sessionstore.Store
 	SettingStore *settingstore.Store
+	UserStore    *entitystore.Store
 
 	entitiesAutoMigrate bool
 	entityTableName     string
@@ -78,6 +83,13 @@ type Cms struct {
 	settingsEnabled     bool
 	settingsAutomigrate bool
 	settingsTableName   string
+
+	usersEnabled           bool
+	usersAutoMigrate       bool
+	userEntityTableName    string
+	userAttributeTableName string
+
+	funcLayout func(content string) string
 }
 
 func configToCms(config Config) *Cms {
@@ -86,6 +98,10 @@ func configToCms(config Config) *Cms {
 
 	if config.Prefix == "" {
 		cms.prefix = "cms_"
+	}
+
+	if config.FuncLayout == nil {
+		config.FuncLayout = cms.layout
 	}
 
 	cms.blocksEnabled = config.BlocksEnable
@@ -99,13 +115,16 @@ func configToCms(config Config) *Cms {
 	cms.pagesEnabled = config.PagesEnable
 	cms.sessionAutomigrate = config.SessionAutomigrate
 	cms.sessionEnabled = config.SessionEnable
-	cms.settingsAutomigrate = config.SettingsAutomigate
+	cms.settingsAutomigrate = config.SettingsAutomigrate
 	cms.settingsEnabled = config.SettingsEnable
 	cms.templatesEnabled = config.TemplatesEnable
 	cms.translationsEnabled = config.TranslationsEnable
 	cms.widgetsEnabled = config.WidgetsEnable
+	cms.usersEnabled = config.UsersEnable
+	cms.usersAutoMigrate = config.UsersAutomigrate
 	cms.DbInstance = config.DbInstance
 	cms.prefix = config.Prefix
+	cms.funcLayout = config.FuncLayout
 
 	// Table Names
 	cms.attributeTableName = cms.prefix + "entities_attribute"
@@ -113,7 +132,9 @@ func configToCms(config Config) *Cms {
 	cms.entityTableName = cms.prefix + "entities_entity"
 	cms.logTableName = cms.prefix + "log"
 	cms.sessionTableName = cms.prefix + "session"
-	cms.settingsTableName = cms.prefix + "settings"
+	cms.settingsTableName = cms.prefix + "setting"
+	cms.userEntityTableName = cms.prefix + "users_entity"
+	cms.userAttributeTableName = cms.prefix + "users_attribute"
 
 	return cms
 }
@@ -128,7 +149,11 @@ func NewCms(config Config) (*Cms, error) {
 	cms := configToCms(config)
 
 	var err error
-	cms.EntityStore, err = entitystore.NewStore(entitystore.WithDb(cms.DbInstance), entitystore.WithEntityTableName(cms.entityTableName), entitystore.WithAttributeTableName(cms.attributeTableName))
+	cms.EntityStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
+		DB:                 cms.DbInstance,
+		EntityTableName:    cms.entityTableName,
+		AttributeTableName: cms.attributeTableName,
+	})
 
 	if err != nil {
 		return nil, err
@@ -141,8 +166,30 @@ func NewCms(config Config) (*Cms, error) {
 		}
 	}
 
+	if cms.usersEnabled {
+		cms.UserStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
+			DB:                 cms.DbInstance,
+			EntityTableName:    cms.userAttributeTableName,
+			AttributeTableName: cms.userAttributeTableName,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		if cms.usersAutoMigrate {
+			err = cms.UserStore.AutoMigrate()
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	if cms.cacheEnabled {
-		cms.CacheStore, err = cachestore.NewStore(cachestore.WithDb(cms.DbInstance), cachestore.WithTableName(cms.cacheTableName))
+		cms.CacheStore, err = cachestore.NewStore(cachestore.NewStoreOptions{
+			DB:             cms.DbInstance,
+			CacheTableName: cms.cacheTableName,
+		})
 
 		if err != nil {
 			// log.Panicln("Cache store failed to be intiated")
@@ -178,7 +225,10 @@ func NewCms(config Config) (*Cms, error) {
 	}
 
 	if cms.sessionEnabled {
-		cms.SessionStore, err = sessionstore.NewStore(sessionstore.WithDb(cms.DbInstance), sessionstore.WithTableName(cms.sessionTableName))
+		cms.SessionStore, err = sessionstore.NewStore(sessionstore.NewStoreOptions{
+			DB:               cms.DbInstance,
+			SessionTableName: cms.sessionTableName,
+		})
 
 		if err != nil {
 			// log.Panicln("Session store failed to be intiated")
@@ -345,3 +395,18 @@ func NewCms(config Config) (*Cms, error) {
 // func GetDb() *sql.DB {
 // 	return configuration.DbInstance
 // }
+
+func (Cms) layout(content string) string {
+	return content
+	// font := hb.NewStyleURL("https://fonts.bunny.net/css?family=Nunito").ToHTML()
+	// style := hb.NewStyle(`
+	// html, body {
+	// 	background: #f8fafc;
+	// 	font-family: Nunito, sans-serif;;
+	// }
+	// `).ToHTML()
+	// h := hb.NewSection().
+	// 	Attr("style", "padding:120px 0px").
+	// 	AddChild(hb.NewHTML(content))
+	// return font + style + h.ToHTML()
+}

@@ -9,8 +9,10 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -36,8 +38,7 @@ func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 
 	menu.SetString("name", name)
 
-	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
 }
 
 func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +46,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	//log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager): "Menus",
 	})
@@ -57,7 +58,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	modal := hb.NewDiv().Attr("id", "ModalMenuCreate").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
@@ -66,14 +67,20 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	modalBody := hb.NewDiv().Attr("class", "modal-body")
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuCreateModel.name")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "menuCreate"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	menus, err := cms.EntityStore.EntityList("menu", 0, 200, "", "id", "asc")
+	menus, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "menu",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity list failed to be retrieved "+err.Error()))
@@ -95,8 +102,8 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	for _, menu := range menus {
 		name, _ := menu.GetString("name", "n/a")
 		status, _ := menu.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID+"')")
-		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID()+"')")
+		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -155,11 +162,11 @@ const MenuManager = {
 Vue.createApp(MenuManager).mount('#menu-manager')
 	`
 
-	webmenu := Webpage("Menu Manager", h)
-	webmenu.AddScript(inlineScript)
+	menu := Webpage("Menu Manager", h)
+	menu.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webmenu.ToHTML()))
+	w.Write([]byte(menu.ToHTML()))
 }
 
 func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
@@ -180,7 +187,7 @@ func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
 		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Edit menu",
@@ -208,7 +215,7 @@ func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(formGroupStatus).AddChild(formGroupName)
 
 	h := container.ToHTML()
@@ -272,11 +279,10 @@ const MenuUpdate = {
 Vue.createApp(MenuUpdate).mount('#menu-update')
 	`
 
-	webmenu := Webpage("Edit Menu", h)
-	webmenu.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webmenu.ToHTML()))
+	webMenu := Webpage("Edit Menu", h)
+	webMenu.AddScript(inlineScript)
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webMenu.ToHTML()))
 }
 
 func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -309,36 +315,30 @@ func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
 
 	menu.SetString("name", name)
 	menu.SetString("handle", handle)
-	isOk, err := menu.SetString("status", status)
+	err := menu.SetString("status", status)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu failed to be updated "+err.Error()))
 		return
 	}
 
-	if isOk == false {
-		api.Respond(w, r, api.Error("Menu failed to be updated"))
-		return
-	}
-
-	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
 }
 
 func getChildren(data []map[string]interface{}, parentID string) []map[string]interface{} {
 	children := []map[string]interface{}{}
-	sequences := []string{}
+	//sequences := []string{}
 	for _, node := range data {
 		nodeParentID := ""
-		sequence := ""
+		//sequence := ""
 		if keyExists(node, "parent_id") {
 			nodeParentID = node["parent_id"].(string)
 		}
-		if keyExists(node, "sequence") {
-			sequence = node["sequence"].(string)
-		}
+		//if keyExists(node, "sequence") {
+		//sequence = node["sequence"].(string)
+		//}
 		if nodeParentID == parentID {
-			sequences = append(sequences, sequence)
+			//sequences = append(sequences, sequence)
 			children = append(children, node)
 		}
 	}
@@ -364,9 +364,7 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 		for childIndex, child := range children {
 			childID := child["id"].(string)
 			childrenTrees := buildTreeFromData(data, childID)
-			for _, childTree := range childrenTrees {
-				rootChildren = append(rootChildren, childTree)
-			}
+			rootChildren = append(rootChildren, childrenTrees...)
 			children[childIndex]["children"] = rootChildren
 		}
 		root["children"] = children
@@ -428,10 +426,9 @@ func (cms Cms) pageMenusMenuItemsFetchAjax(w http.ResponseWriter, r *http.Reques
 	tree := cms.buildTree(menuID)
 
 	api.Respond(w, r, api.SuccessWithData("Menu items found successfully", map[string]interface{}{
-		"menu_id":   menu.ID,
+		"menu_id":   menu.ID(),
 		"menuitems": tree,
 	}))
-	return
 }
 
 func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
@@ -454,7 +451,7 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 	menuName, _ := menu.GetString("name", "")
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
 		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Menu",
@@ -482,7 +479,7 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(actionsCard)
 
 	modal := hb.NewDiv().Attr("id", "ModalItemUpdate").Attr("class", "modal fade")
@@ -495,7 +492,7 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("URL")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.url")))
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Target")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.target")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Update").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemUpdate").Attr("data-bs-dismiss", "modal"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)
@@ -714,7 +711,7 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 		node["sequence"] = utils.ToString((index + 1))
 		flatTree = append(flatTree, node)
 
-		if hasChildren == false {
+		if !hasChildren {
 			continue
 		}
 
@@ -726,10 +723,7 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 			childrenMapArray = append(childrenMapArray, childMap)
 		}
 		childNodesList := flattenTree(childrenMapArray)
-		for _, childNode := range childNodesList {
-			//childNode["parent_id"] = node["id"]
-			flatTree = append(flatTree, childNode)
-		}
+		flatTree = append(flatTree, childNodesList...)
 	}
 	return flatTree
 }
@@ -805,19 +799,14 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 		menuitem.SetString("sequence", sequence)
 		menuitem.SetString("page_id", pageID)
 		menuitem.SetString("url", url)
-		isOk, err := menuitem.SetString("target", target)
+		err := menuitem.SetString("target", target)
 
 		if err != nil {
 			api.Respond(w, r, api.Error("Menu items failed to be updated "+err.Error()))
 			return
 		}
 
-		if isOk == false {
-			api.Respond(w, r, api.Error("Menu items failed to be updated"))
-			return
-		}
-
-		newIDs = append(newIDs, menuitem.ID)
+		newIDs = append(newIDs, menuitem.ID())
 	}
 
 	allMenuItems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
@@ -830,13 +819,12 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 	for _, menuitem := range allMenuItems {
 		//allIDs = append(allIDs, menuitem.ID)
 		exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
-		if exists == false {
-			cms.EntityStore.EntityDelete(menuitem.ID)
+		if !exists {
+			cms.EntityStore.EntityDelete(menuitem.ID())
 		}
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
 }
 
 func keyExists(decoded map[string]interface{}, key string) bool {

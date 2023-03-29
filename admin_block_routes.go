@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/utils"
@@ -33,8 +34,7 @@ func (cms Cms) pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request)
 
 	block.SetString("name", name)
 
-	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathBlocksBlockManager): "Blocks",
 	})
@@ -54,12 +54,18 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	container.AddChild(cms.pageBlocksBlockCreateModal())
 	container.AddChild(cms.pageBlocksBlockTrashModal())
 
-	blocks, err := cms.EntityStore.EntityList("block", 0, 200, "", "id", "asc")
+	blocks, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "block",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Blocks failed to be listed"))
@@ -89,8 +95,8 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		//buttonDelete := hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger float-end").Attr("v-on:click", "showBlockDeleteModal('"+block.ID+"')")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "blockEdit('"+block.ID+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showBlockTrashModal('"+block.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "blockEdit('"+block.ID()+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showBlockTrashModal('"+block.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -229,7 +235,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathBlocksBlockManager):                         "Blocks",
 		(endpoint + "?path=" + PathBlocksBlockUpdate + "&block_id=" + blockID): "Edit block",
@@ -263,15 +269,15 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this block in your website use the following shortcode:"))
 
-	blockName, err := block.GetString("name", "")
+	blockName, _ := block.GetString("name", "")
 	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Block: ` + blockName + ` -->
-[[BLOCK_` + block.ID + `]]
+[[BLOCK_` + block.ID() + `]]
 &lt;!-- END: Block: ` + blockName + ` -->`))
 	paragraphUsage.AddChild(code)
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(formGroupStatus).AddChild(formGroupName).AddChild(formGroupContent)
 	container.AddChild(paragraphUsage)
 
@@ -282,7 +288,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 		api.Respond(w, r, api.Error("Name failed to be retrieved: "+err.Error()))
 		return
 	}
-	statusAttribute, err := cms.EntityStore.AttributeFind(block.ID, "status")
+	statusAttribute, err := cms.EntityStore.AttributeFind(block.ID(), "status")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be pulled"))
@@ -293,7 +299,7 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := cms.EntityStore.AttributeFind(block.ID, "content")
+	contentAttribute, err := cms.EntityStore.AttributeFind(block.ID(), "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be fetched"))
@@ -389,11 +395,11 @@ const BlockUpdate = {
 Vue.createApp(BlockUpdate).mount('#block-update')
 	`
 
-	webtemplate := Webpage("Edit Block", h)
-	webtemplate.AddStyleURLs([]string{
+	template := Webpage("Edit Block", h)
+	template.AddStyleURLs([]string{
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
 	})
-	webtemplate.AddScriptURLs([]string{
+	template.AddScriptURLs([]string{
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
@@ -404,16 +410,16 @@ Vue.createApp(BlockUpdate).mount('#block-update')
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
 		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
 	})
-	webtemplate.AddStyle(`	
+	template.AddStyle(`	
 .CodeMirror {
 	border: 1px solid #eee;
 	height: auto;
 }
 	`)
-	webtemplate.AddScript(inlineScript)
+	template.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webtemplate.ToHTML()))
+	w.Write([]byte(template.ToHTML()))
 }
 
 func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -453,15 +459,14 @@ func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request)
 	block.SetString("content", content)
 	block.SetString("name", name)
 	block.SetString("handle", handle)
-	isOk, _ := block.SetString("status", status)
+	errSetString := block.SetString("status", status)
 
-	if isOk == false {
+	if errSetString != nil {
 		api.Respond(w, r, api.Error("Block failed to be updated"))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Block saved successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
@@ -491,13 +496,12 @@ func (cms Cms) pageBlocksBlockDeleteAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Block failed to be deleted"))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Block deleted successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) {
@@ -527,13 +531,12 @@ func (cms Cms) pageBlocksBlockTrashAjax(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Block failed to be trashed"))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Block trashed successfully", map[string]interface{}{"block_id": block.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Block trashed successfully", map[string]interface{}{"block_id": block.ID()}))
 }
 
 func (cms Cms) pageBlocksBlockTrashModal() *hb.Tag {
@@ -560,7 +563,7 @@ func (cms Cms) pageBlocksBlockCreateModal() *hb.Tag {
 	modalBody := hb.NewDiv().Attr("class", "modal-body")
 	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "blockCreateModel.name")))
 	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "blockCreate"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)

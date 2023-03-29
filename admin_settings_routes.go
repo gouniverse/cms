@@ -6,8 +6,10 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -26,13 +28,12 @@ func (cms Cms) pageSettingsSettingCreateAjax(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Setting failed to be created"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Setting saved successfully", map[string]interface{}{"setting_key": key}))
-	return
 }
 
 func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request) {
@@ -45,9 +46,9 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 		(endpoint + "?path=" + PathSettingsSettingManager): "Settings",
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "setting-manager")
+	container := bs.Container().ID("setting-manager")
 	heading := hb.NewHeading1().HTML("Setting Manager")
-	button := hb.NewButton().HTML("New setting").Attr("class", "btn btn-success float-end").Attr("v-on:click", "showSettingCreateModal")
+	button := bs.Button().HTML("New setting").Class("btn-success float-end").Attr("v-on:click", "showSettingCreateModal")
 	heading.AddChild(button)
 
 	container.AddChild(hb.NewHTML(header))
@@ -64,10 +65,10 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	table := hb.NewTable().Attr("id", "TableSettings").Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().ID("TableSettings").Class("table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
-	table.AddChild(thead).AddChild(tbody)
+	table.Child(thead).Child(tbody)
 
 	tr := hb.NewTR()
 	th1 := hb.NewTD().HTML("Name")
@@ -76,8 +77,8 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 
 	for _, settingKey := range settingKeys {
 		name := settingKey
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "settingEdit('"+settingKey+"')")
-		buttonDelete := hb.NewButton().HTML("Delete").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showSettingDeleteModal('"+settingKey+"')")
+		buttonEdit := bs.Button().HTML("Edit").Attr("type", "button").Class("btn-primary btn-sm").Attr("v-on:click", "settingEdit('"+settingKey+"')")
+		buttonDelete := bs.Button().HTML("Delete").Attr("type", "button").Class("btn-danger btn-sm").Attr("v-on:click", "showSettingDeleteModal('"+settingKey+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -164,9 +165,8 @@ Vue.createApp(SettingManager).mount('#setting-manager')
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request) {
@@ -313,9 +313,8 @@ Vue.createApp(SettingUpdate).mount('#setting-update')
 }
 	`)
 	webtemplate.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webtemplate.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webtemplate.ToHTML()))
 }
 
 func (cms Cms) pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -337,13 +336,12 @@ func (cms Cms) pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Setting failed to be updated"))
 		return
 	}
 
 	api.Respond(w, r, api.SuccessWithData("Setting saved successfully", map[string]interface{}{"setting_key": settingKey}))
-	return
 }
 
 func (cms Cms) pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
@@ -362,7 +360,6 @@ func (cms Cms) pageSettingsSettingDeleteAjax(w http.ResponseWriter, r *http.Requ
 	// }
 
 	api.Respond(w, r, api.SuccessWithData("Setting deleted successfully", map[string]interface{}{"setting_key": settingKey}))
-	return
 }
 
 func (cms Cms) pageSettingsSettingDeleteModal() *hb.Tag {

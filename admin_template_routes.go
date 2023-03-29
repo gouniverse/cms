@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -32,17 +34,22 @@ func (cms Cms) pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Re
 
 	template.SetString("name", name)
 	template.SetString("status", "inactive")
-	template.Status = "inactive"
 	cms.EntityStore.EntityUpdate(*template)
 
-	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
+	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID()}))
 }
 
 func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	templates, err := cms.EntityStore.EntityList("template", 0, 200, "", "id", "asc")
+	templates, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "template",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Templates failed to be fetched: "+err.Error()))
@@ -50,7 +57,7 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathTemplatesTemplateManager): "Templates",
 	})
@@ -62,7 +69,7 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	container.AddChild(pageTemplatesTemplateTrashModal())
 	container.AddChild(pageTemplatesTemplateCreateModal())
@@ -89,8 +96,8 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 			api.Respond(w, r, api.Error("Attribute 'status' failed to be fetched: "+err.Error()))
 			return
 		}
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "templateEdit('"+template.ID()+"')").Attr("style", "margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Attr("type", "button").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTemplateTrashModal('"+template.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -179,9 +186,8 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
 	//webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 // pageTemplatesTemplateUpdate shows the template edit page
@@ -363,9 +369,8 @@ Vue.createApp(TemplateUpdate).mount('#template-update')
 }
 	`)
 	webtemplate.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webtemplate.ToHTML()))
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webtemplate.ToHTML()))
 }
 
 // pageTemplatesTemplateTrashAjax - moves the template to the trash
@@ -391,13 +396,12 @@ func (cms Cms) pageTemplatesTemplateTrashAjax(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	if isOk == false {
+	if !isOk {
 		api.Respond(w, r, api.Error("Template failed to be moved to trash"))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Template moved to trash successfully", map[string]interface{}{"template_id": template.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Template moved to trash successfully", map[string]interface{}{"template_id": template.ID()}))
 }
 
 // pageTemplatesTemplateUpdateAjax - saves the template via Ajax
@@ -430,37 +434,33 @@ func (cms Cms) pageTemplatesTemplateUpdateAjax(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	// template.SetString("content", content)
-	// template.SetString("name", name)
-	// template.SetString("handle", handle)
-	_, err := cms.EntityStore.AttributeSetString(template.ID, "content", content)
+	err := cms.EntityStore.AttributeSetString(template.ID(), "content", content)
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be updated: "+err.Error()))
 		return
 	}
 
-	_, err = cms.EntityStore.AttributeSetString(template.ID, "name", name)
+	err = cms.EntityStore.AttributeSetString(template.ID(), "name", name)
 	if err != nil {
 		api.Respond(w, r, api.Error("Name failed to be updated: "+err.Error()))
 		return
 	}
 
-	template.Status = status
-	template.Handle = handle
-	isOk, err := cms.EntityStore.EntityUpdate(*template)
-
+	err = cms.EntityStore.AttributeSetString(template.ID(), "status", status)
 	if err != nil {
-		api.Respond(w, r, api.Error("Template failed to be updated: "+err.Error()))
+		api.Respond(w, r, api.Error("Status failed to be updated: "+err.Error()))
 		return
 	}
 
-	if !isOk {
-		api.Respond(w, r, api.Error("Template failed to be updated"))
+	template.SetHandle(handle)
+	errUpdate := cms.EntityStore.EntityUpdate(*template)
+
+	if errUpdate != nil {
+		api.Respond(w, r, api.Error("Template failed to be updated: "+errUpdate.Error()))
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID()}))
 }
 
 func pageTemplatesTemplateTrashModal() *hb.Tag {

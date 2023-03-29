@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -32,8 +34,7 @@ func (cms Cms) pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Reques
 
 	widget.SetString("name", name)
 
-	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID}))
-	return
+	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID()}))
 }
 
 func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +42,7 @@ func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) 
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathWidgetsWidgetManager): "Widgets",
 	})
@@ -53,7 +54,7 @@ func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) 
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
 	modal := hb.NewDiv().Attr("id", "ModalWidgetCreate").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
@@ -69,7 +70,13 @@ func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) 
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	widgets, err := cms.EntityStore.EntityList("widget", 0, 200, "", "id", "asc")
+	widgets, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: "widget",
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widgets failed to be fetched: "+err.Error()))
@@ -90,7 +97,7 @@ func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) 
 	for _, widget := range widgets {
 		name, _ := widget.GetString("name", "n/a")
 		status, _ := widget.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "widgetEdit('"+widget.ID+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "widgetEdit('"+widget.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -141,11 +148,10 @@ const WidgetManager = {
 Vue.createApp(WidgetManager).mount('#widget-manager')
 	`
 
-	webwidget := Webpage("Widget Manager", h)
-	webwidget.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webwidget.ToHTML()))
+	webpage := Webpage("Widget Manager", h)
+	webpage.AddScript(inlineScript)
+
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
@@ -166,7 +172,7 @@ func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
+	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
 		endpoint: "Home",
 		(endpoint + "?path=" + PathWidgetsWidgetManager):                           "Widgets",
 		(endpoint + "?path=" + PathWidgetsWidgetUpdate + "&widget_id=" + widgetID): "Edit widget",
@@ -201,20 +207,20 @@ func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this widget in your website use the following shortcode:"))
 	widgetName, _ := widget.GetString("name", "")
 	code := hb.NewCode().AddChild(hb.NewPRE().HTML(`&lt;!-- START: Widget: ` + widgetName + ` -->
-[[BLOCK_` + widget.ID + `]]
+[[BLOCK_` + widget.ID() + `]]
 &lt;!-- END: Widget: ` + widgetName + ` -->`))
 	paragraphUsage.AddChild(code)
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(formGroupStatus).AddChild(formGroupName).AddChild(formGroupContent)
 	container.AddChild(paragraphUsage)
 
 	h := container.ToHTML()
 
 	name, _ := widget.GetString("name", "")
-	statusAttribute, err := cms.EntityStore.AttributeFind(widget.ID, "status")
+	statusAttribute, err := cms.EntityStore.AttributeFind(widget.ID(), "status")
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be found: "+err.Error()))
 		return
@@ -224,7 +230,7 @@ func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := cms.EntityStore.AttributeFind(widget.ID, "content")
+	contentAttribute, err := cms.EntityStore.AttributeFind(widget.ID(), "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be found: "+err.Error()))
@@ -292,11 +298,9 @@ const WidgetUpdate = {
 Vue.createApp(WidgetUpdate).mount('#widget-update')
 	`
 
-	webwidget := Webpage("Edit Widget", h)
-	webwidget.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webwidget.ToHTML()))
+	webpage := Webpage("Edit Widget", h)
+	webpage.AddScript(inlineScript)
+	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
 }
 
 func (cms Cms) pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
@@ -331,17 +335,12 @@ func (cms Cms) pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Reques
 	widget.SetString("content", content)
 	widget.SetString("name", name)
 	widget.SetString("handle", handle)
-	isOk, err := widget.SetString("status", status)
+	err := widget.SetString("status", status)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widget failed to be updated: "+err.Error()))
 		return
 	}
 
-	if !isOk {
-		api.Respond(w, r, api.Error("Widget failed to be updated"))
-		return
-	}
-
-	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID}))
+	api.Respond(w, r, api.SuccessWithData("Widget saved successfully", map[string]interface{}{"widget_id": widget.ID()}))
 }
