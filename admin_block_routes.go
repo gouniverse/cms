@@ -20,7 +20,7 @@ func (cms Cms) pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	block, err := cms.EntityStore.EntityCreate("block")
+	block, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_BLOCK)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be created: "+err.Error()))
@@ -60,7 +60,7 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(cms.pageBlocksBlockTrashModal())
 
 	blocks, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "block",
+		EntityType: ENTITY_TYPE_BLOCK,
 		Offset:     0,
 		Limit:      200,
 		SortBy:     "id",

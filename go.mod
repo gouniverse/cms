@@ -6,8 +6,8 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gouniverse/bs v0.5.1
 	github.com/gouniverse/cachestore v0.16.0
-	github.com/gouniverse/entitystore v0.54.0
-	github.com/gouniverse/hb v1.47.0
+	github.com/gouniverse/entitystore v0.54.1
+	github.com/gouniverse/hb v1.50.0
 	github.com/gouniverse/logstore v1.2.0
 	github.com/gouniverse/responses v0.1.0
 	github.com/gouniverse/sessionstore v0.17.0
@@ -15,15 +15,20 @@ require (
 	github.com/gouniverse/utils v1.29.0
 	github.com/lib/pq v1.10.7
 	github.com/stretchr/testify v1.8.2
-	modernc.org/sqlite v1.21.0
+	modernc.org/sqlite v1.21.1
 )
 
 require (
 	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/georgysavva/scany v1.2.1 // indirect
 	github.com/golang-module/carbon/v2 v2.2.3 // indirect
+	github.com/gouniverse/maputils v0.2.0 // indirect
+	github.com/gouniverse/sql v0.0.4 // indirect
+	github.com/samber/lo v1.38.1 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
+	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 )
 
 require (

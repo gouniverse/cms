@@ -24,7 +24,7 @@ func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, err := cms.EntityStore.EntityCreate("menu")
+	menu, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_MENU)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu failed to be created "+err.Error()))
@@ -75,7 +75,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(modal)
 
 	menus, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "menu",
+		EntityType: ENTITY_TYPE_MENU,
 		Offset:     0,
 		Limit:      200,
 		SortBy:     "id",
@@ -375,7 +375,7 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 }
 
 func (cms Cms) buildTree(menuID string) []map[string]interface{} {
-	menuitems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
+	menuitems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
 
 	if err != nil {
 		log.Panicln("Menu items failed to be retrieved " + err.Error())
@@ -787,7 +787,7 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 
 		menuitem, _ := cms.EntityStore.EntityFindByID(id)
 		if menuitem == nil {
-			menuitem, err = cms.EntityStore.EntityCreate("menuitem")
+			menuitem, err = cms.EntityStore.EntityCreate(ENTITY_TYPE_MENUITEM)
 			if err != nil {
 				api.Respond(w, r, api.Error("Menu item failed to be created "+err.Error()))
 				return
@@ -809,7 +809,7 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 		newIDs = append(newIDs, menuitem.ID())
 	}
 
-	allMenuItems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
+	allMenuItems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu items failed to be fetched: "+err.Error()))

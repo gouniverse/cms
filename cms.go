@@ -12,38 +12,44 @@ import (
 	"github.com/gouniverse/logstore"
 	"github.com/gouniverse/sessionstore"
 	"github.com/gouniverse/settingstore"
+	sqldb "github.com/gouniverse/sql"
+	"github.com/samber/lo"
 )
 
 type Config struct {
-	DbInstance          *sql.DB
-	DbDriver            string
-	DbDsn               string
-	CustomEntityList    []CustomEntityStructure
-	Prefix              string
-	BlocksEnable        bool
-	CacheAutomigrate    bool
-	CacheEnable         bool
-	EntitiesAutomigrate bool
-	LogsEnable          bool
-	LogsAutomigrate     bool
-	MenusEnable         bool
-	PagesEnable         bool
-	SessionAutomigrate  bool
-	SessionEnable       bool
-	SettingsAutomigrate bool
-	SettingsEnable      bool
-	TemplatesEnable     bool
-	TranslationsEnable  bool
-	UsersEnable         bool
-	UsersAutomigrate    bool
-	DashboardEnable     bool
-	WidgetsEnable       bool
-	FuncLayout          func(content string) string
+	Database                   *sqldb.Database
+	DbInstance                 *sql.DB
+	DbDriver                   string
+	DbDsn                      string
+	CustomEntityList           []CustomEntityStructure
+	Prefix                     string
+	BlocksEnable               bool
+	CacheAutomigrate           bool
+	CacheEnable                bool
+	EntitiesAutomigrate        bool
+	LogsEnable                 bool
+	LogsAutomigrate            bool
+	MenusEnable                bool
+	PagesEnable                bool
+	SessionAutomigrate         bool
+	SessionEnable              bool
+	SettingsAutomigrate        bool
+	SettingsEnable             bool
+	TemplatesEnable            bool
+	TranslationsEnable         bool
+	TranslationLanguageDefault string
+	TranslationLanguages       map[string]string
+	UsersEnable                bool
+	UsersAutomigrate           bool
+	DashboardEnable            bool
+	WidgetsEnable              bool
+	FuncLayout                 func(content string) string
 }
 
 // Cms defines the cms
 type Cms struct {
-	DbInstance   *sql.DB
+	Database *sqldb.Database
+	// DbInstance   *sql.DB
 	CacheStore   *cachestore.Store
 	EntityStore  *entitystore.Store
 	LogStore     *logstore.Store
@@ -84,6 +90,9 @@ type Cms struct {
 	settingsAutomigrate bool
 	settingsTableName   string
 
+	translationLanguageDefault string
+	translationLanguages       map[string]string
+
 	usersEnabled           bool
 	usersAutoMigrate       bool
 	userEntityTableName    string
@@ -104,6 +113,20 @@ func configToCms(config Config) *Cms {
 		config.FuncLayout = cms.layout
 	}
 
+	if config.Database == nil && config.DbInstance != nil {
+		config.Database = sqldb.NewDatabase(config.DbInstance, sqldb.DatabaseDriverName(config.DbInstance))
+	}
+
+	if config.Database == nil && (config.DbDriver != "" && config.DbDsn != "") {
+		var errDatabase error
+		config.Database, errDatabase = sqldb.NewDatabaseFromDriver(config.DbDriver, config.DbDsn)
+		panic("At CMS: " + errDatabase.Error())
+	}
+
+	if config.TranslationLanguageDefault == "" && len(config.TranslationLanguages) > 0 {
+		config.TranslationLanguageDefault = config.TranslationLanguages[lo.Keys(config.TranslationLanguages)[0]]
+	}
+
 	cms.blocksEnabled = config.BlocksEnable
 	cms.cacheAutoMigrate = config.CacheAutomigrate
 	cms.cacheEnabled = config.CacheEnable
@@ -119,10 +142,13 @@ func configToCms(config Config) *Cms {
 	cms.settingsEnabled = config.SettingsEnable
 	cms.templatesEnabled = config.TemplatesEnable
 	cms.translationsEnabled = config.TranslationsEnable
+	cms.translationLanguageDefault = config.TranslationLanguageDefault
+	cms.translationLanguages = config.TranslationLanguages
 	cms.widgetsEnabled = config.WidgetsEnable
 	cms.usersEnabled = config.UsersEnable
 	cms.usersAutoMigrate = config.UsersAutomigrate
-	cms.DbInstance = config.DbInstance
+	cms.Database = config.Database
+	// cms.DbInstance = config.DbInstance
 	cms.prefix = config.Prefix
 	cms.funcLayout = config.FuncLayout
 
@@ -142,15 +168,27 @@ func configToCms(config Config) *Cms {
 // NewCms creates a new CMS
 func NewCms(config Config) (*Cms, error) {
 
-	if config.DbInstance == nil {
-		return nil, errors.New("DbInstance is required field")
+	if config.DbInstance == nil && config.Database == nil && (config.DbDriver == "" || config.DbDsn == "") {
+		return nil, errors.New("database (preferred) OR dbinstance OR (driver & dsn) are required field")
+	}
+
+	if config.DbInstance != nil && config.Database != nil && (config.DbDriver != "" && config.DbDsn != "") {
+		return nil, errors.New("only one of database (preferred) OR dbinstance OR (driver & dsn) are required field")
+	}
+
+	if config.TranslationsEnable && len(config.TranslationLanguages) < 1 {
+		return nil, errors.New("translations enabled but no translation languages specified")
+	}
+
+	if config.TranslationsEnable && len(config.TranslationLanguageDefault) < 1 {
+		return nil, errors.New("translations enabled but no default translation language specified")
 	}
 
 	cms := configToCms(config)
 
 	var err error
 	cms.EntityStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
-		DB:                 cms.DbInstance,
+		DB:                 cms.Database.DB(),
 		EntityTableName:    cms.entityTableName,
 		AttributeTableName: cms.attributeTableName,
 	})
@@ -168,7 +206,7 @@ func NewCms(config Config) (*Cms, error) {
 
 	if cms.usersEnabled {
 		cms.UserStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
-			DB:                 cms.DbInstance,
+			DB:                 cms.Database.DB(),
 			EntityTableName:    cms.userAttributeTableName,
 			AttributeTableName: cms.userAttributeTableName,
 		})
@@ -187,7 +225,7 @@ func NewCms(config Config) (*Cms, error) {
 
 	if cms.cacheEnabled {
 		cms.CacheStore, err = cachestore.NewStore(cachestore.NewStoreOptions{
-			DB:             cms.DbInstance,
+			DB:             cms.Database.DB(),
 			CacheTableName: cms.cacheTableName,
 		})
 
@@ -209,7 +247,7 @@ func NewCms(config Config) (*Cms, error) {
 	}
 
 	if cms.logsEnabled {
-		cms.LogStore, err = logstore.NewStore(logstore.WithDb(cms.DbInstance), logstore.WithTableName(cms.logTableName))
+		cms.LogStore, err = logstore.NewStore(logstore.WithDb(cms.Database.DB()), logstore.WithTableName(cms.logTableName))
 
 		if err != nil {
 			return nil, err
@@ -226,7 +264,7 @@ func NewCms(config Config) (*Cms, error) {
 
 	if cms.sessionEnabled {
 		cms.SessionStore, err = sessionstore.NewStore(sessionstore.NewStoreOptions{
-			DB:               cms.DbInstance,
+			DB:               cms.Database.DB(),
 			SessionTableName: cms.sessionTableName,
 		})
 
@@ -248,7 +286,7 @@ func NewCms(config Config) (*Cms, error) {
 	}
 
 	if cms.settingsEnabled {
-		cms.SettingStore, err = settingstore.NewStore(settingstore.WithDb(cms.DbInstance), settingstore.WithTableName(cms.settingsTableName), settingstore.WithAutoMigrate(true))
+		cms.SettingStore, err = settingstore.NewStore(settingstore.WithDb(cms.Database.DB()), settingstore.WithTableName(cms.settingsTableName), settingstore.WithAutoMigrate(true))
 
 		if err != nil {
 			// log.Panicln("Setting store failed to be intiated")

@@ -79,6 +79,14 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		PathSettingsSettingUpdateAjax: cms.pageSettingsSettingUpdateAjax,
 		// END: Settings
 
+		// START: Settings
+		PathTranslationsTranslationCreateAjax: cms.pageTranslationsTranslationCreateAjax,
+		PathTranslationsTranslationDeleteAjax: cms.pageTranslationsTranslationDeleteAjax,
+		PathTranslationsTranslationManager:    cms.pageTranslationsTranslationManager,
+		PathTranslationsTranslationUpdate:     cms.pageTranslationsTranslationUpdate,
+		PathTranslationsTranslationUpdateAjax: cms.pageTranslationsTranslationUpdateAjax,
+		// END: Settings
+
 		// START: Users
 		PathUsersUserCreateAjax: cms.pageUsersUserCreateAjax,
 		PathUsersUserTrashAjax:  cms.pageUsersUserTrashAjax,
@@ -161,69 +169,97 @@ func (cms Cms) cmsBreadcrumbs(breadcrumbs map[string]string) string {
 }
 
 func (cms Cms) cmsHeader(endpoint string) string {
-	linkHome := hb.NewHyperlink().HTML("Dashboard").Attr("href", endpoint+"").Attr("class", "nav-link")
-	linkBlocks := hb.NewHyperlink().HTML("Blocks ").Attr("href", endpoint+"?path="+PathBlocksBlockManager).Attr("class", "nav-link")
-	linkMenus := hb.NewHyperlink().HTML("Menus ").Attr("href", endpoint+"?path="+PathMenusMenuManager).Attr("class", "nav-link")
-	linkPages := hb.NewHyperlink().HTML("Pages ").Attr("href", endpoint+"?path="+PathPagesPageManager).Attr("class", "nav-link")
-	linkTemplates := hb.NewHyperlink().HTML("Templates ").Attr("href", endpoint+"?path="+PathTemplatesTemplateManager).Attr("class", "nav-link")
-	linkWidgets := hb.NewHyperlink().HTML("Widgets ").Attr("href", endpoint+"?path="+PathWidgetsWidgetManager).Attr("class", "nav-link")
-	linkSettings := hb.NewHyperlink().HTML("Settings").Attr("href", endpoint+"?path="+PathSettingsSettingManager).Attr("class", "nav-link")
-	linkTranslations := hb.NewHyperlink().HTML("Translations").Attr("href", "#").Attr("class", "nav-link")
+	linkHome := hb.NewHyperlink().
+		HTML("Dashboard").
+		Href(endpoint + "").
+		Class("nav-link")
+	linkBlocks := hb.NewHyperlink().
+		HTML("Blocks ").
+		Href(endpoint + "?path=" + PathBlocksBlockManager).
+		Class("nav-link")
+	linkMenus := hb.NewHyperlink().
+		HTML("Menus ").
+		Href(endpoint + "?path=" + PathMenusMenuManager).
+		Class("nav-link")
+	linkPages := hb.NewHyperlink().
+		HTML("Pages ").
+		Href(endpoint + "?path=" + PathPagesPageManager).
+		Class("nav-link")
+	linkTemplates := hb.NewHyperlink().
+		HTML("Templates ").
+		Href(endpoint + "?path=" + PathTemplatesTemplateManager).
+		Class("nav-link")
+	linkWidgets := hb.NewHyperlink().
+		HTML("Widgets ").
+		Href(endpoint + "?path=" + PathWidgetsWidgetManager).
+		Class("nav-link")
+	linkSettings := hb.NewHyperlink().
+		HTML("Settings").
+		Href(endpoint + "?path=" + PathSettingsSettingManager).
+		Class("nav-link")
+	linkTranslations := hb.NewHyperlink().
+		HTML("Translations").
+		Href(endpoint + "?path=" + PathTranslationsTranslationManager).
+		Class("nav-link")
+
 	blocksCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
-		EntityType: "block",
+		EntityType: ENTITY_TYPE_BLOCK,
 	})
 	menusCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
-		EntityType: "menu",
+		EntityType: ENTITY_TYPE_MENU,
 	})
 	pagesCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
-		EntityType: "page",
+		EntityType: ENTITY_TYPE_PAGE,
 	})
 	templatesCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
-		EntityType: "template",
+		EntityType: ENTITY_TYPE_TEMPLATE,
+	})
+	translationsCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+		EntityType: ENTITY_TYPE_TRANSLATION,
 	})
 	widgetsCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
-		EntityType: "widget",
+		EntityType: ENTITY_TYPE_WIDGET,
 	})
 
-	ulNav := hb.NewUL().Attr("class", "nav  nav-pills justify-content-center")
-	ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkHome))
+	ulNav := hb.NewUL().Class("nav  nav-pills justify-content-center")
+	ulNav.AddChild(hb.NewLI().Class("nav-item").Child(linkHome))
 
 	if cms.templatesEnabled {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(templatesCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").AddChild(linkTemplates.AddChild(hb.NewSpan().Class("badge bg-secondary").HTML(strconv.FormatInt(templatesCount, 10)))))
 	}
 
 	if cms.pagesEnabled {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(pagesCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").AddChild(linkPages.AddChild(hb.NewSpan().Class("badge bg-secondary").HTML(strconv.FormatInt(pagesCount, 10)))))
 	}
 
 	if cms.menusEnabled {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(menusCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").AddChild(linkMenus.AddChild(hb.NewSpan().Class("badge bg-secondary").HTML(strconv.FormatInt(menusCount, 10)))))
 	}
 
 	if cms.blocksEnabled {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(blocksCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").AddChild(linkBlocks.AddChild(hb.NewSpan().Class("badge bg-secondary").HTML(strconv.FormatInt(blocksCount, 10)))))
 	}
 
 	if cms.widgetsEnabled {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Attr("class", "badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").AddChild(linkWidgets.AddChild(hb.NewSpan().Class("badge bg-secondary").HTML(strconv.FormatInt(widgetsCount, 10)))))
 	}
 
 	if cms.translationsEnabled {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkTranslations))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").Child(linkTranslations.Child(hb.NewSpan().Class("badge bg-secondary").HTML(utils.ToString(translationsCount)))))
 	}
 
 	if cms.settingsEnabled {
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkSettings))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").AddChild(linkSettings))
 	}
 	// add Translations
 
 	for _, entity := range cms.customEntityList {
-		linkEntity := hb.NewHyperlink().HTML(entity.TypeLabel).Attr("href", endpoint+"?path=entities/entity-manager&type="+entity.Type).Attr("class", "nav-link")
-		ulNav.AddChild(hb.NewLI().Attr("class", "nav-item").AddChild(linkEntity))
+		linkEntity := hb.NewHyperlink().HTML(entity.TypeLabel).Href(endpoint + "?path=entities/entity-manager&type=" + entity.Type).Class("nav-link")
+		ulNav.AddChild(hb.NewLI().Class("nav-item").Child(linkEntity))
 	}
 
-	divCard := hb.NewDiv().Attr("class", "card card-default mt-3 mb-3")
-	divCardBody := hb.NewDiv().Attr("class", "card-body").Attr("style", "padding: 2px;")
+	divCard := hb.NewDiv().Class("card card-default mt-3 mb-3")
+	divCardBody := hb.NewDiv().Class("card-body").Style("padding: 2px;")
 	return divCard.AddChild(divCardBody.AddChild(ulNav)).ToHTML()
 }
 

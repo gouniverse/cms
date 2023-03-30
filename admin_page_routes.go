@@ -23,7 +23,7 @@ func (cms Cms) pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, err := cms.EntityStore.EntityCreate("page")
+	page, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_PAGE)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page failed to be created: "+err.Error()))
@@ -465,7 +465,7 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	// log.Println(endpoint)
 
 	pages, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "page",
+		EntityType: ENTITY_TYPE_PAGE,
 		Offset:     0,
 		Limit:      200,
 		SortBy:     "id",
