@@ -113,6 +113,7 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 		Prefix:              "cms2",
 		// CustomEntityList: entityList(),
 	})
+
 	assert.Nil(suite.T(), err)
 	assert.True(suite.T(), cms2.blocksEnabled, "Enable blocks MUST BE true after init")
 	assert.True(suite.T(), cms2.cacheEnabled, "Enable cache MUST BE true after init")

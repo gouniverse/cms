@@ -120,7 +120,9 @@ func configToCms(config Config) *Cms {
 	if config.Database == nil && (config.DbDriver != "" && config.DbDsn != "") {
 		var errDatabase error
 		config.Database, errDatabase = sqldb.NewDatabaseFromDriver(config.DbDriver, config.DbDsn)
-		panic("At CMS: " + errDatabase.Error())
+		if errDatabase != nil {
+			panic("At CMS: " + errDatabase.Error())
+		}
 	}
 
 	if config.TranslationLanguageDefault == "" && len(config.TranslationLanguages) > 0 {
@@ -188,7 +190,7 @@ func NewCms(config Config) (*Cms, error) {
 
 	var err error
 	cms.EntityStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
-		DB:                 cms.Database.DB(),
+		Database:           cms.Database,
 		EntityTableName:    cms.entityTableName,
 		AttributeTableName: cms.attributeTableName,
 	})
