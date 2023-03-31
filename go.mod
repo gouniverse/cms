@@ -6,7 +6,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gouniverse/bs v0.5.1
 	github.com/gouniverse/cachestore v0.16.0
-	github.com/gouniverse/entitystore v0.54.1
+	github.com/gouniverse/entitystore v0.55.0
 	github.com/gouniverse/hb v1.50.0
 	github.com/gouniverse/logstore v1.2.0
 	github.com/gouniverse/responses v0.1.0
@@ -28,7 +28,7 @@ require (
 	github.com/golang-module/carbon/v2 v2.2.3 // indirect
 	github.com/gouniverse/maputils v0.2.0 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
-	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
+	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 )
 
 require (
