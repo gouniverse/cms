@@ -284,14 +284,18 @@ func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.
 		hb.NewTextArea().Class("form-control CodeMirror").Attr("v-model", "translationModel.comment"),
 	})
 
-	paragraphUsage := hb.NewParagraph().Attr("class", "text-info mt-5").AddChild(hb.NewHTML("To use this translation in your website use the following shortcode:"))
+	paragraphUsage := hb.NewParagraph().
+		Class("text-info mt-5").
+		HTML("To use this translation in your website use the following shortcode:")
 
 	translationName, _ := translation.GetString("name", "")
-	code := hb.NewCode().children([]*hb.Tag{
-		hb.NewPRE().HTML(`&lt;!-- START: Translation: ` + translationName + ` -->
+	code := hb.NewCode().Children([]*hb.Tag{
+		hb.NewPRE().
+			HTML(`&lt;!-- START: Translation: ` + translationName + ` -->
 [[TRANSLATION_` + translation.ID() + `]]
 &lt;!-- END: Translation: ` + translationName + ` -->`),
-		hb.NewPRE().HTML(`&lt;!-- START: Translation: ` + translation.Handle() + ` -->
+		hb.NewPRE().
+			HTML(`&lt;!-- START: Translation: ` + translation.Handle() + ` -->
 [[TRANSLATION_` + translation.Handle() + `]]
 &lt;!-- END: Translation: ` + translationName + ` -->`),
 	})
