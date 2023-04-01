@@ -90,9 +90,10 @@ func (cms Cms) pageTranslationsTranslationManager(w http.ResponseWriter, r *http
 
 	tr := hb.NewTR()
 	th1 := hb.NewTD().HTML("Name")
-	th2 := hb.NewTD().HTML("Status")
-	th3 := hb.NewTD().HTML("Actions").Style("width:120px;")
-	thead.AddChild(tr.AddChild(th1).AddChild(th2).AddChild(th3))
+	th2 := hb.NewTD().HTML("Status").Style("width:1px;")
+	th3 := hb.NewTD().HTML("Handle").Style("width:1px;")
+	th4 := hb.NewTD().HTML("Actions").Style("width:120px;")
+	thead.Child(tr.Child(th1).Child(th2).Child(th3).Child(th4))
 
 	for _, translation := range translations {
 		name, err := translation.GetString("name", "n/a")
@@ -112,9 +113,10 @@ func (cms Cms) pageTranslationsTranslationManager(w http.ResponseWriter, r *http
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
 		td2 := hb.NewTD().HTML(status)
-		td3 := hb.NewTD().SetAttribute("style", "white-space:nowrap;").AddChild(buttonEdit).AddChild(buttonTrash)
+		td3 := hb.NewTD().HTML(translation.Handle())
+		td4 := hb.NewTD().SetAttribute("style", "white-space:nowrap;").AddChild(buttonEdit).AddChild(buttonTrash)
 
-		tbody.AddChild(tr.AddChild(td1).AddChild(td2).AddChild(td3))
+		tbody.Child(tr.Child(td1).Child(td2).Child(td3).Child(td4))
 	}
 	container.AddChild(table)
 
