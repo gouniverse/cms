@@ -19,6 +19,7 @@ This package allows to add a content management system as a module dependency, w
 - Blocks (CMS)
 - Menus (CMS)
 - Settings (CMS)
+- Translations (CMS)
 - Custom Types
 - Cache Store
 - Log Store
