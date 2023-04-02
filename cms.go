@@ -436,7 +436,7 @@ func NewCms(config Config) (*Cms, error) {
 // 	return configuration.DbInstance
 // }
 
-func (Cms) layout(content string) string {
+func (c *Cms) layout(content string) string {
 	return content
 	// font := hb.NewStyleURL("https://fonts.bunny.net/css?family=Nunito").ToHTML()
 	// style := hb.NewStyle(`
