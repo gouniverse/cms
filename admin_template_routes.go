@@ -188,13 +188,20 @@ const TemplateManager = {
 Vue.createApp(TemplateManager).mount('#template-manager')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css").ToHTML()
+		out += h
+		out += hb.NewScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js").ToHTML()
+		out += hb.NewScript(inlineScript).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(h))
+		return
+	}
+
 	webpage := Webpage("Template Manager", h)
 	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
 	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
 	webpage.AddScript(inlineScript)
-	//webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
-
-	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 // pageTemplatesTemplateUpdate shows the template edit page
@@ -355,6 +362,29 @@ const TemplateUpdate = {
 Vue.createApp(TemplateUpdate).mount('#template-update')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewStyleURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css").ToHTML()
+		out += hb.NewStyle(`	
+		.CodeMirror {
+			border: 1px solid #eee;
+			height: auto;
+		}
+			`).ToHTML()
+		out += h
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js").ToHTML()
+		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js").ToHTML()
+		out += hb.NewScript(inlineScript).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(h))
+		return
+	}
+
 	webtemplate := Webpage("Edit Template", h)
 
 	// <style>
@@ -386,7 +416,7 @@ Vue.createApp(TemplateUpdate).mount('#template-update')
 	`)
 	webtemplate.AddScript(inlineScript)
 
-	responses.HTMLResponse(w, r, cms.funcLayout(webtemplate.ToHTML()))
+	responses.HTMLResponse(w, r, webtemplate.ToHTML())
 }
 
 // pageTemplatesTemplateTrashAjax - moves the template to the trash

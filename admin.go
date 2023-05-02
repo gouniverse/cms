@@ -152,9 +152,13 @@ func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 
 	h := container.ToHTML()
 
-	webpage := Webpage("Home", h).ToHTML()
+	if cms.funcLayout("") != "" {
+		responses.HTMLResponse(w, r, cms.funcLayout(h))
+		return
+	}
 
-	responses.HTMLResponse(w, r, cms.funcLayout(webpage))
+	webpage := Webpage("Home", h).ToHTML()
+	responses.HTMLResponse(w, r, webpage)
 }
 
 func (cms Cms) cmsBreadcrumbs(breadcrumbs []bs.Breadcrumb) string {
