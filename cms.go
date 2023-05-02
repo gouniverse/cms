@@ -438,15 +438,10 @@ func NewCms(config Config) (*Cms, error) {
 
 func (c *Cms) layout(content string) string {
 	return content
-	// font := hb.NewStyleURL("https://fonts.bunny.net/css?family=Nunito").ToHTML()
-	// style := hb.NewStyle(`
-	// html, body {
-	// 	background: #f8fafc;
-	// 	font-family: Nunito, sans-serif;;
-	// }
-	// `).ToHTML()
-	// h := hb.NewSection().
-	// 	Attr("style", "padding:120px 0px").
-	// 	AddChild(hb.NewHTML(content))
-	// return font + style + h.ToHTML()
+}
+
+// SetFuncLayout sets a layout for the CMS to display inside
+func (c *Cms) SetFuncLayout(funcLayout func(content string) string) *Cms {
+	c.funcLayout = funcLayout
+	return c
 }
