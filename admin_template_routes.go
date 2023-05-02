@@ -245,17 +245,17 @@ func (cms Cms) pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Reques
 		},
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "template-update")
+	container := hb.NewDiv().Class("container").ID("template-update")
 	heading := hb.NewHeading1().HTML("Edit Template")
-	button := hb.NewButton().HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "templateSave")
+	button := hb.NewButton().HTML("Save").Class("btn btn-success float-end").Attr("v-on:click", "templateSave")
 	heading.AddChild(button)
 
-	formGroupStatus := hb.NewDiv().Attr("class", "form-group mb-3")
-	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "templateModel.status")
-	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
-	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
-	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")
+	formGroupStatus := hb.NewDiv().Class("form-group mb-3")
+	formGroupStatusLabel := hb.NewLabel().HTML("Status").Class("form-label")
+	formGroupStatusSelect := hb.NewSelect().Class("form-select").Attr("v-model", "templateModel.status")
+	formGroupOptionsActive := hb.NewOption().Value("active").HTML("Active")
+	formGroupOptionsInactive := hb.NewOption().Value("inactive").HTML("Inactive")
+	formGroupOptionsTrash := hb.NewOption().Value("trash").HTML("Trash")
 	formGroupStatus.AddChild(formGroupStatusLabel)
 	formGroupStatus.AddChild(formGroupStatusSelect.AddChild(formGroupOptionsActive).AddChild(formGroupOptionsInactive).AddChild(formGroupOptionsTrash))
 
@@ -370,60 +370,53 @@ Vue.createApp(TemplateUpdate).mount('#template-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewStyleURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css").ToHTML()
-		out += hb.NewStyle(`	
-		.CodeMirror {
-			border: 1px solid #eee;
-			height: auto;
-		}
-			`).ToHTML()
-		out += h
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js").ToHTML()
-		out += hb.NewScriptURL("//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js").ToHTML()
-		out += hb.NewScript(inlineScript).ToHTML()
-		responses.HTMLResponse(w, r, cms.funcLayout(h))
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(codemirrorCss),
+			hb.NewStyle(`.CodeMirror {
+				border: 1px solid #eee;
+				height: auto;
+			}`),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(codemirrorJs),
+			hb.NewScriptURL(codemirrorHtmlmixedJs),
+			hb.NewScriptURL(codemirrorJavascriptJs),
+			hb.NewScriptURL(codemirrorCssJs),
+			hb.NewScriptURL(codemirrorClikeJs),
+			hb.NewScriptURL(codemirrorPhpJs),
+			hb.NewScriptURL(codemirrorFormattingJs),
+			hb.NewScriptURL(codemirrorMatchBracketsJs),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
 		return
 	}
 
-	webtemplate := Webpage("Edit Template", h)
-
-	// <style>
-	// .CodeMirror {
-	// 	border: 1px solid #eee;
-	// 	height: auto;
-	// }
-	// </style>
-
-	webtemplate.AddStyleURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
-	})
-	webtemplate.AddScriptURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
-	})
-	webtemplate.AddStyle(`	
+	webpage := Webpage("Edit Template", h).
+		AddStyleURLs([]string{
+			codemirrorCss,
+		}).
+		AddScriptURLs([]string{
+			codemirrorJs,
+			codemirrorXmlJs,
+			codemirrorHtmlmixedJs,
+			codemirrorJavascriptJs,
+			codemirrorCssJs,
+			codemirrorClikeJs,
+			codemirrorPhpJs,
+			codemirrorFormattingJs,
+			codemirrorMatchBracketsJs,
+		}).
+		AddStyle(`	
 .CodeMirror {
 	border: 1px solid #eee;
 	height: auto;
-}
-	`)
-	webtemplate.AddScript(inlineScript)
+}`).
+		AddScript(inlineScript)
 
-	responses.HTMLResponse(w, r, webtemplate.ToHTML())
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 // pageTemplatesTemplateTrashAjax - moves the template to the trash
