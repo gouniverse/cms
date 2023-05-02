@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
@@ -43,9 +44,15 @@ func (cms Cms) pageTranslationsTranslationManager(w http.ResponseWriter, r *http
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathTranslationsTranslationManager): "Translations",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTranslationsTranslationManager),
+			Name: "Translations",
+		},
 	})
 
 	button := hb.NewButton().
@@ -222,7 +229,7 @@ Vue.createApp(TranslationManager).mount('#translation-manager')
 	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
 }
 
 func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.Request) {
@@ -248,10 +255,19 @@ func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathTranslationsTranslationManager):                                     "Translations",
-		(endpoint + "?path=" + PathTranslationsTranslationUpdate + "&translation_id=" + translationID): "Edit translation",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTranslationsTranslationManager),
+			Name: "Translations",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTranslationsTranslationUpdate + "&translation_id=" + translationID),
+			Name: "Edit translation",
+		},
 	})
 
 	heading := hb.NewHeading1().HTML("Edit Translation")
@@ -486,7 +502,7 @@ Vue.createApp(TranslationUpdate).mount('#translation-update')
 	template.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(template.ToHTML()))
+	w.Write([]byte(cms.funcLayout(template.ToHTML())))
 }
 
 func (cms Cms) pageTranslationsTranslationUpdateAjax(w http.ResponseWriter, r *http.Request) {

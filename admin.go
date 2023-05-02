@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -135,8 +136,11 @@ func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")
@@ -153,19 +157,22 @@ func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 	responses.HTMLResponse(w, r, cms.funcLayout(webpage))
 }
 
-func (cms Cms) cmsBreadcrumbs(breadcrumbs map[string]string) string {
-	nav := hb.NewNav().Attr("aria-label", "breadcrumb")
-	ol := hb.NewOL().Attr("class", "breadcrumb")
-	for k, v := range breadcrumbs {
-		li := hb.NewLI().Attr("class", "breadcrumb-item")
-		link := hb.NewHyperlink().HTML(v).Attr("href", k)
+func (cms Cms) cmsBreadcrumbs(breadcrumbs []bs.Breadcrumb) string {
+	return bs.Breadcrumbs(breadcrumbs).
+		Style("margin-bottom:10px;").
+		ToHTML()
+	// nav := hb.NewNav().Attr("aria-label", "breadcrumb")
+	// ol := hb.NewOL().Attr("class", "breadcrumb")
+	// for k, v := range breadcrumbs {
+	// 	li := hb.NewLI().Attr("class", "breadcrumb-item")
+	// 	link := hb.NewHyperlink().HTML(v).Attr("href", k)
 
-		li.AddChild(link)
+	// 	li.AddChild(link)
 
-		ol.AddChild(li)
-	}
-	nav.AddChild(ol)
-	return nav.ToHTML()
+	// 	ol.AddChild(li)
+	// }
+	// nav.AddChild(ol)
+	// return nav.ToHTML()
 }
 
 func (cms Cms) cmsHeader(endpoint string) string {

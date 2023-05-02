@@ -16,12 +16,15 @@ import (
 	_ "modernc.org/sqlite"
 )
 
+var db *sql.DB
+
 func main() {
 	log.Println("1. Initializing environment variables...")
 	utils.EnvInitialize()
 
 	log.Println("2. Initializing database...")
-	db, err := mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
+	var err error
+	db, err = mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
 
 	if err != nil {
 		log.Panic("Database is NIL: " + err.Error())
@@ -33,6 +36,39 @@ func main() {
 		return
 	}
 
+	log.Println("4. Starting server on http://" + utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT") + " ...")
+	log.Println("URL: http://" + utils.Env("APP_URL") + " ...")
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		menu := hb.NewHTML("<a href='/cms'>Standalone CMS</a> <br /> <br /> <a href='/cmswithlayout'>CMS WIth Layout</a> <br /> <br /> <a href='/embeddedcms'>Embedded CMS in IFRAME</a>")
+		w.Write([]byte(menu.ToHTML()))
+	})
+	mux.HandleFunc("/cms", cmsStandalone().Router)
+	mux.HandleFunc("/embeddedcms", pageDashboardWithEmbeddedCms)
+	mux.HandleFunc("/cmswithlayout", cmsWithLayout().Router)
+
+	srv := &http.Server{
+		Handler: mux,
+		Addr:    utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT"),
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout:      15 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		IdleTimeout:       30 * time.Second,
+		ReadHeaderTimeout: 2 * time.Second,
+	}
+
+	log.Fatal(srv.ListenAndServe())
+}
+
+func pageDashboardWithEmbeddedCms(w http.ResponseWriter, r *http.Request) {
+	leftMenu := hb.NewHTML("<a href='/cms'>Standalone CMS</a> <br /> <br /> <a href='/cmswithlayout'>CMS WIth Layout</a> <br /> <br /> <a href='/embeddedcms'>Embedded CMS in IFRAME</a>")
+	iframe := hb.NewHTML("<iframe src=\"/cms\" style='width:100%;height:2000px;border:none;' scrolling='no'></iframe>")
+	layout := hb.NewHTML("<table style='width:100%;height:100%;'><tr><td style='width:300px;vertical-align:top;'>" + leftMenu.ToHTML() + "</td><td style='vertical-align:top;'>" + iframe.ToHTML() + "</td></tr></table>")
+	webpage := hb.NewWebpage().AddChild(layout)
+	w.Write([]byte(webpage.ToHTML()))
+}
+
+func cmsStandalone() *cms.Cms {
 	log.Println("3. Initializing CMS...")
 	myCms, err := cms.NewCms(cms.Config{
 		DbInstance:                 db,
@@ -65,32 +101,47 @@ func main() {
 		log.Panicln(err.Error())
 	}
 
-	log.Println("4. Starting server on http://" + utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT") + " ...")
-	log.Println("URL: http://" + utils.Env("APP_URL") + " ...")
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", myCms.Router)
-	mux.HandleFunc("/cms", myCms.Router)
-	mux.HandleFunc("/embeddedcms", pageDashboardWithEmbeddedCms)
-
-	srv := &http.Server{
-		Handler: mux,
-		Addr:    utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT"),
-		// Good practice: enforce timeouts for servers you create!
-		WriteTimeout:      15 * time.Second,
-		ReadTimeout:       15 * time.Second,
-		IdleTimeout:       30 * time.Second,
-		ReadHeaderTimeout: 2 * time.Second,
-	}
-
-	log.Fatal(srv.ListenAndServe())
+	return myCms
 }
 
-func pageDashboardWithEmbeddedCms(w http.ResponseWriter, r *http.Request) {
-	leftMenu := hb.NewHTML("<a href='/embeddedcms'>Embedded CMS</a>")
-	iframe := hb.NewHTML("<iframe src=\"/\" style='width:100%;height:2000px;border:none;' scrolling='no'></iframe>")
-	layout := hb.NewHTML("<table style='width:100%;height:100%;'><tr><td style='width:300px;vertical-align:top;'>" + leftMenu.ToHTML() + "</td><td style='vertical-align:top;'>" + iframe.ToHTML() + "</td></tr></table>")
-	webpage := hb.NewWebpage().AddChild(layout)
-	w.Write([]byte(webpage.ToHTML()))
+func cmsWithLayout() *cms.Cms {
+	leftMenu := hb.NewHTML("<a href='/cms'>Standalone CMS</a> <br /> <br /> <a href='/cmswithlayout'>CMS WIth Layout</a> <br /> <br /> <a href='/embeddedcms'>Embedded CMS in IFRAME</a>")
+	myCms, err := cms.NewCms(cms.Config{
+		DbInstance:                 db,
+		BlocksEnable:               true,
+		CacheAutomigrate:           true,
+		CacheEnable:                true,
+		EntitiesAutomigrate:        true,
+		LogsAutomigrate:            true,
+		LogsEnable:                 true,
+		MenusEnable:                true,
+		PagesEnable:                true,
+		SettingsAutomigrate:        true,
+		SettingsEnable:             true,
+		SessionAutomigrate:         true,
+		SessionEnable:              true,
+		TemplatesEnable:            true,
+		TranslationsEnable:         true,
+		TranslationLanguageDefault: "en",
+		TranslationLanguages: map[string]string{
+			"en": "English",
+			"bg": "Bulgarian",
+		},
+		UsersEnable:      true,
+		UsersAutomigrate: true,
+		Prefix:           "cms3",
+		CustomEntityList: entityList(),
+		FuncLayout: func(content string) string {
+			layout := hb.NewHTML("<table style='width:100%;height:100%;'><tr><td style='width:300px;vertical-align:top;'>" + leftMenu.ToHTML() + "</td><td style='vertical-align:top;'>" + content + "</td></tr></table>")
+			return layout.ToHTML()
+		},
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return myCms
 }
 
 func mainDb(driverName string, dbHost string, dbPort string, dbName string, dbUser string, dbPass string) (*sql.DB, error) {

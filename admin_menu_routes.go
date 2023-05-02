@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
@@ -46,9 +47,15 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	//log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathMenusMenuManager): "Menus",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuManager),
+			Name: "Menus",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-manager")
@@ -166,7 +173,7 @@ Vue.createApp(MenuManager).mount('#menu-manager')
 	menu.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(menu.ToHTML()))
+	w.Write([]byte(cms.funcLayout(menu.ToHTML())))
 }
 
 func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
@@ -187,10 +194,19 @@ func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
-		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Edit menu",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuManager),
+			Name: "Menus",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID),
+			Name: "Edit menu",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
@@ -451,11 +467,23 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 	menuName, _ := menu.GetString("name", "")
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
-		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Menu",
-		"#": "Edit menu items",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuManager),
+			Name: "Menus",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID),
+			Name: "Menu",
+		},
+		{
+			URL:  "#",
+			Name: "Edit menu items",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
@@ -698,7 +726,7 @@ ul.jqtree-tree li.jqtree_common:hover{
 	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
 }
 
 // flattenTree flattens a JQTree data

@@ -41,9 +41,15 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathSettingsSettingManager): "Settings",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathSettingsSettingManager),
+			Name: "Settings",
+		},
 	})
 
 	container := bs.Container().ID("setting-manager")
@@ -192,10 +198,19 @@ func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request)
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathSettingsSettingManager):                               "Settings",
-		(endpoint + "?path=" + PathSettingsSettingUpdate + "&setting_key=" + settingKey): "Edit setting",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathSettingsSettingManager),
+			Name: "Settings",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathSettingsSettingUpdate + "&setting_key=" + settingKey),
+			Name: "Edit setting",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "setting-update")

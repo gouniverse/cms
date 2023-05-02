@@ -31,9 +31,15 @@ func (cms Cms) pageUsersUserManager(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathUsersUserManager): "Users",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathUsersUserManager),
+			Name: "Users",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "user-manager")
@@ -333,10 +339,19 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathUsersUserManager):                       "Users",
-		(endpoint + "?path=" + PathUsersUserUpdate + "&user_id=" + userID): "Edit user",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathUsersUserManager),
+			Name: "Users",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathUsersUserUpdate + "&user_id=" + userID),
+			Name: "Edit user",
+		},
 	})
 
 	container := hb.NewDiv().ID("user-update").Class("container")

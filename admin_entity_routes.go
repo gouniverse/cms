@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -55,9 +56,15 @@ func (cms Cms) pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request)
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathWidgetsWidgetManager): "Custom Entities",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathWidgetsWidgetManager),
+			Name: "Custom Entities",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "entity-manager")
@@ -212,10 +219,19 @@ func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) 
 	entityAttributeList := cms.customEntityAttributeList(entity.Type())
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathEntitiesEntityManager + "&type=" + entity.Type()): "Custom Entities",
-		(endpoint + "?path=" + PathEntitiesEntityUpdate + "&entity_id=" + entityID):  "Edit Entity",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathEntitiesEntityManager + "&type=" + entity.Type()),
+			Name: "Custom Entities",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathEntitiesEntityUpdate + "&entity_id=" + entityID),
+			Name: "Edit Entity",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "entity-update")

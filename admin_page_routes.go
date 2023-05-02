@@ -131,10 +131,19 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathPagesPageManager):                       "Pages",
-		(endpoint + "?path=" + PathPagesPageUpdate + "&page_id=" + pageID): "Edit page",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathPagesPageManager),
+			Name: "Pages",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathPagesPageUpdate + "&page_id=" + pageID),
+			Name: "Edit page",
+		},
 	})
 
 	container := hb.NewDiv().ID("page-update").Class("container")
@@ -478,9 +487,15 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathPagesPageManager): "Pages",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathPagesPageManager),
+			Name: "Pages",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")

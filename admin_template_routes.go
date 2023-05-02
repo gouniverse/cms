@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -57,9 +58,15 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathTemplatesTemplateManager): "Templates",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTemplatesTemplateManager),
+			Name: "Templates",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "template-manager")
@@ -209,10 +216,19 @@ func (cms Cms) pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Reques
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathTemplatesTemplateManager):                               "Templates",
-		(endpoint + "?path=" + PathTemplatesTemplateUpdate + "&template_id=" + templateID): "Edit template",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTemplatesTemplateManager),
+			Name: "Templates",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTemplatesTemplateUpdate + "&template_id=" + templateID),
+			Name: "Edit template",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "template-update")

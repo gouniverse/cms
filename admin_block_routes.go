@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
@@ -42,9 +43,15 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathBlocksBlockManager): "Blocks",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathBlocksBlockManager),
+			Name: "Blocks",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "block-manager")
@@ -209,7 +216,7 @@ Vue.createApp(BlockManager).mount('#block-manager')
 	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
 }
 
 func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
@@ -235,10 +242,19 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathBlocksBlockManager):                         "Blocks",
-		(endpoint + "?path=" + PathBlocksBlockUpdate + "&block_id=" + blockID): "Edit block",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathBlocksBlockManager),
+			Name: "Blocks",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathBlocksBlockUpdate + "&block_id=" + blockID),
+			Name: "Edit block",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "block-update")
@@ -419,7 +435,7 @@ Vue.createApp(BlockUpdate).mount('#block-update')
 	template.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(template.ToHTML()))
+	w.Write([]byte(cms.funcLayout(template.ToHTML())))
 }
 
 func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
