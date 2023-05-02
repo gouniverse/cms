@@ -2,8 +2,6 @@
 
 ![tests](https://github.com/gouniverse/cms/workflows/tests/badge.svg)
 
-PREVIEW ONLY. NOT STABLE API CAN AND WILL CHANGE FREQUENTLY
-
 A "plug-and-play" content managing system (CMS) for GoLang that does its job and stays out of your way.
 
 ## Introduction
