@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -283,13 +284,13 @@ func Webpage(title, content string) *hb.Webpage {
 	webpage.SetFavicon(faviconImgCms)
 
 	webpage.AddStyleURLs([]string{
-		"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css",
+		cdn.BootstrapCss_5_2_3(),
 	})
 	webpage.AddScriptURLs([]string{
-		"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js",
-		"https://code.jquery.com/jquery-3.6.0.min.js",
-		"https://unpkg.com/vue@next",
-		"https://cdn.jsdelivr.net/npm/sweetalert2@9",
+		cdn.BootstrapJs_5_2_3(),
+		cdn.Jquery_3_6_4(),
+		cdn.VueJs_3(),
+		cdn.Sweetalert2_10(),
 	})
 	webpage.AddScripts([]string{
 		app,

@@ -7,6 +7,7 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -189,17 +190,23 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css").ToHTML()
-		out += h
-		out += hb.NewScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js").ToHTML()
-		out += hb.NewScript(inlineScript).ToHTML()
-		responses.HTMLResponse(w, r, cms.funcLayout(h))
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(cdn.JqueryDataTablesJs_1_13_4()),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
 		return
 	}
 
 	webpage := Webpage("Template Manager", h)
-	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
-	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
+	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
 	responses.HTMLResponse(w, r, webpage.ToHTML())
 }

@@ -10,6 +10,7 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
@@ -712,7 +713,7 @@ Vue.createApp(MenuUpdate).mount('#menu-update')`
 	})
 	webpage.AddScriptURLs([]string{
 		"https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/tree.jquery.js",
-		"https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js",
+		cdn.Notify_0_4_2(),
 	})
 	webpage.AddStyle(`
 ul.jqtree-tree li>.jqtree-element {
