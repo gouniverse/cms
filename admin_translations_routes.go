@@ -506,6 +506,7 @@ Vue.createApp(TranslationUpdate).mount('#translation-update')
 			hb.NewScriptURL(cdn.VueJs_3()),
 			hb.NewScriptURL(cdn.Sweetalert2_10()),
 			hb.NewScriptURL(codemirrorJs),
+			hb.NewScriptURL(codemirrorXmlJs),
 			hb.NewScriptURL(codemirrorHtmlmixedJs),
 			hb.NewScriptURL(codemirrorJavascriptJs),
 			hb.NewScriptURL(codemirrorCssJs),
