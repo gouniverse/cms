@@ -728,6 +728,30 @@ Vue.createApp(MenuUpdate).mount('#menu-update')`
 	//         <script>var menuItemsSaveUrl = "/save";</script>
 	//         <script>var menuItemsFetchUrl = "/menus.json";</script>
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL("https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/jqtree.css"),
+			hb.NewStyle(`
+	ul.jqtree-tree li>.jqtree-element {
+		display: block;
+		padding: 10px;
+	}
+	ul.jqtree-tree li.jqtree_common:hover{
+		background:cornsilk;
+	}
+		`),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL("https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/tree.jquery.js"),
+			hb.NewScriptURL(cdn.Notify_0_4_2()),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Edit Menu Items", h)
 	webpage.AddStyleURLs([]string{
 		"https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/jqtree.css",
@@ -746,9 +770,8 @@ ul.jqtree-tree li.jqtree_common:hover{
 }
 	`)
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
+	webpage.AddScript(inlineScript)
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 // flattenTree flattens a JQTree data
