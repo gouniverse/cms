@@ -192,7 +192,6 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 	if cms.funcLayout("") != "" {
 		out := hb.NewWrap().Children([]*hb.Tag{
 			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
-			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
 			hb.NewScriptURL(cdn.VueJs_3()),

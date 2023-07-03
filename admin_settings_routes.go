@@ -168,6 +168,20 @@ const SettingManager = {
 Vue.createApp(SettingManager).mount('#setting-manager')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(cdn.JqueryDataTablesJs_1_13_4()),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Setting Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
@@ -307,30 +321,54 @@ const SettingUpdate = {
 Vue.createApp(SettingUpdate).mount('#setting-update')
 	`
 
-	webtemplate := Webpage("Edit Setting", h)
-	webtemplate.AddStyleURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
-	})
-	webtemplate.AddScriptURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
-	})
-	webtemplate.AddStyle(`	
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(codemirrorCss),
+			hb.NewStyle(`.CodeMirror {
+				border: 1px solid #eee;
+				height: auto;
+			}`),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(codemirrorJs),
+			hb.NewScriptURL(codemirrorHtmlmixedJs),
+			hb.NewScriptURL(codemirrorJavascriptJs),
+			hb.NewScriptURL(codemirrorCssJs),
+			hb.NewScriptURL(codemirrorClikeJs),
+			hb.NewScriptURL(codemirrorPhpJs),
+			hb.NewScriptURL(codemirrorFormattingJs),
+			hb.NewScriptURL(codemirrorMatchBracketsJs),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
+	webpage := Webpage("Edit Setting", h).
+		AddStyleURLs([]string{
+			codemirrorCss,
+		}).
+		AddScriptURLs([]string{
+			codemirrorJs,
+			codemirrorXmlJs,
+			codemirrorHtmlmixedJs,
+			codemirrorJavascriptJs,
+			codemirrorCssJs,
+			codemirrorClikeJs,
+			codemirrorPhpJs,
+			codemirrorFormattingJs,
+			codemirrorMatchBracketsJs,
+		}).
+		AddStyle(`	
 .CodeMirror {
 	border: 1px solid #eee;
 	height: auto;
-}
-	`)
-	webtemplate.AddScript(inlineScript)
+}`).
+		AddScript(inlineScript)
 
-	responses.HTMLResponse(w, r, cms.funcLayout(webtemplate.ToHTML()))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageSettingsSettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
