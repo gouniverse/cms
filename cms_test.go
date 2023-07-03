@@ -49,7 +49,7 @@ func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
 	cms, err := NewCms(Config{})
 	assert.NotNil(suite.T(), err, err.Error())
 
-	assert.Contains(suite.T(), err.Error(), "DbInstance", err.Error())
+	assert.Contains(suite.T(), err.Error(), "database (preferred) OR dbinstance OR (driver & dsn) are required field", err.Error())
 
 	assert.Nil(suite.T(), cms, "cms must be nil")
 }
@@ -113,6 +113,7 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 		Prefix:              "cms2",
 		// CustomEntityList: entityList(),
 	})
+
 	assert.Nil(suite.T(), err)
 	assert.True(suite.T(), cms2.blocksEnabled, "Enable blocks MUST BE true after init")
 	assert.True(suite.T(), cms2.cacheEnabled, "Enable cache MUST BE true after init")
@@ -123,7 +124,7 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	assert.True(suite.T(), cms2.templatesEnabled, "Enable templates MUST BE true after init")
 
 	pages, err := cms2.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "page",
+		EntityType: ENTITY_TYPE_PAGE,
 		Offset:     0,
 		Limit:      10,
 		SortBy:     "name",
@@ -160,7 +161,7 @@ func (suite *CmsTestSuite) TestCmsPages() {
 	assert.Nil(suite.T(), err)
 
 	pages, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "page",
+		EntityType: ENTITY_TYPE_PAGE,
 		Offset:     0,
 		Limit:      10,
 		SortBy:     "name",

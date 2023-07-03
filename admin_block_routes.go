@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
@@ -20,7 +22,7 @@ func (cms Cms) pageBlocksBlockCreateAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	block, err := cms.EntityStore.EntityCreate("block")
+	block, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_BLOCK)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be created: "+err.Error()))
@@ -42,9 +44,15 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathBlocksBlockManager): "Blocks",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathBlocksBlockManager),
+			Name: "Blocks",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "block-manager")
@@ -60,7 +68,7 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(cms.pageBlocksBlockTrashModal())
 
 	blocks, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "block",
+		EntityType: ENTITY_TYPE_BLOCK,
 		Offset:     0,
 		Limit:      200,
 		SortBy:     "id",
@@ -204,12 +212,12 @@ Vue.createApp(BlockManager).mount('#block-manager')
 	`
 
 	webpage := Webpage("Block Manager", h)
-	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
-	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
+	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
 }
 
 func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
@@ -235,10 +243,19 @@ func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathBlocksBlockManager):                         "Blocks",
-		(endpoint + "?path=" + PathBlocksBlockUpdate + "&block_id=" + blockID): "Edit block",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathBlocksBlockManager),
+			Name: "Blocks",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathBlocksBlockUpdate + "&block_id=" + blockID),
+			Name: "Edit block",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "block-update")
@@ -419,7 +436,7 @@ Vue.createApp(BlockUpdate).mount('#block-update')
 	template.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(template.ToHTML()))
+	w.Write([]byte(cms.funcLayout(template.ToHTML())))
 }
 
 func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {

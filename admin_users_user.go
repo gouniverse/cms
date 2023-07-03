@@ -7,6 +7,7 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -31,9 +32,15 @@ func (cms Cms) pageUsersUserManager(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathUsersUserManager): "Users",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathUsersUserManager),
+			Name: "Users",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "user-manager")
@@ -153,8 +160,8 @@ Vue.createApp(UserManager).mount('#user-manager')
 	`
 
 	webpage := Webpage("User Manager", h)
-	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
-	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
+	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
 
 	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
@@ -333,10 +340,19 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathUsersUserManager):                       "Users",
-		(endpoint + "?path=" + PathUsersUserUpdate + "&user_id=" + userID): "Edit user",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathUsersUserManager),
+			Name: "Users",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathUsersUserUpdate + "&user_id=" + userID),
+			Name: "Edit user",
+		},
 	})
 
 	container := hb.NewDiv().ID("user-update").Class("container")

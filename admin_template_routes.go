@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -57,9 +59,15 @@ func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Reque
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathTemplatesTemplateManager): "Templates",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTemplatesTemplateManager),
+			Name: "Templates",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "template-manager")
@@ -181,13 +189,26 @@ const TemplateManager = {
 Vue.createApp(TemplateManager).mount('#template-manager')
 	`
 
-	webpage := Webpage("Template Manager", h)
-	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
-	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
-	webpage.AddScript(inlineScript)
-	//webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.js")
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(cdn.JqueryDataTablesJs_1_13_4()),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
 
-	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
+	webpage := Webpage("Template Manager", h)
+	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
+	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
+	webpage.AddScript(inlineScript)
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 // pageTemplatesTemplateUpdate shows the template edit page
@@ -209,23 +230,32 @@ func (cms Cms) pageTemplatesTemplateUpdate(w http.ResponseWriter, r *http.Reques
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathTemplatesTemplateManager):                               "Templates",
-		(endpoint + "?path=" + PathTemplatesTemplateUpdate + "&template_id=" + templateID): "Edit template",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTemplatesTemplateManager),
+			Name: "Templates",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathTemplatesTemplateUpdate + "&template_id=" + templateID),
+			Name: "Edit template",
+		},
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "template-update")
+	container := hb.NewDiv().Class("container").ID("template-update")
 	heading := hb.NewHeading1().HTML("Edit Template")
-	button := hb.NewButton().HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "templateSave")
+	button := hb.NewButton().HTML("Save").Class("btn btn-success float-end").Attr("v-on:click", "templateSave")
 	heading.AddChild(button)
 
-	formGroupStatus := hb.NewDiv().Attr("class", "form-group mb-3")
-	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "templateModel.status")
-	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
-	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
-	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")
+	formGroupStatus := hb.NewDiv().Class("form-group mb-3")
+	formGroupStatusLabel := hb.NewLabel().HTML("Status").Class("form-label")
+	formGroupStatusSelect := hb.NewSelect().Class("form-select").Attr("v-model", "templateModel.status")
+	formGroupOptionsActive := hb.NewOption().Value("active").HTML("Active")
+	formGroupOptionsInactive := hb.NewOption().Value("inactive").HTML("Inactive")
+	formGroupOptionsTrash := hb.NewOption().Value("trash").HTML("Trash")
 	formGroupStatus.AddChild(formGroupStatusLabel)
 	formGroupStatus.AddChild(formGroupStatusSelect.AddChild(formGroupOptionsActive).AddChild(formGroupOptionsInactive).AddChild(formGroupOptionsTrash))
 
@@ -339,38 +369,54 @@ const TemplateUpdate = {
 Vue.createApp(TemplateUpdate).mount('#template-update')
 	`
 
-	webtemplate := Webpage("Edit Template", h)
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(codemirrorCss),
+			hb.NewStyle(`.CodeMirror {
+				border: 1px solid #eee;
+				height: auto;
+			}`),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(codemirrorJs),
+			hb.NewScriptURL(codemirrorHtmlmixedJs),
+			hb.NewScriptURL(codemirrorJavascriptJs),
+			hb.NewScriptURL(codemirrorCssJs),
+			hb.NewScriptURL(codemirrorClikeJs),
+			hb.NewScriptURL(codemirrorPhpJs),
+			hb.NewScriptURL(codemirrorFormattingJs),
+			hb.NewScriptURL(codemirrorMatchBracketsJs),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
 
-	// <style>
-	// .CodeMirror {
-	// 	border: 1px solid #eee;
-	// 	height: auto;
-	// }
-	// </style>
-
-	webtemplate.AddStyleURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
-	})
-	webtemplate.AddScriptURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
-	})
-	webtemplate.AddStyle(`	
+	webpage := Webpage("Edit Template", h).
+		AddStyleURLs([]string{
+			codemirrorCss,
+		}).
+		AddScriptURLs([]string{
+			codemirrorJs,
+			codemirrorXmlJs,
+			codemirrorHtmlmixedJs,
+			codemirrorJavascriptJs,
+			codemirrorCssJs,
+			codemirrorClikeJs,
+			codemirrorPhpJs,
+			codemirrorFormattingJs,
+			codemirrorMatchBracketsJs,
+		}).
+		AddStyle(`	
 .CodeMirror {
 	border: 1px solid #eee;
 	height: auto;
-}
-	`)
-	webtemplate.AddScript(inlineScript)
+}`).
+		AddScript(inlineScript)
 
-	responses.HTMLResponse(w, r, cms.funcLayout(webtemplate.ToHTML()))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 // pageTemplatesTemplateTrashAjax - moves the template to the trash

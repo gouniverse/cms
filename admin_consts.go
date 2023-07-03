@@ -8,6 +8,7 @@ func (c contextKey) String() string {
 
 const (
 	keyEndpoint = contextKey("endpoint")
+
 	// PathHome contains the path to admin CMS home page
 	PathHome string = "home"
 
@@ -95,6 +96,19 @@ const (
 	// PathSettingsSettingUpdateAjax contains the path to admin settings update page
 	PathSettingsSettingUpdateAjax string = "settings/setting-update-ajax"
 	// END: Settings
+
+	// START: Translations
+	// PathTranslationsTranslationManager contains the path to admin translations manager page
+	PathTranslationsTranslationManager string = "translations/translation-manager"
+	// PathTranslationsTranslationCreateAjax contains the path to admin translations create page
+	PathTranslationsTranslationCreateAjax string = "translations/translation-create-ajax"
+	// PathTranslationsTranslationDeleteAjax contains the path to admin translations delete page
+	PathTranslationsTranslationDeleteAjax string = "translations/translation-delete-ajax"
+	// PathTranslationsTranslationUpdate contains the path to admin translations update page
+	PathTranslationsTranslationUpdate string = "translations/translation-update"
+	// PathTranslationsTranslationUpdateAjax contains the path to admin translations update page
+	PathTranslationsTranslationUpdateAjax string = "translations/translation-update-ajax"
+	// END: Translations
 
 	// START: Users
 	// PathUsersUserManager contains the path to admin users manager page

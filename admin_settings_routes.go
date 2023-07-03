@@ -7,6 +7,7 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
@@ -41,9 +42,15 @@ func (cms Cms) pageSettingsSettingManager(w http.ResponseWriter, r *http.Request
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathSettingsSettingManager): "Settings",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathSettingsSettingManager),
+			Name: "Settings",
+		},
 	})
 
 	container := bs.Container().ID("setting-manager")
@@ -162,8 +169,8 @@ Vue.createApp(SettingManager).mount('#setting-manager')
 	`
 
 	webpage := Webpage("Setting Manager", h)
-	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
-	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
+	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
 
 	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
@@ -192,10 +199,19 @@ func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request)
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathSettingsSettingManager):                               "Settings",
-		(endpoint + "?path=" + PathSettingsSettingUpdate + "&setting_key=" + settingKey): "Edit setting",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathSettingsSettingManager),
+			Name: "Settings",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathSettingsSettingUpdate + "&setting_key=" + settingKey),
+			Name: "Edit setting",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "setting-update")

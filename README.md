@@ -1,8 +1,6 @@
-# GoLang CMS
+# GoLang CMS <a href="https://gitpod.io/#https://github.com/gouniverse/cms" style="float:right:"><img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" loading="lazy"></a>
 
 ![tests](https://github.com/gouniverse/cms/workflows/tests/badge.svg)
-
-PREVIEW ONLY. NOT STABLE API CAN AND WILL CHANGE FREQUENTLY
 
 A "plug-and-play" content managing system (CMS) for GoLang that does its job and stays out of your way.
 
@@ -19,6 +17,7 @@ This package allows to add a content management system as a module dependency, w
 - Blocks (CMS)
 - Menus (CMS)
 - Settings (CMS)
+- Translations (CMS)
 - Custom Types
 - Cache Store
 - Log Store

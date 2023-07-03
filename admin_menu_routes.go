@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
@@ -24,7 +26,7 @@ func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, err := cms.EntityStore.EntityCreate("menu")
+	menu, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_MENU)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu failed to be created "+err.Error()))
@@ -46,9 +48,15 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	//log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathMenusMenuManager): "Menus",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuManager),
+			Name: "Menus",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-manager")
@@ -75,7 +83,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(modal)
 
 	menus, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "menu",
+		EntityType: ENTITY_TYPE_MENU,
 		Offset:     0,
 		Limit:      200,
 		SortBy:     "id",
@@ -166,7 +174,7 @@ Vue.createApp(MenuManager).mount('#menu-manager')
 	menu.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(menu.ToHTML()))
+	w.Write([]byte(cms.funcLayout(menu.ToHTML())))
 }
 
 func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
@@ -187,10 +195,19 @@ func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
-		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Edit menu",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuManager),
+			Name: "Menus",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID),
+			Name: "Edit menu",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
@@ -375,7 +392,7 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 }
 
 func (cms Cms) buildTree(menuID string) []map[string]interface{} {
-	menuitems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
+	menuitems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
 
 	if err != nil {
 		log.Panicln("Menu items failed to be retrieved " + err.Error())
@@ -451,11 +468,23 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 	menuName, _ := menu.GetString("name", "")
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathMenusMenuManager):                       "Menus",
-		(endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID): "Menu",
-		"#": "Edit menu items",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuManager),
+			Name: "Menus",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathMenusMenuUpdate + "&menu_id=" + menuID),
+			Name: "Menu",
+		},
+		{
+			URL:  "#",
+			Name: "Edit menu items",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
@@ -684,7 +713,7 @@ Vue.createApp(MenuUpdate).mount('#menu-update')`
 	})
 	webpage.AddScriptURLs([]string{
 		"https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/tree.jquery.js",
-		"https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js",
+		cdn.Notify_0_4_2(),
 	})
 	webpage.AddStyle(`
 ul.jqtree-tree li>.jqtree-element {
@@ -698,7 +727,7 @@ ul.jqtree-tree li.jqtree_common:hover{
 	webpage.AddScript(inlineScript)
 	w.WriteHeader(200)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(webpage.ToHTML()))
+	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
 }
 
 // flattenTree flattens a JQTree data
@@ -787,7 +816,7 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 
 		menuitem, _ := cms.EntityStore.EntityFindByID(id)
 		if menuitem == nil {
-			menuitem, err = cms.EntityStore.EntityCreate("menuitem")
+			menuitem, err = cms.EntityStore.EntityCreate(ENTITY_TYPE_MENUITEM)
 			if err != nil {
 				api.Respond(w, r, api.Error("Menu item failed to be created "+err.Error()))
 				return
@@ -809,7 +838,7 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 		newIDs = append(newIDs, menuitem.ID())
 	}
 
-	allMenuItems, err := cms.EntityStore.EntityListByAttribute("menuitem", "menu_id", menuID)
+	allMenuItems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu items failed to be fetched: "+err.Error()))

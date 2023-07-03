@@ -7,6 +7,7 @@ import (
 
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/responses"
 
@@ -23,7 +24,7 @@ func (cms Cms) pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, err := cms.EntityStore.EntityCreate("page")
+	page, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_PAGE)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page failed to be created: "+err.Error()))
@@ -131,10 +132,19 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathPagesPageManager):                       "Pages",
-		(endpoint + "?path=" + PathPagesPageUpdate + "&page_id=" + pageID): "Edit page",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathPagesPageManager),
+			Name: "Pages",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathPagesPageUpdate + "&page_id=" + pageID),
+			Name: "Edit page",
+		},
 	})
 
 	container := hb.NewDiv().ID("page-update").Class("container")
@@ -465,7 +475,7 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	// log.Println(endpoint)
 
 	pages, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
-		EntityType: "page",
+		EntityType: ENTITY_TYPE_PAGE,
 		Offset:     0,
 		Limit:      200,
 		SortBy:     "id",
@@ -478,9 +488,15 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathPagesPageManager): "Pages",
+	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathPagesPageManager),
+			Name: "Pages",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")
@@ -609,8 +625,8 @@ Vue.createApp(PageManager).mount('#page-manager')
 	`
 
 	webpage := Webpage("Page Manager", h)
-	webpage.AddStyleURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.css")
-	webpage.AddScriptURL("https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.js")
+	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
+	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
 
 	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))

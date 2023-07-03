@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/bs"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
@@ -42,9 +43,15 @@ func (cms Cms) pageWidgetsWidgetManager(w http.ResponseWriter, r *http.Request) 
 	// log.Println(endpoint)
 
 	header := cms.cmsHeader(endpoint)
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathWidgetsWidgetManager): "Widgets",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathWidgetsWidgetManager),
+			Name: "Widgets",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "widget-manager")
@@ -172,10 +179,19 @@ func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-		endpoint: "Home",
-		(endpoint + "?path=" + PathWidgetsWidgetManager):                           "Widgets",
-		(endpoint + "?path=" + PathWidgetsWidgetUpdate + "&widget_id=" + widgetID): "Edit widget",
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+		{
+			URL:  endpoint,
+			Name: "Home",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathWidgetsWidgetManager),
+			Name: "Widgets",
+		},
+		{
+			URL:  (endpoint + "?path=" + PathWidgetsWidgetUpdate + "&widget_id=" + widgetID),
+			Name: "Edit widget",
+		},
 	})
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "widget-update")
