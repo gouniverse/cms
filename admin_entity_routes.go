@@ -192,12 +192,22 @@ const EntityManager = {
 Vue.createApp(EntityManager).mount('#entity-manager')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewScriptURL(cdn.JqueryDataTablesJs_1_13_4()),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Custom Entity Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
-
-	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) {
@@ -365,10 +375,18 @@ const EntityUpdate = {
 Vue.createApp(EntityUpdate).mount('#entity-update')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Edit Custom Entity", h)
 	webpage.AddScript(inlineScript)
-
-	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {

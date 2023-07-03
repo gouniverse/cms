@@ -11,6 +11,7 @@ import (
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/icons"
+	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
@@ -211,13 +212,22 @@ const BlockManager = {
 Vue.createApp(BlockManager).mount('#block-manager')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewScriptURL(cdn.JqueryDataTablesJs_1_13_4()),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Block Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageBlocksBlockUpdate(w http.ResponseWriter, r *http.Request) {
@@ -412,31 +422,54 @@ const BlockUpdate = {
 Vue.createApp(BlockUpdate).mount('#block-update')
 	`
 
-	template := Webpage("Edit Block", h)
-	template.AddStyleURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
-	})
-	template.AddScriptURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
-	})
-	template.AddStyle(`	
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(codemirrorCss),
+			hb.NewStyle(`.CodeMirror {
+				border: 1px solid #eee;
+				height: auto;
+			}`),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(codemirrorJs),
+			hb.NewScriptURL(codemirrorHtmlmixedJs),
+			hb.NewScriptURL(codemirrorJavascriptJs),
+			hb.NewScriptURL(codemirrorCssJs),
+			hb.NewScriptURL(codemirrorClikeJs),
+			hb.NewScriptURL(codemirrorPhpJs),
+			hb.NewScriptURL(codemirrorFormattingJs),
+			hb.NewScriptURL(codemirrorMatchBracketsJs),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
+	webpage := Webpage("Edit Block", h).
+		AddStyleURLs([]string{
+			codemirrorCss,
+		}).
+		AddScriptURLs([]string{
+			codemirrorJs,
+			codemirrorXmlJs,
+			codemirrorHtmlmixedJs,
+			codemirrorJavascriptJs,
+			codemirrorCssJs,
+			codemirrorClikeJs,
+			codemirrorPhpJs,
+			codemirrorFormattingJs,
+			codemirrorMatchBracketsJs,
+		}).
+		AddStyle(`	
 .CodeMirror {
 	border: 1px solid #eee;
 	height: auto;
-}
-	`)
-	template.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(cms.funcLayout(template.ToHTML())))
+}`).
+		AddScript(inlineScript)
+
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageBlocksBlockUpdateAjax(w http.ResponseWriter, r *http.Request) {

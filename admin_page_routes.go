@@ -31,8 +31,6 @@ func (cms Cms) pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// log.Println(page)
-
 	if page == nil {
 		api.Respond(w, r, api.Error("Page failed to be created"))
 		return
@@ -443,20 +441,45 @@ const PageUpdate = {
 Vue.createApp(PageUpdate).mount('#page-update')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewStyleURL(codemirrorCss),
+			hb.NewStyle(`.CodeMirror {
+				border: 1px solid #eee;
+				height: auto;
+			}`),
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(codemirrorJs),
+			hb.NewScriptURL(codemirrorHtmlmixedJs),
+			hb.NewScriptURL(codemirrorJavascriptJs),
+			hb.NewScriptURL(codemirrorCssJs),
+			hb.NewScriptURL(codemirrorClikeJs),
+			hb.NewScriptURL(codemirrorPhpJs),
+			hb.NewScriptURL(codemirrorFormattingJs),
+			hb.NewScriptURL(codemirrorMatchBracketsJs),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Edit Page", h)
 	webpage.AddStyleURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css",
+		codemirrorCss,
 	})
 	webpage.AddScriptURLs([]string{
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/htmlmixed/htmlmixed.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/javascript/javascript.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/css/css.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/clike/clike.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/php/php.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js",
-		"//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js",
+		codemirrorJs,
+		codemirrorXmlJs,
+		codemirrorHtmlmixedJs,
+		codemirrorJavascriptJs,
+		codemirrorCssJs,
+		codemirrorClikeJs,
+		codemirrorPhpJs,
+		codemirrorFormattingJs,
+		codemirrorMatchBracketsJs,
 	})
 	webpage.AddStyle(`	
 .CodeMirror {
@@ -488,7 +511,7 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 	}
 
 	header := cms.cmsHeader(endpoint)
-	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
 		{
 			URL:  endpoint,
 			Name: "Home",
@@ -499,27 +522,15 @@ func (cms Cms) pagePagesPageManager(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")
+	container := hb.NewDiv().Class("container").ID("page-manager")
 	heading := hb.NewHeading1().HTML("Page Manager")
 	button := hb.NewButton().HTML("New page").Attr("class", "btn btn-success float-end").Attr("v-on:click", "showPageCreateModal")
 	heading.AddChild(button)
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 
-	// modal := hb.NewDiv().Attr("id", "ModalPageCreate").Attr("class", "modal fade")
-	// modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	// modalContent := hb.NewDiv().Attr("class", "modal-content")
-	// modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Page"))
-	// modalBody := hb.NewDiv().Attr("class", "modal-body")
-	// modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "pageCreateModel.name")))
-	// modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	// modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-prsecondary").Attr("data-bs-dismiss", "modal"))
-	// modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "pageCreate"))
-	// modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	// modalDialog.AddChild(modalContent)
-	// modal.AddChild(modalDialog)
 	container.AddChild(pagePagesPageCreateModal())
 	container.AddChild(pagePagesPageTrashModal())
 
@@ -623,6 +634,17 @@ const PageManager = {
 };
 Vue.createApp(PageManager).mount('#page-manager')
 	`
+
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.JqueryDataTablesCss_1_13_4()),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
 
 	webpage := Webpage("Page Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())

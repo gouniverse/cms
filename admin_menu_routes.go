@@ -170,11 +170,18 @@ const MenuManager = {
 Vue.createApp(MenuManager).mount('#menu-manager')
 	`
 
-	menu := Webpage("Menu Manager", h)
-	menu.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(cms.funcLayout(menu.ToHTML())))
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
+	webpage := Webpage("Menu Manager", h)
+	webpage.AddScript(inlineScript)
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
@@ -296,10 +303,18 @@ const MenuUpdate = {
 Vue.createApp(MenuUpdate).mount('#menu-update')
 	`
 
-	webMenu := Webpage("Edit Menu", h)
-	webMenu.AddScript(inlineScript)
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
 
-	responses.HTMLResponse(w, r, cms.funcLayout(webMenu.ToHTML()))
+	webpage := Webpage("Edit Menu", h)
+	webpage.AddScript(inlineScript)
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageMenusMenuUpdateAjax(w http.ResponseWriter, r *http.Request) {

@@ -155,10 +155,19 @@ const WidgetManager = {
 Vue.createApp(WidgetManager).mount('#widget-manager')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Widget Manager", h)
 	webpage.AddScript(inlineScript)
 
-	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageWidgetsWidgetUpdate(w http.ResponseWriter, r *http.Request) {
@@ -314,9 +323,18 @@ const WidgetUpdate = {
 Vue.createApp(WidgetUpdate).mount('#widget-update')
 	`
 
+	if cms.funcLayout("") != "" {
+		out := hb.NewWrap().Children([]*hb.Tag{
+			hb.NewHTML(h),
+			hb.NewScript(inlineScript),
+		}).ToHTML()
+		responses.HTMLResponse(w, r, cms.funcLayout(out))
+		return
+	}
+
 	webpage := Webpage("Edit Widget", h)
 	webpage.AddScript(inlineScript)
-	responses.HTMLResponse(w, r, cms.funcLayout(webpage.ToHTML()))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageWidgetsWidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
