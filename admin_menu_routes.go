@@ -309,6 +309,9 @@ Vue.createApp(MenuUpdate).mount('#menu-update')
 	if cms.funcLayout("") != "" {
 		out := hb.NewWrap().Children([]*hb.Tag{
 			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_10()),
 			hb.NewScript(inlineScript),
 		}).ToHTML()
 		responses.HTMLResponse(w, r, cms.funcLayout(out))

@@ -213,7 +213,7 @@ func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request)
 	}
 
 	header := cms.cmsHeader(r.Context().Value(keyEndpoint).(string))
-	breadcrums := cms.cmsBreadcrumbs([]bs.Breadcrumb{
+	breadcrumbs := cms.cmsBreadcrumbs([]bs.Breadcrumb{
 		{
 			URL:  endpoint,
 			Name: "Home",
@@ -253,7 +253,7 @@ func (cms Cms) pageSettingsSettingUpdate(w http.ResponseWriter, r *http.Request)
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrums))
+	container.AddChild(hb.NewHTML(breadcrumbs))
 	container.AddChild(formGroupName).AddChild(formGroupContent).AddChild(paragraphUsage)
 
 	h := container.ToHTML()
