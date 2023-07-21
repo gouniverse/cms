@@ -49,7 +49,7 @@ func (suite *CmsTestSuite) TestCmsInitWithoutDb() {
 	cms, err := NewCms(Config{})
 	assert.NotNil(suite.T(), err, err.Error())
 
-	assert.Contains(suite.T(), err.Error(), "database (preferred) OR dbinstance OR (driver & dsn) are required field", err.Error())
+	assert.Contains(suite.T(), err.Error(), "database (preferred) OR db instance OR (driver & dsn) are required field", err.Error())
 
 	assert.Nil(suite.T(), cms, "cms must be nil")
 }
