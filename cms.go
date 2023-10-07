@@ -128,6 +128,10 @@ func configToCms(config Config) *Cms {
 		}
 	}
 
+	if config.Shortcodes == nil {
+		config.Shortcodes = map[string]func(*http.Request, string, map[string]string) string{}
+	}
+
 	if config.TranslationLanguageDefault == "" && len(config.TranslationLanguages) > 0 {
 		config.TranslationLanguageDefault = config.TranslationLanguages[lo.Keys(config.TranslationLanguages)[0]]
 	}
