@@ -116,14 +116,14 @@ func (cms Cms) pageTranslationsTranslationManager(w http.ResponseWriter, r *http
 			return
 		}
 		//buttonDelete := hb.NewButton().HTML("Delete").Attr("class", "btn btn-danger float-end").Attr("v-on:click", "showTranslationDeleteModal('"+translation.ID+"')")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary btn-sm").Attr("v-on:click", "translationEdit('"+translation.ID()+"')").Attr("style", "margin-right:5px")
-		buttonTrash := hb.NewButton().HTML("Trash").Attr("class", "btn btn-danger btn-sm").Attr("v-on:click", "showTranslationTrashModal('"+translation.ID()+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Type(hb.TYPE_BUTTON).Class("btn btn-primary btn-sm").Attr("v-on:click", "translationEdit('"+translation.ID()+"')").Style("margin-right:5px")
+		buttonTrash := hb.NewButton().HTML("Trash").Class("btn btn-danger btn-sm").Attr("v-on:click", "showTranslationTrashModal('"+translation.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
 		td2 := hb.NewTD().HTML(status)
 		td3 := hb.NewTD().HTML(translation.Handle())
-		td4 := hb.NewTD().SetAttribute("style", "white-space:nowrap;").AddChild(buttonEdit).AddChild(buttonTrash)
+		td4 := hb.NewTD().Style("white-space:nowrap;").Child(buttonEdit).Child(buttonTrash)
 
 		tbody.Child(tr.Child(td1).Child(td2).Child(td3).Child(td4))
 	}
