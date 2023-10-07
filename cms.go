@@ -16,6 +16,8 @@ import (
 	"github.com/samber/lo"
 )
 
+type LanguageKey struct{}
+
 type Config struct {
 	Database                   *sqldb.Database
 	DbInstance                 *sql.DB
