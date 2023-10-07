@@ -3,6 +3,7 @@ package cms
 import (
 	"database/sql"
 	"errors"
+	"net/http"
 
 	"time"
 
@@ -34,6 +35,7 @@ type Config struct {
 	SessionEnable              bool
 	SettingsAutomigrate        bool
 	SettingsEnable             bool
+	Shortcodes                 map[string]func(*http.Request, string, map[string]string) string
 	TemplatesEnable            bool
 	TranslationsEnable         bool
 	TranslationLanguageDefault string
@@ -88,6 +90,8 @@ type Cms struct {
 	settingsEnabled     bool
 	settingsAutomigrate bool
 	settingsTableName   string
+
+	shortcodes map[string]func(*http.Request, string, map[string]string) string
 
 	translationLanguageDefault string
 	translationLanguages       map[string]string

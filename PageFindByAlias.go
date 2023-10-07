@@ -1,8 +1,6 @@
 package cms
 
 import (
-	"log"
-
 	"github.com/gouniverse/entitystore"
 )
 
@@ -15,30 +13,28 @@ import (
 //     in case of error
 //
 // =====================================================================
-func (cms *Cms) PageFindByAlias(alias string) *entitystore.Entity {
+func (cms *Cms) PageFindByAlias(alias string) (*entitystore.Entity, error) {
 	// Try to find by "alias"
 	page, err := cms.EntityStore.EntityFindByAttribute(ENTITY_TYPE_PAGE, "alias", ""+alias+"")
 
 	if err != nil {
-		log.Println(err.Error())
-		return nil
+		return nil, err
 	}
 
 	if page != nil {
-		return page
+		return page, nil
 	}
 
 	// Try to find by "/alias"
 	page, err = cms.EntityStore.EntityFindByAttribute(ENTITY_TYPE_PAGE, "alias", "/"+alias+"")
 
 	if err != nil {
-		log.Println(err.Error())
-		return nil
+		return nil, err
 	}
 
 	if page != nil {
-		return page
+		return page, nil
 	}
 
-	return nil
+	return nil, nil
 }

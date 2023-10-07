@@ -69,6 +69,8 @@ github.com/gouniverse/sessionstore v0.19.0 h1:4O34mqspErrnC7MhThA7Ay0Z12xoYqlZWJ
 github.com/gouniverse/sessionstore v0.19.0/go.mod h1:V/XLv9Oi7VZGnkNNJjpCWFhgPEdWff0q0e2eO5bB5V8=
 github.com/gouniverse/settingstore v0.11.0 h1:cn84YxYYAPLtlgXfWiMMV+R4q5p26DFNyjLuSEbtP3E=
 github.com/gouniverse/settingstore v0.11.0/go.mod h1:qJaeCWdUGemWIE8RaUONlTRJDZBBTpyw9Kgn5YUeqzQ=
+github.com/gouniverse/shortcode v0.1.4 h1:595X57QYdi7hUl2dqvL/oih1Ha0/FhU5i9xJr1pbChc=
+github.com/gouniverse/shortcode v0.1.4/go.mod h1:3AmIfeaJKbteiVmalROhmE6mcq73l37uPpDWlCrhvas=
 github.com/gouniverse/sql v0.7.2 h1:xj0y1zvu2y2aiMrmsRIJnR8kdQqww7WiUPlM08d3OnY=
 github.com/gouniverse/sql v0.7.2/go.mod h1:Kyca0F0/sfwjtFf7dYZ7Z11FpxyoVBeo2HLrpt3boHk=
 github.com/gouniverse/uid v1.3.0/go.mod h1:YKsoFDjOj3GUJIL7KeMK0GzGsg7Klk3Sghn+aIotv2k=

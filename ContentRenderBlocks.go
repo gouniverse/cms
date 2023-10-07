@@ -1,48 +1,70 @@
 package cms
 
 import (
-	"log"
 	"strings"
 )
 
 // RenderBlocks renders the blocks in a string
-func (cms *Cms) ContentRenderBlocks(content string) string {
+func (cms *Cms) ContentRenderBlocks(content string) (string, error) {
 	blockIDs := ContentFindIdsByPatternPrefix(content, "BLOCK")
 
+	var err error
 	for _, blockID := range blockIDs {
-		content = cms.ContentRenderBlockByID(content, blockID)
+		content, err = cms.ContentRenderBlockByID(content, blockID)
+
+		if err != nil {
+			return content, err
+		}
 	}
 
-	return content
+	return content, nil
 }
 
-// RenderBlockByID renders the block specified by the ID in a content
+// ContentRenderBlockByID renders the block specified by the ID in a content
 // if the blockID is empty or not found the initial content is returned
-func (cms *Cms) ContentRenderBlockByID(content string, blockID string) string {
+func (cms *Cms) ContentRenderBlockByID(content string, blockID string) (string, error) {
 	if blockID == "" {
-		return content
+		return content, nil
 	}
 
-	blockContent := cms.findBlockContent(blockID)
+	blockContent, err := cms.findBlockContent(blockID)
+
+	if err != nil {
+		return "", err
+	}
+
 	content = strings.ReplaceAll(content, "[[BLOCK_"+blockID+"]]", blockContent)
 	content = strings.ReplaceAll(content, "[[ BLOCK_"+blockID+" ]]", blockContent)
-	return content
+
+	return content, nil
 }
 
-func (cms *Cms) findBlockContent(blockID string) string {
-	block, _ := cms.EntityStore.EntityFindByID(blockID)
+func (cms *Cms) findBlockContent(blockID string) (string, error) {
+	block, err := cms.BlockFindByID(blockID)
+
+	if err != nil {
+		return "", err
+	}
 
 	var blockContent string
 
 	if block == nil {
-		log.Println("Block " + blockID + " not found")
 		blockContent = ""
 	} else {
-		blockStatus, _ := block.GetString("status", "")
+		blockStatus, err := block.GetString("status", "")
+
+		if err != nil {
+			return "", err
+		}
+
 		if blockStatus == "active" {
-			blockContent, _ = block.GetString("content", "")
+			blockContent, err = block.GetString("content", "")
+
+			if err != nil {
+				return "", err
+			}
 		}
 	}
 
-	return blockContent
+	return blockContent, nil
 }

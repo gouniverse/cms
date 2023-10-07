@@ -38,6 +38,7 @@ require (
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/gouniverse/api v1.5.0
 	github.com/gouniverse/icons v1.3.0
+	github.com/gouniverse/shortcode v0.1.4
 	github.com/gouniverse/uid v1.4.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
