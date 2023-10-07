@@ -145,6 +145,7 @@ func configToCms(config Config) *Cms {
 	cms.sessionEnabled = config.SessionEnable
 	cms.settingsAutomigrate = config.SettingsAutomigrate
 	cms.settingsEnabled = config.SettingsEnable
+	cms.shortcodes = config.Shortcodes
 	cms.templatesEnabled = config.TemplatesEnable
 	cms.translationsEnabled = config.TranslationsEnable
 	cms.translationLanguageDefault = config.TranslationLanguageDefault
