@@ -21,6 +21,13 @@ require (
 )
 
 require (
+	github.com/gouniverse/taskstore v0.2.0 // indirect
+	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
+	github.com/mattn/go-colorable v0.1.6 // indirect
+	github.com/mingrammer/cfmt v1.1.0 // indirect
+)
+
+require (
 	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect

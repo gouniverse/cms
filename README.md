@@ -22,6 +22,7 @@ This package allows to add a content management system as a module dependency, w
 - Cache Store
 - Log Store
 - Session Store
+- Task Store (queue for background tasks)
 
 # Simplest Initialization
 

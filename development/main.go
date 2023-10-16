@@ -43,6 +43,7 @@ func main() {
 		menu := hb.NewHTML("<a href='/cms'>Standalone CMS</a> <br /> <br /> <a href='/cmswithlayout'>CMS WIth Layout</a> <br /> <br /> <a href='/embeddedcms'>Embedded CMS in IFRAME</a>")
 		w.Write([]byte(menu.ToHTML()))
 	})
+
 	mux.HandleFunc("/cms", cmsStandalone().Router)
 	mux.HandleFunc("/embeddedcms", pageDashboardWithEmbeddedCms)
 	mux.HandleFunc("/cmswithlayout", cmsWithLayout().Router)
@@ -84,6 +85,7 @@ func cmsStandalone() *cms.Cms {
 		SettingsEnable:             true,
 		SessionAutomigrate:         true,
 		SessionEnable:              true,
+		TasksEnable:                true,
 		TemplatesEnable:            true,
 		TranslationsEnable:         true,
 		TranslationLanguageDefault: "en",
