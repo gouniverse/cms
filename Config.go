@@ -28,6 +28,9 @@ type Config struct {
 	SettingsEnable             bool
 	Shortcodes                 map[string]func(*http.Request, string, map[string]string) string
 	TasksEnable                bool
+	TasksAutomigrate           bool
+	TasksQueueTableName        string
+	TasksTaskTableName         string
 	TemplatesEnable            bool
 	TranslationsEnable         bool
 	TranslationLanguageDefault string

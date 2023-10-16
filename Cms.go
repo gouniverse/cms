@@ -124,6 +124,10 @@ func configToCms(config Config) *Cms {
 	cms.settingsAutomigrate = config.SettingsAutomigrate
 	cms.settingsEnabled = config.SettingsEnable
 	cms.shortcodes = config.Shortcodes
+	cms.tasksAutomigrate = config.TasksAutomigrate
+	cms.tasksEnabled = config.TasksEnable
+	cms.tasksQueueTableName = config.TasksQueueTableName
+	cms.tasksTaskTableName = config.TasksTaskTableName
 	cms.templatesEnabled = config.TemplatesEnable
 	cms.translationsEnabled = config.TranslationsEnable
 	cms.translationLanguageDefault = config.TranslationLanguageDefault
