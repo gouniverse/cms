@@ -16,6 +16,7 @@ import (
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
+	"github.com/samber/lo"
 )
 
 func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
@@ -513,18 +514,40 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 	//heading.AddChild(button)
 
 	backURL := endpoint + "?path=" + PathMenusMenuManager
-	actionsCard := hb.NewDiv().Class("card box-primary")
-	actionsCardHeader := hb.NewDiv().Class("card-header with-border")
-	actionsCardBody := hb.NewDiv().Class("card-body with-border")
+	buttonCancel := hb.NewHyperlink().
+		Class("btn btn-info").
+		Href(backURL).
+		Child(hb.NewHTML(icons.BootstrapChevronLeft)).
+		HTML(" Cancel")
+	buttonAddNode := hb.NewButton().
+		Attr("v-on:click", "menuItemAdd").
+		Class("btn btn-success float-end").
+		ID("ButtonNewMenuItem").
+		Attr("disabled", "disabled").
+		Child(hb.NewHTML(icons.BootstrapPlusCircle)).
+		HTML(" Add item")
+	buttonSaveNode := hb.NewButton().
+		Attr("v-on:click", "menuItemsSave").
+		Class("btn btn-success").
+		ID("ButtonSaveMenuItems").
+		Attr("disabled", "disabled").
+		Child(hb.NewHTML(icons.BootstrapBoxArrowInDown)).
+		HTML(" Save")
 
-	buttonCancel := hb.NewHyperlink().Class("btn btn-info").Attr("href", backURL).AddChild(hb.NewHTML(icons.BootstrapChevronLeft)).HTML(" Cancel")
-	buttonAddNode := hb.NewButton().Attr("v-on:click", "menuItemAdd").Class("btn btn-success float-end").Attr("id", "ButtonNewMenuItem").Attr("disabled", "disabled").AddChild(hb.NewHTML(icons.BootstrapPlusCircle)).HTML(" Add item")
-	buttonSaveNode := hb.NewButton().Attr("v-on:click", "menuItemsSave").Class("btn btn-success").Attr("id", "ButtonSaveMenuItems").Attr("disabled", "disabled").AddChild(hb.NewHTML(icons.BootstrapBoxArrowInDown)).HTML(" Save")
-
-	divTree := hb.NewDiv().Attr("id", "tree1")
-	actionsCardBody.AddChild(divTree)
-	actionsCardHeader.AddChild(buttonCancel).AddChild(buttonAddNode).AddChild(buttonSaveNode)
-	actionsCard.AddChild(actionsCardHeader).AddChild(actionsCardBody)
+	actionsCard := hb.NewDiv().
+		Class("card box-primary").
+		Child(
+			hb.NewDiv().
+				Class("card-header with-border").
+				Child(buttonCancel).
+				Child(buttonAddNode).
+				Child(buttonSaveNode)).
+		Child(
+			hb.NewDiv().
+				Class("card-body with-border").
+				Child(
+					hb.NewDiv().
+						ID("tree1")))
 
 	modal := hb.NewDiv().
 		ID("ModalItemUpdate").
@@ -540,24 +563,37 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 					Class("modal-body").
 					Child(hb.NewDiv().
 						Class("form-group").
+						Style(`margin-top:10px;`).
 						Child(hb.NewLabel().HTML("Title")).
-						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.title"))).
+						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.title")).
+						Child(hb.NewDiv().Class("text-info").HTML("Title to display"))).
 					Child(hb.NewDiv().
 						Class("form-group").
+						Style(`margin-top:10px;`).
 						Child(hb.NewLabel().HTML("Page")).
-						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.pageId"))).
+						Child(hb.NewSelect().
+							Class("form-select").Attr("v-model", "menuItemUpdateModel.pageId").
+							Child(hb.NewTemplate().
+								Attr("v-for", "dropdown in pagesDropdownList").
+								Child(hb.NewOption().Attr("v-bind:value", "dropdown.key").Attr("v-html", "dropdown.value"))),
+						).
+						Child(hb.NewDiv().Class("text-info").HTML("Page to link to"))).
 					Child(hb.NewDiv().
 						Class("form-group").
+						Style(`margin-top:10px;`).
 						Child(hb.NewLabel().HTML("URL")).
-						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.url"))).
+						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.url")).
+						Child(hb.NewDiv().Class("text-info").HTML("URL to link to (if page not set)"))).
 					Child(hb.NewDiv().
 						Class("form-group").
+						Style(`margin-top:10px;`).
 						Child(hb.NewLabel().HTML("Target")).
-						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.target")))).
-				Child(hb.NewDiv().
-					Class("modal-footer").
-					Child(hb.NewButton().HTML("Close").Class("btn btn-secondary").Attr("data-bs-dismiss", "modal")).
-					Child(hb.NewButton().HTML("Update").Class("btn btn-primary").Attr("v-on:click", "menuItemUpdate").Attr("data-bs-dismiss", "modal")))))
+						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.target")).
+						Child(hb.NewDiv().Class("text-info").HTML("Where to open the menu item. Can be one of _blank |_self (default) | _parent | _top | frame name"))).
+					Child(hb.NewDiv().
+						Class("modal-footer").
+						Child(hb.NewButton().HTML("Close").Class("btn btn-secondary").Attr("data-bs-dismiss", "modal")).
+						Child(hb.NewButton().HTML("Update").Class("btn btn-primary").Attr("v-on:click", "menuItemUpdate").Attr("data-bs-dismiss", "modal"))))))
 
 	container := hb.NewDiv().
 		Class("container").
@@ -568,17 +604,27 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 		Child(actionsCard).
 		Child(modal)
 
+	pagesDropdownList, errorMessage := cms.pageMenusMenuItemsPagesDropdownList()
+
+	if errorMessage != "" {
+		api.Respond(w, r, api.Error(errorMessage))
+		return
+	}
+
 	menuItemsUpdateURL := endpoint + "?path=" + PathMenusMenuItemsUpdateAjax
 	menuItemsFetchURL := endpoint + "?path=" + PathMenusMenuItemsFetchAjax
+	pagesDropdownJSON, _ := utils.ToJSON(pagesDropdownList)
 	inlineScript := `
 var menuItemsSaveUrl = "` + menuItemsUpdateURL + `";
 var menuItemsFetchUrl = "` + menuItemsFetchURL + `";
 var menuId = "` + menuID + `";
+var pagesDropdownList = ` + pagesDropdownJSON + `;
 const MenuItemsUpdate = {
 	data() {
 		return {
 			menuId: menuId,
 			menuitems:[],
+			pagesDropdownList: pagesDropdownList,
 			menuItemUpdateModel:{
 				menuItemId:null,
 				pageId:null,
@@ -784,6 +830,58 @@ ul.jqtree-tree li.jqtree_common:hover{
 	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
+func (cms Cms) pageMenusMenuItemsPagesDropdownList() (pagesDropdownList []map[string]string, errorMessage string) {
+	pages, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+		EntityType: ENTITY_TYPE_PAGE,
+		Offset:     0,
+		Limit:      200,
+		SortBy:     "id",
+		SortOrder:  "asc",
+	})
+
+	if err != nil {
+		return pagesDropdownList, "Page list failed to be retrieved " + err.Error()
+	}
+
+	pagesDropdownList = make([]map[string]string, 0)
+
+	mapPageIDTitle := map[string]string{}
+	for _, page := range pages {
+		title, err := page.GetString("title", "")
+
+		if err != nil {
+			return pagesDropdownList, "Page failed to be retrieved " + err.Error()
+		}
+
+		status, err := page.GetString("status", "")
+
+		if err != nil {
+			return pagesDropdownList, "Page failed to be retrieved " + err.Error()
+		}
+
+		mapPageIDTitle[page.ID()] = title + " (" + status + ")"
+	}
+
+	pageTitles := lo.Values(mapPageIDTitle)
+
+	sort.Strings(pageTitles)
+
+	pagesDropdownList = []map[string]string{}
+
+	for _, title := range pageTitles {
+		pageID, isFound := lo.FindKey(mapPageIDTitle, title)
+		if !isFound {
+			continue
+		}
+		pagesDropdownList = append(pagesDropdownList, map[string]string{
+			"key":   pageID,
+			"value": title,
+		})
+	}
+
+	return pagesDropdownList, ""
+}
+
 // flattenTree flattens a JQTree data
 func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 	flatTree := []map[string]interface{}{}
@@ -812,8 +910,8 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 }
 
 func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	menuID := strings.Trim(utils.Req(r, "menu_id", ""), " ")
-	data := strings.Trim(utils.Req(r, "data", ""), " ")
+	menuID := strings.TrimSpace(utils.Req(r, "menu_id", ""))
+	data := strings.TrimSpace(utils.Req(r, "data", ""))
 
 	if menuID == "" {
 		api.Respond(w, r, api.Error("Menu ID is required"))
@@ -840,33 +938,17 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	newIDs := []string{}
+	existingMenuItemIDs := []string{}
 	flatNodeList := flattenTree(nodes)
 
 	for _, node := range flatNodeList {
-		//log.Println(node)
 		id := node["id"].(string)
 		name := node["name"].(string)
-		pageID := ""
-		url := ""
-		target := ""
-		parentID := ""
-		sequence := ""
-		if keyExists(node, "page_id") {
-			pageID = node["page_id"].(string)
-		}
-		if keyExists(node, "url") {
-			url = node["url"].(string)
-		}
-		if keyExists(node, "target") {
-			target = node["target"].(string)
-		}
-		if keyExists(node, "parent_id") {
-			parentID = node["parent_id"].(string)
-		}
-		if keyExists(node, "sequence") {
-			sequence = node["sequence"].(string)
-		}
+		pageID := lo.ValueOr(node, "page_id", "").(string)
+		url := lo.ValueOr(node, "url", "").(string)
+		target := lo.ValueOr(node, "target", "").(string)
+		parentID := lo.ValueOr(node, "parent_id", "").(string)
+		sequence := lo.ValueOr(node, "sequence", "").(string)
 
 		menuitem, _ := cms.EntityStore.EntityFindByID(id)
 		if menuitem == nil {
@@ -889,26 +971,35 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 			return
 		}
 
-		newIDs = append(newIDs, menuitem.ID())
+		existingMenuItemIDs = append(existingMenuItemIDs, menuitem.ID())
 	}
 
-	// allMenuItems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
+	errMessage := cms.cleanMenuFromNonExistingMenuItems(menuID, existingMenuItemIDs)
 
-	// if err != nil {
-	// 	api.Respond(w, r, api.Error("Menu items failed to be fetched: "+err.Error()))
-	// 	return
-	// }
-
-	// Delete old menu items
-	// for _, menuitem := range allMenuItems {
-	// 	//allIDs = append(allIDs, menuitem.ID)
-	// 	exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
-	// 	if !exists {
-	// 		cms.EntityStore.EntityDelete(menuitem.ID())
-	// 	}
-	// }
+	if errMessage != "" {
+		api.Respond(w, r, api.Error(errMessage))
+		return
+	}
 
 	api.Respond(w, r, api.SuccessWithData("Menu items saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
+}
+
+func (cms Cms) cleanMenuFromNonExistingMenuItems(menuID string, existingMenuItemIDs []string) (errorMessage string) {
+	allMenuItems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
+
+	if err != nil {
+		return "Menu items failed to be fetched: " + err.Error()
+	}
+
+	// Delete old menu items
+	for _, menuitem := range allMenuItems {
+		exists, _ := utils.ArrayContains(existingMenuItemIDs, menuitem.ID())
+		if !exists {
+			cms.EntityStore.EntityDelete(menuitem.ID())
+		}
+	}
+
+	return ""
 }
 
 func keyExists(decoded map[string]interface{}, key string) bool {
