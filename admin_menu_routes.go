@@ -59,24 +59,24 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-manager")
+	container := hb.NewDiv().Class("container").Attr("id", "menu-manager")
 	heading := hb.NewHeading1().HTML("Menu Manager")
-	button := hb.NewButton().HTML("New menu").Attr("class", "btn btn-success float-end").Attr("v-on:click", "showMenuCreateModal")
+	button := hb.NewButton().HTML("New menu").Class("btn btn-success float-end").Attr("v-on:click", "showMenuCreateModal")
 	heading.AddChild(button)
 
 	container.AddChild(hb.NewHTML(header))
 	container.AddChild(heading)
 	container.AddChild(hb.NewHTML(breadcrumbs))
 
-	modal := hb.NewDiv().Attr("id", "ModalMenuCreate").Attr("class", "modal fade")
-	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	modalContent := hb.NewDiv().Attr("class", "modal-content")
-	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("New Menu"))
-	modalBody := hb.NewDiv().Attr("class", "modal-body")
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuCreateModel.name")))
-	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
-	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "menuCreate"))
+	modal := hb.NewDiv().Attr("id", "ModalMenuCreate").Class("modal fade")
+	modalDialog := hb.NewDiv().Class("modal-dialog")
+	modalContent := hb.NewDiv().Class("modal-content")
+	modalHeader := hb.NewDiv().Class("modal-header").AddChild(hb.NewHeading5().HTML("New Menu"))
+	modalBody := hb.NewDiv().Class("modal-body")
+	modalBody.AddChild(hb.NewDiv().Class("form-group").AddChild(hb.NewLabel().HTML("Name")).AddChild(hb.NewInput().Class("form-control").Attr("v-model", "menuCreateModel.name")))
+	modalFooter := hb.NewDiv().Class("modal-footer")
+	modalFooter.AddChild(hb.NewButton().HTML("Close").Class("btn btn-secondary").Attr("data-bs-dismiss", "modal"))
+	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Class("btn btn-primary").Attr("v-on:click", "menuCreate"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
 	modalDialog.AddChild(modalContent)
 	modal.AddChild(modalDialog)
@@ -95,7 +95,7 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	table := hb.NewTable().Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().Class("table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
 	table.AddChild(thead).AddChild(tbody)
@@ -110,8 +110,8 @@ func (cms Cms) pageMenusMenuManager(w http.ResponseWriter, r *http.Request) {
 	for _, menu := range menus {
 		name, _ := menu.GetString("name", "n/a")
 		status, _ := menu.GetString("status", "n/a")
-		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID()+"')")
-		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID()+"')")
+		buttonEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Class("btn btn-primary").Attr("v-on:click", "menuEdit('"+menu.ID()+"')")
+		buttonMenuItemsEdit := hb.NewButton().HTML("Edit").Attr("type", "button").Class("btn btn-primary").Attr("v-on:click", "menuItemsEdit('"+menu.ID()+"')")
 
 		tr := hb.NewTR()
 		td1 := hb.NewTD().HTML(name)
@@ -220,23 +220,23 @@ func (cms Cms) pageMenusMenuUpdate(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
+	container := hb.NewDiv().Class("container").Attr("id", "menu-update")
 	heading := hb.NewHeading1().HTML("Edit Menu")
-	button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "menuSave")
+	button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Class("btn btn-success float-end").Attr("v-on:click", "menuSave")
 	heading.AddChild(button)
 
-	formGroupStatus := hb.NewDiv().Attr("class", "form-group")
-	formGroupStatusLabel := hb.NewLabel().HTML("Status").Attr("class", "form-label")
-	formGroupStatusSelect := hb.NewSelect().Attr("class", "form-select").Attr("v-model", "menuModel.status")
+	formGroupStatus := hb.NewDiv().Class("form-group")
+	formGroupStatusLabel := hb.NewLabel().HTML("Status").Class("form-label")
+	formGroupStatusSelect := hb.NewSelect().Class("form-select").Attr("v-model", "menuModel.status")
 	formGroupOptionsActive := hb.NewOption().Attr("value", "active").HTML("Active")
 	formGroupOptionsInactive := hb.NewOption().Attr("value", "inactive").HTML("Inactive")
 	formGroupOptionsTrash := hb.NewOption().Attr("value", "trash").HTML("Trash")
 	formGroupStatus.AddChild(formGroupStatusLabel)
 	formGroupStatus.AddChild(formGroupStatusSelect.AddChild(formGroupOptionsActive).AddChild(formGroupOptionsInactive).AddChild(formGroupOptionsTrash))
 
-	formGroupName := hb.NewDiv().Attr("class", "form-group")
-	formGroupNameLabel := hb.NewLabel().HTML("Name").Attr("class", "form-label")
-	formGroupNameInput := hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuModel.name")
+	formGroupName := hb.NewDiv().Class("form-group")
+	formGroupNameLabel := hb.NewLabel().HTML("Name").Class("form-label")
+	formGroupNameInput := hb.NewInput().Class("form-control").Attr("v-model", "menuModel.name")
 	formGroupName.AddChild(formGroupNameLabel)
 	formGroupName.AddChild(formGroupNameInput)
 
@@ -422,7 +422,7 @@ func (cms Cms) buildTree(menuID string) []map[string]interface{} {
 
 	nodeList := []map[string]interface{}{}
 	for _, menuitem := range menuitems {
-		itemID := menuitem.ID
+		itemID := menuitem.ID()
 		itemName, _ := menuitem.GetString("name", "n/a")
 		parentID, _ := menuitem.GetString("parent_id", "")
 		sequence, _ := menuitem.GetString("sequence", "")
@@ -508,48 +508,65 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 		},
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "menu-update")
 	heading := hb.NewHeading1().HTML("Edit Menu Items for Menu '" + menuName + "'")
-	//button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "menuSave")
+	//button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Class( "btn btn-success float-end").Attr("v-on:click", "menuSave")
 	//heading.AddChild(button)
 
 	backURL := endpoint + "?path=" + PathMenusMenuManager
-	actionsCard := hb.NewDiv().Attr("class", "card box-primary")
-	actionsCardHeader := hb.NewDiv().Attr("class", "card-header with-border")
-	actionsCardBody := hb.NewDiv().Attr("class", "card-body with-border")
+	actionsCard := hb.NewDiv().Class("card box-primary")
+	actionsCardHeader := hb.NewDiv().Class("card-header with-border")
+	actionsCardBody := hb.NewDiv().Class("card-body with-border")
 
-	buttonCancel := hb.NewHyperlink().Attr("class", "btn btn-info").Attr("href", backURL).AddChild(hb.NewHTML(icons.BootstrapChevronLeft)).HTML(" Cancel")
-	buttonAddNode := hb.NewButton().Attr("v-on:click", "menuItemAdd").Attr("class", "btn btn-success float-end").Attr("id", "ButtonNewMenuItem").Attr("disabled", "disabled").AddChild(hb.NewHTML(icons.BootstrapPlusCircle)).HTML(" Add item")
-	buttonSaveNode := hb.NewButton().Attr("v-on:click", "menuItemsSave").Attr("class", "btn btn-success").Attr("id", "ButtonSaveMenuItems").Attr("disabled", "disabled").AddChild(hb.NewHTML(icons.BootstrapBoxArrowInDown)).HTML(" Save")
+	buttonCancel := hb.NewHyperlink().Class("btn btn-info").Attr("href", backURL).AddChild(hb.NewHTML(icons.BootstrapChevronLeft)).HTML(" Cancel")
+	buttonAddNode := hb.NewButton().Attr("v-on:click", "menuItemAdd").Class("btn btn-success float-end").Attr("id", "ButtonNewMenuItem").Attr("disabled", "disabled").AddChild(hb.NewHTML(icons.BootstrapPlusCircle)).HTML(" Add item")
+	buttonSaveNode := hb.NewButton().Attr("v-on:click", "menuItemsSave").Class("btn btn-success").Attr("id", "ButtonSaveMenuItems").Attr("disabled", "disabled").AddChild(hb.NewHTML(icons.BootstrapBoxArrowInDown)).HTML(" Save")
 
 	divTree := hb.NewDiv().Attr("id", "tree1")
 	actionsCardBody.AddChild(divTree)
 	actionsCardHeader.AddChild(buttonCancel).AddChild(buttonAddNode).AddChild(buttonSaveNode)
 	actionsCard.AddChild(actionsCardHeader).AddChild(actionsCardBody)
 
-	container.AddChild(hb.NewHTML(header))
-	container.AddChild(heading)
-	container.AddChild(hb.NewHTML(breadcrumbs))
-	container.AddChild(actionsCard)
+	modal := hb.NewDiv().
+		ID("ModalItemUpdate").
+		Class("modal fade").
+		Child(hb.NewDiv().
+			Class("modal-dialog").
+			Child(hb.NewDiv().
+				Class("modal-content").
+				Child(hb.NewDiv().
+					Class("modal-header").
+					Child(hb.NewHeading5().HTML("Edit Menu Item"))).
+				Child(hb.NewDiv().
+					Class("modal-body").
+					Child(hb.NewDiv().
+						Class("form-group").
+						Child(hb.NewLabel().HTML("Title")).
+						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.title"))).
+					Child(hb.NewDiv().
+						Class("form-group").
+						Child(hb.NewLabel().HTML("Page")).
+						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.pageId"))).
+					Child(hb.NewDiv().
+						Class("form-group").
+						Child(hb.NewLabel().HTML("URL")).
+						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.url"))).
+					Child(hb.NewDiv().
+						Class("form-group").
+						Child(hb.NewLabel().HTML("Target")).
+						Child(hb.NewInput().Class("form-control").Attr("v-model", "menuItemUpdateModel.target")))).
+				Child(hb.NewDiv().
+					Class("modal-footer").
+					Child(hb.NewButton().HTML("Close").Class("btn btn-secondary").Attr("data-bs-dismiss", "modal")).
+					Child(hb.NewButton().HTML("Update").Class("btn btn-primary").Attr("v-on:click", "menuItemUpdate").Attr("data-bs-dismiss", "modal")))))
 
-	modal := hb.NewDiv().Attr("id", "ModalItemUpdate").Attr("class", "modal fade")
-	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
-	modalContent := hb.NewDiv().Attr("class", "modal-content")
-	modalHeader := hb.NewDiv().Attr("class", "modal-header").AddChild(hb.NewHeading5().HTML("Edit Menu Item"))
-	modalBody := hb.NewDiv().Attr("class", "modal-body")
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Title")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.title")))
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Page")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.pageId")))
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("URL")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.url")))
-	modalBody.AddChild(hb.NewDiv().Attr("class", "form-group").AddChild(hb.NewLabel().HTML("Target")).AddChild(hb.NewInput().Attr("class", "form-control").Attr("v-model", "menuItemUpdateModel.target")))
-	modalFooter := hb.NewDiv().Attr("class", "modal-footer")
-	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
-	modalFooter.AddChild(hb.NewButton().HTML("Update").Attr("class", "btn btn-primary").Attr("v-on:click", "menuItemUpdate").Attr("data-bs-dismiss", "modal"))
-	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	modalDialog.AddChild(modalContent)
-	modal.AddChild(modalDialog)
-	container.AddChild(modal)
-
-	h := container.ToHTML()
+	container := hb.NewDiv().
+		Class("container").
+		ID("menu-items-update").
+		Child(hb.NewHTML(header)).
+		Child(heading).
+		Child(hb.NewHTML(breadcrumbs)).
+		Child(actionsCard).
+		Child(modal)
 
 	menuItemsUpdateURL := endpoint + "?path=" + PathMenusMenuItemsUpdateAjax
 	menuItemsFetchURL := endpoint + "?path=" + PathMenusMenuItemsFetchAjax
@@ -557,7 +574,7 @@ func (cms Cms) pageMenusMenuItemsUpdate(w http.ResponseWriter, r *http.Request) 
 var menuItemsSaveUrl = "` + menuItemsUpdateURL + `";
 var menuItemsFetchUrl = "` + menuItemsFetchURL + `";
 var menuId = "` + menuID + `";
-const MenuUpdate = {
+const MenuItemsUpdate = {
 	data() {
 		return {
 			menuId: menuId,
@@ -720,13 +737,7 @@ const MenuUpdate = {
 		// }
 	}
 };
-Vue.createApp(MenuUpdate).mount('#menu-update')`
-	// <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-	//         <script src="https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/tree.jquery.js"></script>
-	//         <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-	//         <script>var menuId = 1;</script>
-	//         <script>var menuItemsSaveUrl = "/save";</script>
-	//         <script>var menuItemsFetchUrl = "/menus.json";</script>
+Vue.createApp(MenuItemsUpdate).mount('#menu-items-update')`
 
 	if cms.funcLayout("") != "" {
 		out := hb.NewWrap().Children([]*hb.Tag{
@@ -740,7 +751,7 @@ Vue.createApp(MenuUpdate).mount('#menu-update')`
 		background:cornsilk;
 	}
 		`),
-			hb.NewHTML(h),
+			container,
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
 			hb.NewScriptURL(cdn.VueJs_3()),
 			hb.NewScriptURL(cdn.Sweetalert2_10()),
@@ -752,7 +763,7 @@ Vue.createApp(MenuUpdate).mount('#menu-update')`
 		return
 	}
 
-	webpage := Webpage("Edit Menu Items", h)
+	webpage := Webpage("Edit Menu Items", container.ToHTML())
 	webpage.AddStyleURLs([]string{
 		"https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/jqtree.css",
 	})
@@ -769,7 +780,6 @@ ul.jqtree-tree li.jqtree_common:hover{
     background:cornsilk;
 }
 	`)
-	webpage.AddScript(inlineScript)
 	webpage.AddScript(inlineScript)
 	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
@@ -882,22 +892,23 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 		newIDs = append(newIDs, menuitem.ID())
 	}
 
-	allMenuItems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
+	// allMenuItems, err := cms.EntityStore.EntityListByAttribute(ENTITY_TYPE_MENUITEM, "menu_id", menuID)
 
-	if err != nil {
-		api.Respond(w, r, api.Error("Menu items failed to be fetched: "+err.Error()))
-		return
-	}
+	// if err != nil {
+	// 	api.Respond(w, r, api.Error("Menu items failed to be fetched: "+err.Error()))
+	// 	return
+	// }
 
-	for _, menuitem := range allMenuItems {
-		//allIDs = append(allIDs, menuitem.ID)
-		exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
-		if !exists {
-			cms.EntityStore.EntityDelete(menuitem.ID())
-		}
-	}
+	// Delete old menu items
+	// for _, menuitem := range allMenuItems {
+	// 	//allIDs = append(allIDs, menuitem.ID)
+	// 	exists, _ := utils.ArrayContains(newIDs, menuitem.ID)
+	// 	if !exists {
+	// 		cms.EntityStore.EntityDelete(menuitem.ID())
+	// 	}
+	// }
 
-	api.Respond(w, r, api.SuccessWithData("Menu saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
+	api.Respond(w, r, api.SuccessWithData("Menu items saved successfully", map[string]interface{}{"menu_id": menu.ID()}))
 }
 
 func keyExists(decoded map[string]interface{}, key string) bool {

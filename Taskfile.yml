@@ -11,6 +11,10 @@ tasks:
       - echo "{{.GREETING}}"
     silent: true
 
+  dev-init:
+    cmds:
+      - cp development/.env_example development/.env
+
   dev:
     cmds:
-      - cd development; air
+      - cd development; air;

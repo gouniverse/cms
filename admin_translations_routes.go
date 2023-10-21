@@ -243,9 +243,7 @@ Vue.createApp(TranslationManager).mount('#translation-manager')
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
-	w.WriteHeader(200)
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(cms.funcLayout(webpage.ToHTML())))
+	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
 
 func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.Request) {
