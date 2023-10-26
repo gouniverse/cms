@@ -24,7 +24,7 @@ func (cms Cms) pagePagesPageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_PAGE)
+	page, err := cms.EntityStore.EntityCreateWithType(ENTITY_TYPE_PAGE)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page failed to be created: "+err.Error()))

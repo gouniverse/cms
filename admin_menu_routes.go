@@ -27,7 +27,7 @@ func (cms Cms) pageMenusMenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_MENU)
+	menu, err := cms.EntityStore.EntityCreateWithType(ENTITY_TYPE_MENU)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu failed to be created "+err.Error()))
@@ -952,7 +952,7 @@ func (cms Cms) pageMenusMenuItemsUpdateAjax(w http.ResponseWriter, r *http.Reque
 
 		menuitem, _ := cms.EntityStore.EntityFindByID(id)
 		if menuitem == nil {
-			menuitem, err = cms.EntityStore.EntityCreate(ENTITY_TYPE_MENUITEM)
+			menuitem, err = cms.EntityStore.EntityCreateWithType(ENTITY_TYPE_MENUITEM)
 			if err != nil {
 				api.Respond(w, r, api.Error("Menu item failed to be created "+err.Error()))
 				return

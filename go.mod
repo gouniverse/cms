@@ -6,8 +6,8 @@ require (
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gouniverse/bs v0.10.1
 	github.com/gouniverse/cachestore v0.16.0
-	github.com/gouniverse/entitystore v0.59.0
-	github.com/gouniverse/hb v1.66.0
+	github.com/gouniverse/entitystore v0.60.0
+	github.com/gouniverse/hb v1.67.0
 	github.com/gouniverse/logstore v1.3.0
 	github.com/gouniverse/responses v0.3.0
 	github.com/gouniverse/sessionstore v0.19.0

@@ -22,7 +22,7 @@ func (cms Cms) pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	template, err := cms.EntityStore.EntityCreate("template")
+	template, err := cms.EntityStore.EntityCreateWithType(ENTITY_TYPE_TEMPLATE)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be created: "+err.Error()))

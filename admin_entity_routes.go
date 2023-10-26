@@ -29,7 +29,7 @@ func (cms Cms) pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	entity, err := cms.EntityStore.EntityCreate(entityType)
+	entity, err := cms.EntityStore.EntityCreateWithType(entityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity failed to be created"))

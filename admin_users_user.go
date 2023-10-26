@@ -269,7 +269,7 @@ func (cms Cms) pageUsersUserCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := cms.UserStore.EntityCreate("user")
+	user, err := cms.UserStore.EntityCreateWithType("user")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("User failed to be created: "+err.Error()))

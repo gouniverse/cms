@@ -21,7 +21,7 @@ func (cms Cms) pageWidgetsWidgetCreateAjax(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	widget, err := cms.EntityStore.EntityCreate("widget")
+	widget, err := cms.EntityStore.EntityCreateWithType(ENTITY_TYPE_WIDGET)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widget failed to be created: "+err.Error()))

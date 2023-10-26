@@ -24,7 +24,7 @@ func (cms Cms) pageTranslationsTranslationCreateAjax(w http.ResponseWriter, r *h
 		return
 	}
 
-	translation, err := cms.EntityStore.EntityCreate(ENTITY_TYPE_TRANSLATION)
+	translation, err := cms.EntityStore.EntityCreateWithType(ENTITY_TYPE_TRANSLATION)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Translation failed to be created: "+err.Error()))
