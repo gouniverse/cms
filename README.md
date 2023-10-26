@@ -1,6 +1,8 @@
 # GoLang CMS <a href="https://gitpod.io/#https://github.com/gouniverse/cms" style="float:right:"><img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" loading="lazy"></a>
 
 ![tests](https://github.com/gouniverse/cms/workflows/tests/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/gouniverse/cms)](https://goreportcard.com/report/github.com/gouniverse/cms)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/gouniverse/cms)](https://pkg.go.dev/github.com/gouniverse/cms)
 
 A "plug-and-play" content managing system (CMS) for GoLang that does its job and stays out of your way.
 
