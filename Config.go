@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"net/http"
 
-	sqldb "github.com/gouniverse/sql"
+	"github.com/gouniverse/sb"
 )
 
 type Config struct {
-	Database                   *sqldb.Database
+	Database                   *sb.Database
 	DbInstance                 *sql.DB
 	DbDriver                   string
 	DbDsn                      string

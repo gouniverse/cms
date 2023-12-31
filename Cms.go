@@ -6,9 +6,9 @@ import (
 	"github.com/gouniverse/cachestore"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/logstore"
+	"github.com/gouniverse/sb"
 	"github.com/gouniverse/sessionstore"
 	"github.com/gouniverse/settingstore"
-	sqldb "github.com/gouniverse/sql"
 	"github.com/gouniverse/taskstore"
 	"github.com/samber/lo"
 )
@@ -17,7 +17,7 @@ type LanguageKey struct{}
 
 // Cms defines the cms
 type Cms struct {
-	Database *sqldb.Database
+	Database *sb.Database
 	// DbInstance   *sql.DB
 	CacheStore   *cachestore.Store
 	EntityStore  *entitystore.Store
@@ -91,12 +91,12 @@ func configToCms(config Config) *Cms {
 	}
 
 	if config.Database == nil && config.DbInstance != nil {
-		config.Database = sqldb.NewDatabase(config.DbInstance, sqldb.DatabaseDriverName(config.DbInstance))
+		config.Database = sb.NewDatabase(config.DbInstance, sb.DatabaseDriverName(config.DbInstance))
 	}
 
 	if config.Database == nil && (config.DbDriver != "" && config.DbDsn != "") {
 		var errDatabase error
-		config.Database, errDatabase = sqldb.NewDatabaseFromDriver(config.DbDriver, config.DbDsn)
+		config.Database, errDatabase = sb.NewDatabaseFromDriver(config.DbDriver, config.DbDsn)
 		if errDatabase != nil {
 			panic("At CMS: " + errDatabase.Error())
 		}
