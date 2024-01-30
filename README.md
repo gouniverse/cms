@@ -259,6 +259,25 @@ func Routes(cmsRouter http.HandlerFunc) *chi.Mux {
 }
 ```
 
+### CMS URL Patterns
+
+The following URL patterns are supported:
+
+- :any - ([^/]+)
+- :num - ([0-9]+)
+- :all - (.*)
+- :string - ([a-zA-Z]+)
+- :number - ([0-9]+)
+- :numeric - ([0-9-.]+)
+- :alpha - ([a-zA-Z0-9-_]+)
+
+Example:
+
+```
+/blog/:num/:any
+/shop/product/:num/:any
+```
+
 ## Development Instructions
 
 There is a development directory that allows you to quickly start working on the project or simply to preview
