@@ -14,8 +14,8 @@ func (cms *Cms) ContentRenderShortcodes(req *http.Request, content string) (stri
 		return "", err
 	}
 
-	for k, v := range cms.shortcodes {
-		content = sh.RenderWithRequest(req, content, k, v)
+	for _, shortcode := range cms.shortcodes {
+		content = sh.RenderWithRequest(req, content, shortcode.Alias(), shortcode.Render())
 	}
 
 	return content, nil

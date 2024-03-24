@@ -2,7 +2,6 @@ package cms
 
 import (
 	"database/sql"
-	"net/http"
 
 	"github.com/gouniverse/sb"
 )
@@ -26,7 +25,7 @@ type Config struct {
 	SessionEnable              bool
 	SettingsAutomigrate        bool
 	SettingsEnable             bool
-	Shortcodes                 map[string]func(*http.Request, string, map[string]string) string
+	Shortcodes                 []ShortcodeInterface
 	TasksEnable                bool
 	TasksAutomigrate           bool
 	TasksQueueTableName        string

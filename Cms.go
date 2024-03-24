@@ -1,8 +1,6 @@
 package cms
 
 import (
-	"net/http"
-
 	"github.com/gouniverse/cachestore"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/logstore"
@@ -65,7 +63,7 @@ type Cms struct {
 	tasksTaskTableName  string
 	tasksQueueTableName string
 
-	shortcodes map[string]func(*http.Request, string, map[string]string) string
+	shortcodes []ShortcodeInterface
 
 	translationLanguageDefault string
 	translationLanguages       map[string]string
@@ -103,7 +101,7 @@ func configToCms(config Config) *Cms {
 	}
 
 	if config.Shortcodes == nil {
-		config.Shortcodes = map[string]func(*http.Request, string, map[string]string) string{}
+		config.Shortcodes = []ShortcodeInterface{}
 	}
 
 	if config.TranslationLanguageDefault == "" && len(config.TranslationLanguages) > 0 {
