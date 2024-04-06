@@ -301,6 +301,7 @@ Instructions how to start can be found <a href="https://github.com/gouniverse/cm
 - https://github.com/digimakergo
 - https://github.com/jlelse/GoBlog
 - https://github.com/daptin/daptin
+- https://github.com/fesiong/goblog
 
 # Notable
 - https://github.com/tenox7/wfm - stabdalone file manager
