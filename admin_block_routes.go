@@ -213,7 +213,7 @@ Vue.createApp(BlockManager).mount('#block-manager')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
@@ -426,7 +426,7 @@ Vue.createApp(BlockUpdate).mount('#block-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(codemirrorCss),
 			hb.NewStyle(`.CodeMirror {
 				border: 1px solid #eee;

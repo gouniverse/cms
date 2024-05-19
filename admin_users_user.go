@@ -48,7 +48,7 @@ func (cms Cms) pageUsersUserManager(w http.ResponseWriter, r *http.Request) {
 	button := hb.NewButton().HTML("New user").Attr("class", "btn btn-success float-end").Attr("v-on:click", "showUserCreateModal")
 	heading.AddChild(button)
 
-	container.Children([]*hb.Tag{
+	container.Children([]hb.TagInterface{
 		hb.NewHTML(header),
 		heading,
 		hb.NewHTML(breadcrumbs),
@@ -160,7 +160,7 @@ Vue.createApp(UserManager).mount('#user-manager')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
@@ -200,15 +200,15 @@ func pageUsersUserCreateModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalUserCreate").Attr("class", "modal fade")
 	modalDialog := hb.NewDiv().Attr("class", "modal-dialog")
 	modalContent := hb.NewDiv().Attr("class", "modal-content")
-	modalHeader := hb.NewDiv().Attr("class", "modal-header").Children([]*hb.Tag{
+	modalHeader := hb.NewDiv().Attr("class", "modal-header").Children([]hb.TagInterface{
 		hb.NewHeading5().HTML("New User"),
 	})
-	modalBody := hb.NewDiv().Attr("class", "modal-body").Children([]*hb.Tag{
-		hb.NewDiv().Attr("class", "form-group").Children([]*hb.Tag{
+	modalBody := hb.NewDiv().Attr("class", "modal-body").Children([]hb.TagInterface{
+		hb.NewDiv().Attr("class", "form-group").Children([]hb.TagInterface{
 			hb.NewLabel().HTML("First Name"),
 			hb.NewInput().Attr("class", "form-control").Attr("v-model", "userCreateModel.firstName"),
 		}),
-		hb.NewDiv().Attr("class", "form-group").Children([]*hb.Tag{
+		hb.NewDiv().Attr("class", "form-group").Children([]hb.TagInterface{
 			hb.NewLabel().HTML("Last Name"),
 			hb.NewInput().Attr("class", "form-control").Attr("v-model", "userCreateModel.lastName"),
 		}),
@@ -374,9 +374,9 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	heading.Child(saveButton)
 
 	// Status
-	formGroupStatus := bs.FormGroup().Children([]*hb.Tag{
+	formGroupStatus := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Status"),
-		bs.FormSelect().Attr("v-model", "pageModel.status").Children([]*hb.Tag{
+		bs.FormSelect().Attr("v-model", "pageModel.status").Children([]hb.TagInterface{
 			bs.FormSelectOption("active", "Active"),
 			bs.FormSelectOption("inactive", "Inactive"),
 			bs.FormSelectOption("trash", "Trash"),
@@ -384,14 +384,14 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// First Name
-	formGroupFirstName := bs.FormGroup().Children([]*hb.Tag{
+	formGroupFirstName := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("First Name"),
 		bs.FormInput().Attr("v-model", "pageModel.firstName"),
 		bs.FormText("The first name of the user"),
 	})
 
 	// Last Name
-	formGroupLastName := bs.FormGroup().Children([]*hb.Tag{
+	formGroupLastName := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Last Name"),
 		bs.FormInput().Attr("v-model", "pageModel.lastName"),
 		bs.FormText("The last name of the user"),
@@ -412,7 +412,7 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	// 	formGroupTemplateSelect.Child(formGroupTemplateOptionsTemplate)
 	// }
 
-	container.Children([]*hb.Tag{
+	container.Children([]hb.TagInterface{
 		hb.NewHTML(header),
 		heading,
 		hb.NewHTML(breadcrumbs),
@@ -489,7 +489,7 @@ Vue.createApp(UserUpdate).mount('#user-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(codemirrorCss),
 			hb.NewStyle(`.CodeMirror {
 				border: 1px solid #eee;

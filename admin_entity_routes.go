@@ -193,7 +193,7 @@ Vue.createApp(EntityManager).mount('#entity-manager')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
@@ -379,7 +379,7 @@ Vue.createApp(EntityUpdate).mount('#entity-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewHTML(h),
 			hb.NewScript(inlineScript),
 		}).ToHTML()

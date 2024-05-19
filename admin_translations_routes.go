@@ -69,7 +69,7 @@ func (cms Cms) pageTranslationsTranslationManager(w http.ResponseWriter, r *http
 	container := hb.NewDiv().
 		ID("translation-manager").
 		Class("container").
-		Children([]*hb.Tag{
+		Children([]hb.TagInterface{
 			hb.NewHTML(header),
 			heading,
 			hb.NewHTML(breadcrumbs),
@@ -225,7 +225,7 @@ const TranslationManager = {
 Vue.createApp(TranslationManager).mount('#translation-manager')
 	`
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
 			hb.NewStyleURL(cdn.JqueryDataTablesCss_1_13_4()),
 			hb.NewHTML(h),
@@ -288,28 +288,28 @@ func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.
 	button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "translationSave")
 	heading.AddChild(button)
 
-	formGroupStatus := hb.NewDiv().Class("form-group").Children([]*hb.Tag{
+	formGroupStatus := hb.NewDiv().Class("form-group").Children([]hb.TagInterface{
 		hb.NewLabel().HTML("Status").Class("form-label"),
-		hb.NewSelect().Class("form-select").Attr("v-model", "translationModel.status").Children([]*hb.Tag{
+		hb.NewSelect().Class("form-select").Attr("v-model", "translationModel.status").Children([]hb.TagInterface{
 			hb.NewOption().Value("active").HTML("Active"),
 			hb.NewOption().Value("inactive").HTML("Inactive"),
 			hb.NewOption().Value("trash").HTML("Trash"),
 		}),
 	})
 
-	formGroupName := hb.NewDiv().Class("form-group mt-3").Children([]*hb.Tag{
+	formGroupName := hb.NewDiv().Class("form-group mt-3").Children([]hb.TagInterface{
 		hb.NewLabel().HTML("Name").Class("form-label"),
 		hb.NewInput().Attr("class", "form-control").Attr("v-model", "translationModel.name"),
 		hb.NewParagraph().Class("text-info fs-6").HTML("This is the display name, so that you can easily find it"),
 	})
 
-	formGroupHandle := hb.NewDiv().Class("form-group mt-3").Children([]*hb.Tag{
+	formGroupHandle := hb.NewDiv().Class("form-group mt-3").Children([]hb.TagInterface{
 		hb.NewLabel().HTML("Key").Class("form-label"),
 		hb.NewInput().Class("form-control").Attr("v-model", "translationModel.handle"),
 		hb.NewParagraph().Class("text-info fs-6").HTML("Must be lowercase, no space, hyphens and dots allowed"),
 	})
 
-	formGroupComment := hb.NewDiv().Class("form-group mt-3").Children([]*hb.Tag{
+	formGroupComment := hb.NewDiv().Class("form-group mt-3").Children([]hb.TagInterface{
 		hb.NewLabel().HTML("Comment").Class("form-label"),
 		hb.NewTextArea().Class("form-control CodeMirror").Attr("v-model", "translationModel.comment"),
 	})
@@ -319,7 +319,7 @@ func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.
 		HTML("To use this translation in your website use the following shortcode:")
 
 	translationName, _ := translation.GetString("name", "")
-	code := hb.NewCode().Children([]*hb.Tag{
+	code := hb.NewCode().Children([]hb.TagInterface{
 		hb.NewPRE().
 			HTML(`&lt;!-- START: Translation: ` + translationName + ` -->
 [[TRANSLATION_` + translation.ID() + `]]
@@ -332,7 +332,7 @@ func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.
 	paragraphUsage.Child(code)
 
 	container := hb.NewDiv().ID("translation-update").Class("container").
-		Children([]*hb.Tag{
+		Children([]hb.TagInterface{
 			hb.NewHTML(header),
 			heading,
 			hb.NewParagraph().Class("alert alert-info").
@@ -354,11 +354,11 @@ func (cms Cms) pageTranslationsTranslationUpdate(w http.ResponseWriter, r *http.
 			formGroupHandle,
 			formGroupComment,
 		}).
-		Children(lo.Map(lo.Keys(cms.translationLanguages), func(key string, index int) *hb.Tag {
+		Children(lo.Map(lo.Keys(cms.translationLanguages), func(key string, index int) hb.TagInterface {
 			language := cms.translationLanguages[key]
 			isDefault := cms.translationLanguageDefault == key
 			defaultText := lo.Ternary(isDefault, " (Default)", "")
-			formGroupTranslation := hb.NewDiv().Class("form-group mt-3").Children([]*hb.Tag{
+			formGroupTranslation := hb.NewDiv().Class("form-group mt-3").Children([]hb.TagInterface{
 				hb.NewLabel().
 					HTML(language + " Translation" + defaultText).
 					Class("form-label"),
@@ -493,7 +493,7 @@ Vue.createApp(TranslationUpdate).mount('#translation-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(codemirrorCss),
 			hb.NewStyle(`.CodeMirror {
 				border: 1px solid #eee;
@@ -701,7 +701,7 @@ func (cms Cms) pageTranslationsTranslationCreateModal() *hb.Tag {
 	modalFooter.AddChild(hb.NewButton().HTML("Close").Attr("class", "btn btn-secondary").Attr("data-bs-dismiss", "modal"))
 	modalFooter.AddChild(hb.NewButton().HTML("Create & Continue").Attr("class", "btn btn-primary").Attr("v-on:click", "translationCreate"))
 	modalContent.AddChild(modalHeader).AddChild(modalBody).AddChild(modalFooter)
-	modal.AddChild(hb.NewDiv().Class("modal-dialog").Children([]*hb.Tag{
+	modal.AddChild(hb.NewDiv().Class("modal-dialog").Children([]hb.TagInterface{
 		modalContent,
 	}))
 	return modal

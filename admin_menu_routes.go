@@ -172,7 +172,7 @@ Vue.createApp(MenuManager).mount('#menu-manager')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
 			hb.NewScriptURL(cdn.VueJs_3()),
@@ -308,7 +308,7 @@ Vue.createApp(MenuUpdate).mount('#menu-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
 			hb.NewScriptURL(cdn.VueJs_3()),
@@ -786,7 +786,7 @@ const MenuItemsUpdate = {
 Vue.createApp(MenuItemsUpdate).mount('#menu-items-update')`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL("https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/jqtree.css"),
 			hb.NewStyle(`
 	ul.jqtree-tree li>.jqtree-element {

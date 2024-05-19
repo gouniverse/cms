@@ -156,7 +156,7 @@ Vue.createApp(WidgetManager).mount('#widget-manager')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewHTML(h),
 			hb.NewScript(inlineScript),
 		}).ToHTML()
@@ -324,7 +324,7 @@ Vue.createApp(WidgetUpdate).mount('#widget-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewHTML(h),
 			hb.NewScript(inlineScript),
 		}).ToHTML()

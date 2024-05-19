@@ -167,9 +167,9 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	// 				</div>
 
 	// Status
-	formGroupStatus := bs.FormGroup().Children([]*hb.Tag{
+	formGroupStatus := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Status"),
-		bs.FormSelect().Attr("v-model", "pageModel.status").Children([]*hb.Tag{
+		bs.FormSelect().Attr("v-model", "pageModel.status").Children([]hb.TagInterface{
 			bs.FormSelectOption("active", "Active"),
 			bs.FormSelectOption("inactive", "Inactive"),
 			bs.FormSelectOption("trash", "Trash"),
@@ -177,9 +177,9 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Content Editor
-	formGroupEditor := bs.FormGroup().Children([]*hb.Tag{
+	formGroupEditor := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Content Editor"),
-		bs.FormSelect().Attr("v-model", "pageModel.contentEditor").Children([]*hb.Tag{
+		bs.FormSelect().Attr("v-model", "pageModel.contentEditor").Children([]hb.TagInterface{
 			bs.FormSelectOption("", "- none -"),
 			bs.FormSelectOption("codemirror", "CodeMirror"),
 			// bs.FormSelectOption("visual", "Visual Editor (Experimental)"),
@@ -188,39 +188,39 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Name
-	formGroupName := bs.FormGroup().Children([]*hb.Tag{
+	formGroupName := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Name"),
 		bs.FormInput().Attr("v-model", "pageModel.name"),
 		bs.FormText("The name of the page as visible in the admin panel. This is not vsible to the page vistors"),
 	})
 
 	// Alias
-	formGroupAlias := bs.FormGroup().Children([]*hb.Tag{
+	formGroupAlias := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Alias / Path"),
 		bs.FormInput().Attr("v-model", "pageModel.alias"),
 		bs.FormText("The relative path on the website where this page will be visible to the vistors"),
 	})
 
 	// Canonical Url
-	formGroupCanonicalURL := bs.FormGroup().Children([]*hb.Tag{
+	formGroupCanonicalURL := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Canonical Url"),
 		bs.FormInput().Attr("v-model", "pageModel.canonicalUrl"),
 	})
 
 	// Meta Description
-	formGroupMetaDescription := bs.FormGroup().Children([]*hb.Tag{
+	formGroupMetaDescription := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Meta Description"),
 		bs.FormInput().Attr("v-model", "pageModel.metaDescription"),
 	})
 
 	// Meta Keywords
-	formGroupMetaKeywords := hb.NewDiv().Class("form-group").Children([]*hb.Tag{
+	formGroupMetaKeywords := hb.NewDiv().Class("form-group").Children([]hb.TagInterface{
 		bs.FormLabel("Meta Keywords"),
 		bs.FormInput().Attr("v-model", "pageModel.metaKeywords"),
 	})
 
 	// Robots
-	formGroupMetaRobots := hb.NewDiv().Class("form-group").Children([]*hb.Tag{
+	formGroupMetaRobots := hb.NewDiv().Class("form-group").Children([]hb.TagInterface{
 		bs.FormLabel("Meta Robots"),
 		bs.FormInput().Attr("v-model", "pageModel.metaRobots"),
 	})
@@ -245,7 +245,7 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 		formGroupTemplateOptionsTemplate := bs.FormSelectOption(template.ID(), templateName)
 		formGroupTemplateSelect.Child(formGroupTemplateOptionsTemplate)
 	}
-	formGroupTemplate := bs.FormGroup().Children([]*hb.Tag{
+	formGroupTemplate := bs.FormGroup().Children([]hb.TagInterface{
 		bs.FormLabel("Template").Class("form-label"),
 		formGroupTemplateSelect,
 		bs.FormText("Select the template that this page content will be displayed in. This feature is useful if you want to implement consistent layouts. Leaving the template field empty will display page as it is standalone"),
@@ -268,32 +268,32 @@ func (cms Cms) pagePagesPageUpdate(w http.ResponseWriter, r *http.Request) {
 	// } else {
 	// formGroupContentInputVisualData.Style("display:none")
 	// }
-	formGroupContent.Children([]*hb.Tag{
+	formGroupContent.Children([]hb.TagInterface{
 		formGroupContentLabel,
 		formGroupContentInput,
 		// formGroupContentInputVisualData,
 		// hb.NewHTML(ve.VisualeditorContent()),
 	})
 
-	tabContentContent.Children([]*hb.Tag{
+	tabContentContent.Children([]hb.TagInterface{
 		formGroupTitle,
 		formGroupContent,
 	})
-	tabContentSeo.Children([]*hb.Tag{
+	tabContentSeo.Children([]hb.TagInterface{
 		formGroupAlias,
 		formGroupMetaDescription,
 		formGroupMetaKeywords,
 		formGroupMetaRobots,
 		formGroupCanonicalURL,
 	})
-	tabContentSettings.Children([]*hb.Tag{
+	tabContentSettings.Children([]hb.TagInterface{
 		formGroupStatus,
 		formGroupTemplate,
 		formGroupName,
 		formGroupEditor,
 	})
 
-	container.Children([]*hb.Tag{
+	container.Children([]hb.TagInterface{
 		hb.NewHTML(header),
 		heading,
 		hb.NewHTML(breadcrumbs),
@@ -442,7 +442,7 @@ Vue.createApp(PageUpdate).mount('#page-update')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewStyleURL(codemirrorCss),
 			hb.NewStyle(`.CodeMirror {
 				border: 1px solid #eee;
@@ -637,7 +637,7 @@ Vue.createApp(PageManager).mount('#page-manager')
 	`
 
 	if cms.funcLayout("") != "" {
-		out := hb.NewWrap().Children([]*hb.Tag{
+		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
 			hb.NewScriptURL(cdn.VueJs_3()),
