@@ -7,7 +7,7 @@ tasks:
     command: go install github.com/go-task/task/v3/cmd/task@latest
 
   - name: Install Air
-    command: go install github.com/cosmtrek/air@latest
+    command: go install github.com/air-verse/air@latest
 
   - name: Install Dependencies and Run
     init: go get && go build ./... && go test ./...

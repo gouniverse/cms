@@ -11,8 +11,8 @@ tasks:
       - echo "{{.GREETING}}"
     silent: true
 
-  serve:
+  dev:
     cmds: 
-      - fresh
+      - air
     silent:
       true

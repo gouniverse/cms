@@ -7,17 +7,17 @@ require (
 	github.com/gouniverse/bs v0.11.0
 	github.com/gouniverse/cachestore v0.18.0
 	github.com/gouniverse/entitystore v0.62.0
-	github.com/gouniverse/hb v1.73.2
+	github.com/gouniverse/hb v1.73.3
 	github.com/gouniverse/logstore v1.3.0
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/sessionstore v0.24.0
 	github.com/gouniverse/settingstore v0.12.0
 	github.com/gouniverse/taskstore v1.0.2
-	github.com/gouniverse/utils v1.39.1
+	github.com/gouniverse/utils v1.39.2
 	github.com/lib/pq v1.10.9
-	github.com/samber/lo v1.39.0
+	github.com/samber/lo v1.44.0
 	github.com/stretchr/testify v1.9.0
-	modernc.org/sqlite v1.30.0
+	modernc.org/sqlite v1.30.1
 )
 
 require (
@@ -42,7 +42,7 @@ require (
 	github.com/gouniverse/cdn v1.4.1
 	github.com/gouniverse/maputils v0.7.0 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
-	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8 // indirect
+	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 )
 
 require (
@@ -63,7 +63,7 @@ require (
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.51.0 // indirect
+	modernc.org/libc v1.54.0 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
 	modernc.org/strutil v1.2.0 // indirect
