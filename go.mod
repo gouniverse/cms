@@ -1,6 +1,6 @@
 module github.com/gouniverse/cms
 
-go 1.22.3
+go 1.22.4
 
 require (
 	github.com/go-sql-driver/mysql v1.8.1
@@ -31,6 +31,7 @@ require (
 	github.com/mingrammer/cfmt v1.1.0 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	golang.org/x/term v0.21.0 // indirect
+	golang.org/x/tools v0.22.0 // indirect
 	modernc.org/gc/v3 v3.0.0-20240304020402-f0dba7c97c2b // indirect
 )
 
@@ -42,7 +43,6 @@ require (
 	github.com/gouniverse/cdn v1.4.1
 	github.com/gouniverse/maputils v0.7.0 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
-	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 )
 
 require (
