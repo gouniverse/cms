@@ -6,6 +6,12 @@
 
 A "plug-and-play" content managing system (CMS) for GoLang that does its job and stays out of your way.
 
+## License
+
+This project is licensed under the GNU General Public License version 3 (GPL-3.0). You can find a copy of the license at https://www.gnu.org/licenses/gpl-3.0.en.html
+
+For commercial use, please use my [contact page](https://lesichkov.co.uk/contact) to obtain a commercial license.
+
 ## Introduction
 
 All of the existing GoLang CMSs require a full installations from scratch. Its impossible to just add them to an exiting Go application, and even when added feel like you don't get what you hoped for.
