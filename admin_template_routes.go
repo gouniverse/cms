@@ -203,7 +203,7 @@ Vue.createApp(TemplateManager).mount('#template-manager')
 		return
 	}
 
-	webpage := Webpage("Template Manager", h)
+	webpage := WebpageComplete("Template Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
@@ -394,7 +394,7 @@ Vue.createApp(TemplateUpdate).mount('#template-update')
 		return
 	}
 
-	webpage := Webpage("Edit Template", h).
+	webpage := WebpageComplete("Edit Template", h).
 		AddStyleURLs([]string{
 			codemirrorCss,
 		}).

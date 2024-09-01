@@ -183,7 +183,7 @@ Vue.createApp(MenuManager).mount('#menu-manager')
 		return
 	}
 
-	webpage := Webpage("Menu Manager", h)
+	webpage := WebpageComplete("Menu Manager", h)
 	webpage.AddScript(inlineScript)
 	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
@@ -319,7 +319,7 @@ Vue.createApp(MenuUpdate).mount('#menu-update')
 		return
 	}
 
-	webpage := Webpage("Edit Menu", h)
+	webpage := WebpageComplete("Edit Menu", h)
 	webpage.AddScript(inlineScript)
 	responses.HTMLResponse(w, r, webpage.ToHTML())
 }
@@ -809,7 +809,7 @@ Vue.createApp(MenuItemsUpdate).mount('#menu-items-update')`
 		return
 	}
 
-	webpage := Webpage("Edit Menu Items", container.ToHTML())
+	webpage := WebpageComplete("Edit Menu Items", container.ToHTML())
 	webpage.AddStyleURLs([]string{
 		"https://cdnjs.cloudflare.com/ajax/libs/jqtree/1.4.12/jqtree.css",
 	})

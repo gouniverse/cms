@@ -239,7 +239,7 @@ Vue.createApp(TranslationManager).mount('#translation-manager')
 		return
 	}
 
-	webpage := Webpage("Translation Manager", h)
+	webpage := WebpageComplete("Translation Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
@@ -518,7 +518,7 @@ Vue.createApp(TranslationUpdate).mount('#translation-update')
 		return
 	}
 
-	webpage := Webpage("Edit Translation", h).
+	webpage := WebpageComplete("Edit Translation", h).
 		AddStyleURLs([]string{
 			codemirrorCss,
 		}).
@@ -670,7 +670,9 @@ func (cms Cms) pageTranslationsTranslationTrashAjax(w http.ResponseWriter, r *ht
 		return
 	}
 
-	api.Respond(w, r, api.SuccessWithData("Translation trashed successfully", map[string]interface{}{"translation_id": translation.ID()}))
+	api.Respond(w, r, api.SuccessWithData("Translation trashed successfully", map[string]any{
+		"translation_id": translation.ID(),
+	}))
 }
 
 func (cms Cms) pageTranslationsTranslationTrashModal() *hb.Tag {

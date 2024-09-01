@@ -173,7 +173,7 @@ Vue.createApp(UserManager).mount('#user-manager')
 		return
 	}
 
-	webpage := Webpage("User Manager", h)
+	webpage := WebpageComplete("User Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
@@ -514,7 +514,7 @@ Vue.createApp(UserUpdate).mount('#user-update')
 		return
 	}
 
-	webpage := Webpage("Edit User", h).
+	webpage := WebpageComplete("Edit User", h).
 		AddStyleURLs([]string{
 			codemirrorCss,
 		}).

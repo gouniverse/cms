@@ -206,7 +206,7 @@ Vue.createApp(EntityManager).mount('#entity-manager')
 		return
 	}
 
-	webpage := Webpage("Custom Entity Manager", h)
+	webpage := WebpageComplete("Custom Entity Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
@@ -387,7 +387,7 @@ Vue.createApp(EntityUpdate).mount('#entity-update')
 		return
 	}
 
-	webpage := Webpage("Edit Custom Entity", h)
+	webpage := WebpageComplete("Edit Custom Entity", h)
 	webpage.AddScript(inlineScript)
 	responses.HTMLResponse(w, r, webpage.ToHTML())
 }

@@ -56,7 +56,7 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 
-	container := hb.NewDiv().Attr("class", "container").Attr("id", "block-manager")
+	container := hb.NewDiv().Class("container").Attr("id", "block-manager")
 	heading := hb.NewHeading1().HTML("Block Manager")
 	button := hb.NewButton().HTML("New block").Attr("class", "btn btn-success float-end").Attr("v-on:click", "showBlockCreateModal")
 	heading.AddChild(button)
@@ -81,7 +81,7 @@ func (cms Cms) pageBlocksBlockManager(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	table := hb.NewTable().Attr("id", "TableBlocks").Attr("class", "table table-responsive table-striped mt-3")
+	table := hb.NewTable().ID("TableBlocks").Class("table table-responsive table-striped mt-3")
 	thead := hb.NewThead()
 	tbody := hb.NewTbody()
 	table.AddChild(thead).AddChild(tbody)
@@ -226,7 +226,7 @@ Vue.createApp(BlockManager).mount('#block-manager')
 		return
 	}
 
-	webpage := Webpage("Block Manager", h)
+	webpage := WebpageComplete("Block Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
@@ -451,7 +451,7 @@ Vue.createApp(BlockUpdate).mount('#block-update')
 		return
 	}
 
-	webpage := Webpage("Edit Block", h).
+	webpage := WebpageComplete("Edit Block", h).
 		AddStyleURLs([]string{
 			codemirrorCss,
 		}).

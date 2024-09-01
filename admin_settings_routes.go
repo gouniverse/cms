@@ -182,7 +182,7 @@ Vue.createApp(SettingManager).mount('#setting-manager')
 		return
 	}
 
-	webpage := Webpage("Setting Manager", h)
+	webpage := WebpageComplete("Setting Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)
@@ -347,7 +347,7 @@ Vue.createApp(SettingUpdate).mount('#setting-update')
 		return
 	}
 
-	webpage := Webpage("Edit Setting", h).
+	webpage := WebpageComplete("Edit Setting", h).
 		AddStyleURLs([]string{
 			codemirrorCss,
 		}).

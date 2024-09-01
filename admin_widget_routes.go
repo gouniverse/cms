@@ -164,7 +164,7 @@ Vue.createApp(WidgetManager).mount('#widget-manager')
 		return
 	}
 
-	webpage := Webpage("Widget Manager", h)
+	webpage := WebpageComplete("Widget Manager", h)
 	webpage.AddScript(inlineScript)
 
 	responses.HTMLResponse(w, r, webpage.ToHTML())
@@ -332,7 +332,7 @@ Vue.createApp(WidgetUpdate).mount('#widget-update')
 		return
 	}
 
-	webpage := Webpage("Edit Widget", h)
+	webpage := WebpageComplete("Edit Widget", h)
 	webpage.AddScript(inlineScript)
 	responses.HTMLResponse(w, r, webpage.ToHTML())
 }

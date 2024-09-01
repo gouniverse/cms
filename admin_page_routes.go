@@ -467,7 +467,7 @@ Vue.createApp(PageUpdate).mount('#page-update')
 		return
 	}
 
-	webpage := Webpage("Edit Page", h)
+	webpage := WebpageComplete("Edit Page", h)
 	webpage.AddStyleURLs([]string{
 		codemirrorCss,
 	})
@@ -649,7 +649,7 @@ Vue.createApp(PageManager).mount('#page-manager')
 		return
 	}
 
-	webpage := Webpage("Page Manager", h)
+	webpage := WebpageComplete("Page Manager", h)
 	webpage.AddStyleURL(cdn.JqueryDataTablesCss_1_13_4())
 	webpage.AddScriptURL(cdn.JqueryDataTablesJs_1_13_4())
 	webpage.AddScript(inlineScript)

@@ -1,5 +1,7 @@
 package cms
 
+const COLUMN_ID = "id"
+
 const ENTITY_TYPE_BLOCK = "block"
 const ENTITY_TYPE_MENU = "menu"
 const ENTITY_TYPE_MENUITEM = "menuitem"
@@ -7,6 +9,7 @@ const ENTITY_TYPE_PAGE = "page"
 const ENTITY_TYPE_TEMPLATE = "template"
 const ENTITY_TYPE_TRANSLATION = "translation"
 const ENTITY_TYPE_USER = "user"
+const ENTITY_TYPE_WEBSITE = "website"
 const ENTITY_TYPE_WIDGET = "widget"
 
 const codemirrorCss = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css"

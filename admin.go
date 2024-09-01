@@ -85,6 +85,7 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		PathTranslationsTranslationCreateAjax: cms.pageTranslationsTranslationCreateAjax,
 		PathTranslationsTranslationDeleteAjax: cms.pageTranslationsTranslationDeleteAjax,
 		PathTranslationsTranslationManager:    cms.pageTranslationsTranslationManager,
+		PathTranslationsTranslationTrashAjax:  cms.pageTranslationsTranslationTrashAjax,
 		PathTranslationsTranslationUpdate:     cms.pageTranslationsTranslationUpdate,
 		PathTranslationsTranslationUpdateAjax: cms.pageTranslationsTranslationUpdateAjax,
 		// END: Settings
@@ -96,6 +97,10 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		PathUsersUserUpdate:     cms.pageUsersUserUpdate,
 		PathUsersUserUpdateAjax: cms.pageUsersUserUpdateAjax,
 		// END: Users
+
+		// START: Websites
+		PathWebsitesWebsiteManager: cms.pageWebsitesWebsiteManager,
+		// END: Websites
 
 		// START: Custom Entities
 		PathEntitiesEntityCreateAjax: cms.pageEntitiesEntityCreateAjax,
@@ -126,7 +131,7 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 // 	container.AddChild(heading)
 // 	container.AddChild(hb.NewHTML(breadcrumbs))
 // 	h := container.ToHTML()
-// 	webpage := Webpage("Home", h)
+// 	webpage := WebpageComplete("Home", h)
 // 	w.WriteHeader(200)
 // 	w.Header().Set("Content-Type", "text/html")
 // 	w.Write([]byte(webpage.ToHTML()))
@@ -158,7 +163,7 @@ func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	webpage := Webpage("Home", h).ToHTML()
+	webpage := WebpageComplete("Home", h).ToHTML()
 	responses.HTMLResponse(w, r, webpage)
 }
 
@@ -275,8 +280,8 @@ func (cms Cms) cmsHeader(endpoint string) string {
 	return divCard.AddChild(divCardBody.AddChild(ulNav)).ToHTML()
 }
 
-// Webpage returns the webpage template for the website
-func Webpage(title, content string) *hb.Webpage {
+// WebpageComplete returns the webpage template for the website
+func WebpageComplete(title, content string) *hb.Webpage {
 	faviconImgCms := `data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAmzKzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEQEAAQERAAEAAQABAAEAAQABAQEBEQABAAEREQEAAAERARARAREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAAi6MAALu7AAC6owAAuC8AAIkjAAD//wAA//8AAP//AAD//wAA`
 	app := ""
 	webpage := hb.NewWebpage()

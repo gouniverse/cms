@@ -104,6 +104,8 @@ const (
 	PathTranslationsTranslationCreateAjax string = "translations/translation-create-ajax"
 	// PathTranslationsTranslationDeleteAjax contains the path to admin translations delete page
 	PathTranslationsTranslationDeleteAjax string = "translations/translation-delete-ajax"
+	// PathTranslationsTranslationTrashAjax contains the path to admin translations trash page
+	PathTranslationsTranslationTrashAjax string = "translations/translation-trash-ajax"
 	// PathTranslationsTranslationUpdate contains the path to admin translations update page
 	PathTranslationsTranslationUpdate string = "translations/translation-update"
 	// PathTranslationsTranslationUpdateAjax contains the path to admin translations update page
@@ -122,6 +124,11 @@ const (
 	// PathUsersUserUpdateAjax contains the path to admin users update page
 	PathUsersUserUpdateAjax string = "users/user-update-ajax"
 	// END: Users
+
+	// START: Websites
+	// PathWebsitesWebsiteManager contains the path to admin websites manager page
+	PathWebsitesWebsiteManager string = "websites/website-manager"
+	// END: Websites
 
 	// START: Custom Entities
 	// PathEntitiesEntityManager contains the path to admin entities update page
