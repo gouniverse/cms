@@ -141,7 +141,7 @@ func cmsLogsSetup(cms *Cms) (err error) {
 		return err
 	}
 
-	if cms.cacheAutoMigrate {
+	if cms.logsAutomigrate {
 		err = cms.LogStore.AutoMigrate()
 		if err != nil {
 			return err

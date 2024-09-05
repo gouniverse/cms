@@ -13,7 +13,7 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 	page, err := cms.PageFindByAlias(alias)
 
 	if err != nil {
-		cms.LogStore.ErrorWithContext("At PageRenderHtmlByAlias", err.Error())
+		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
 		return hb.NewDiv().
 			Text(`Page with alias '`).Text(alias).Text(`' not found`).
 			ToHTML()
@@ -28,6 +28,7 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 	pageAttrs, err := page.GetAttributes()
 
 	if err != nil {
+		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
 		return hb.NewDiv().
 			Text(`Page with alias '`).Text(alias).Text(`' io exception`).
 			ToHTML()
@@ -67,7 +68,7 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 	finalContent := lo.If(pageTemplateID == "", pageContent).ElseF(func() string {
 		content, err := cms.TemplateContentFindByID(pageTemplateID)
 		if err != nil {
-			cms.LogStore.ErrorWithContext("At PageRenderHtmlByAlias", err.Error())
+			cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
 		}
 		return content
 	})
@@ -89,19 +90,19 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 	finalContent, err = cms.ContentRenderBlocks(finalContent)
 
 	if err != nil {
-		cms.LogStore.ErrorWithContext("At PageRenderHtmlByAlias", err.Error())
+		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
 	}
 
 	finalContent, err = cms.ContentRenderShortcodes(r, finalContent)
 
 	if err != nil {
-		cms.LogStore.ErrorWithContext("At PageRenderHtmlByAlias", err.Error())
+		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
 	}
 
 	finalContent, err = cms.ContentRenderTranslations(finalContent, language)
 
 	if err != nil {
-		cms.LogStore.ErrorWithContext("At PageRenderHtmlByAlias", err.Error())
+		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
 	}
 
 	return finalContent
