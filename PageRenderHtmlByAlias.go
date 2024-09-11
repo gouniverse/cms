@@ -65,6 +65,10 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 		}
 	}
 
+	if pageTemplateID == "" {
+		return pageContent
+	}
+
 	finalContent := lo.If(pageTemplateID == "", pageContent).ElseF(func() string {
 		content, err := cms.TemplateContentFindByID(pageTemplateID)
 		if err != nil {
@@ -73,37 +77,90 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 		return content
 	})
 
+	html, err := cms.renderContentToHtml(r, finalContent, struct {
+		PageContent         string
+		PageCanonicalURL    string
+		PageMetaDescription string
+		PageMetaKeywords    string
+		PageMetaRobots      string
+		PageTitle           string
+		Language            string
+	}{
+		PageContent:         pageContent,
+		PageCanonicalURL:    pageCanonicalURL,
+		PageMetaDescription: pageMetaDescription,
+		PageMetaKeywords:    pageMetaKeywords,
+		PageMetaRobots:      pageMetaRobots,
+		PageTitle:           pageTitle,
+	})
+
+	if err != nil {
+		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
+		return hb.NewDiv().Text(`error occurred`).ToHTML()
+	}
+
+	return html
+}
+
+// renderContentToHtml renders the content to HTML
+//
+// This is done in the following steps (sequence is important):
+// 1. replaces placeholders with values
+// 2. renders the blocks
+// 3. renders the shortcodes
+// 3. renders the translations
+// 4. returns the HTML
+//
+// Parameters:
+// - r: the HTTP request
+// - content: the content to render
+// - options: the options for the rendering
+//
+// Returns:
+// - html: the rendered HTML
+// - err: the error, if any, or nil otherwise
+func (cms *Cms) renderContentToHtml(r *http.Request, content string, options struct {
+	PageContent         string
+	PageCanonicalURL    string
+	PageMetaDescription string
+	PageMetaKeywords    string
+	PageMetaRobots      string
+	PageTitle           string
+	Language            string
+}) (html string, err error) {
 	replacements := map[string]string{
-		"PageContent":         pageContent,
-		"PageCanonicalUrl":    pageCanonicalURL,
-		"PageMetaDescription": pageMetaDescription,
-		"PageMetaKeywords":    pageMetaKeywords,
-		"PageRobots":          pageMetaRobots,
-		"PageTitle":           pageTitle,
+		"PageContent":         options.PageContent,
+		"PageCanonicalUrl":    options.PageCanonicalURL,
+		"PageMetaDescription": options.PageMetaDescription,
+		"PageMetaKeywords":    options.PageMetaKeywords,
+		"PageRobots":          options.PageMetaRobots,
+		"PageTitle":           options.PageTitle,
 	}
 
 	for key, value := range replacements {
-		finalContent = strings.ReplaceAll(finalContent, "[["+key+"]]", value)
-		finalContent = strings.ReplaceAll(finalContent, "[[ "+key+" ]]", value)
+		content = strings.ReplaceAll(content, "[["+key+"]]", value)
+		content = strings.ReplaceAll(content, "[[ "+key+" ]]", value)
 	}
 
-	finalContent, err = cms.ContentRenderBlocks(finalContent)
+	content, err = cms.ContentRenderBlocks(content)
 
 	if err != nil {
-		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
+		return "", err
 	}
 
-	finalContent, err = cms.ContentRenderShortcodes(r, finalContent)
+	content, err = cms.ContentRenderShortcodes(r, content)
 
 	if err != nil {
-		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
+		return "", err
 	}
 
-	finalContent, err = cms.ContentRenderTranslations(finalContent, language)
+	language := lo.If(options.Language == "", "en").Else(options.Language)
+
+	content, err = cms.ContentRenderTranslations(content, language)
 
 	if err != nil {
-		cms.logErrorWithContext(`At PageRenderHtmlByAlias`, err.Error())
+		return "", err
 	}
 
-	return finalContent
+	return content, nil
 }
