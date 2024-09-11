@@ -12,7 +12,14 @@ import (
 	"github.com/gouniverse/taskstore"
 )
 
-// NewCms creates a new CMS
+// NewCms creates a new CMS instance based on the given configuration
+//
+// Parameters:
+// - config Config - the CMS configuration
+//
+// Returns:
+// - *Cms - the new CMS instance
+// - error - any error if occurred, nil otherwise
 func NewCms(config Config) (cms *Cms, err error) {
 
 	if config.DbInstance == nil && config.Database == nil && (config.DbDriver == "" || config.DbDsn == "") {
@@ -78,6 +85,7 @@ func NewCms(config Config) (cms *Cms, err error) {
 	return cms, nil
 }
 
+// cmsCacheSetup sets up the cache
 func cmsCacheSetup(cms *Cms) (err error) {
 	if !cms.cacheEnabled {
 		return nil
@@ -106,6 +114,7 @@ func cmsCacheSetup(cms *Cms) (err error) {
 	return nil
 }
 
+// cmsEntitiesSetup sets up the entities
 func cmsEntitiesSetup(cms *Cms) (err error) {
 	cms.EntityStore, err = entitystore.NewStore(entitystore.NewStoreOptions{
 		Database:           cms.Database,
@@ -127,6 +136,7 @@ func cmsEntitiesSetup(cms *Cms) (err error) {
 	return nil
 }
 
+// cmsLogsSetup sets up the logs
 func cmsLogsSetup(cms *Cms) (err error) {
 	if !cms.logsEnabled {
 		return nil
@@ -151,6 +161,7 @@ func cmsLogsSetup(cms *Cms) (err error) {
 	return nil
 }
 
+// cmsSessionSetup sets up the session
 func cmsSessionSetup(cms *Cms) (err error) {
 	if !cms.sessionEnabled {
 		return nil
@@ -179,6 +190,7 @@ func cmsSessionSetup(cms *Cms) (err error) {
 	return nil
 }
 
+// cmsSettingsSetup sets up the settings
 func cmsSettingsSetup(cms *Cms) (err error) {
 	if !cms.settingsEnabled {
 		return nil
@@ -200,6 +212,7 @@ func cmsSettingsSetup(cms *Cms) (err error) {
 	return nil
 }
 
+// cmsTasksSetup sets up the tasks
 func cmsTasksSetup(cms *Cms) (err error) {
 	if !cms.tasksEnabled {
 		return nil
@@ -225,6 +238,7 @@ func cmsTasksSetup(cms *Cms) (err error) {
 	return nil
 }
 
+// cmsUsersSetup sets up the users
 func cmsUsersSetup(cms *Cms) (err error) {
 	if !cms.usersEnabled {
 		return nil

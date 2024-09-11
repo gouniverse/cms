@@ -164,7 +164,7 @@ func (c *Cms) SetFuncLayout(funcLayout func(content string) string) *Cms {
 }
 
 func (c *Cms) logErrorWithContext(message string, context any) {
-	if c.LogStore != nil {
+	if c.LogStore == nil {
 		return
 	}
 
