@@ -9,7 +9,7 @@ cp .env_example .env
 2. Install Air
 
 ```
-go install github.com/cosmtrek/air@latest
+go install github.com/air-verse/air@latest
 ```
 
 3. Run it
