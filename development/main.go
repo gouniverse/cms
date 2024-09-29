@@ -20,7 +20,7 @@ var db *sql.DB
 
 func main() {
 	log.Println("1. Initializing environment variables...")
-	utils.EnvInitialize()
+	utils.EnvInitialize(".env")
 
 	log.Println("2. Initializing database...")
 	var err error
@@ -165,7 +165,7 @@ func mainDb(driverName string, dbHost string, dbPort string, dbName string, dbUs
 		return nil, err
 	}
 	if db == nil {
-		return nil, errors.New("database for driver " + driverName + " could not be intialized")
+		return nil, errors.New("database for driver " + driverName + " could not be initialized")
 	}
 
 	return db, nil
@@ -259,7 +259,7 @@ func entityList() []cms.CustomEntityStructure {
 				Type:             "string",
 				FormControlLabel: "Referral",
 				FormControlType:  "input",
-				FormControlHelp:  "Whare the wish was made from",
+				FormControlHelp:  "Where the wish was made from",
 			},
 		},
 	})
