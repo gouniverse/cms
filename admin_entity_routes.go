@@ -189,7 +189,9 @@ const EntityManager = {
 		}
 	}
 };
-Vue.createApp(EntityManager).mount('#entity-manager')
+setTimeout(()=>{
+	Vue.createApp(EntityManager).mount('#entity-manager')
+}, 1000);
 	`
 
 	if cms.funcLayout("") != "" {
@@ -198,7 +200,7 @@ Vue.createApp(EntityManager).mount('#entity-manager')
 			hb.NewHTML(h),
 			hb.NewScriptURL(cdn.Jquery_3_6_4()),
 			hb.NewScriptURL(cdn.VueJs_3()),
-			hb.NewScriptURL(cdn.Sweetalert2_10()),
+			hb.NewScriptURL(cdn.Sweetalert2_11()),
 			hb.NewScriptURL(cdn.JqueryDataTablesJs_1_13_4()),
 			hb.NewScript(inlineScript),
 		}).ToHTML()
@@ -375,12 +377,18 @@ const EntityUpdate = {
 		}
 	}
 };
-Vue.createApp(EntityUpdate).mount('#entity-update')
+
+setTimeout(() => {
+	Vue.createApp(EntityUpdate).mount('#entity-update')	
+}, 1000);
 	`
 
 	if cms.funcLayout("") != "" {
 		out := hb.NewWrap().Children([]hb.TagInterface{
 			hb.NewHTML(h),
+			hb.NewScriptURL(cdn.Jquery_3_6_4()),
+			hb.NewScriptURL(cdn.VueJs_3()),
+			hb.NewScriptURL(cdn.Sweetalert2_11()),
 			hb.NewScript(inlineScript),
 		}).ToHTML()
 		responses.HTMLResponse(w, r, cms.funcLayout(out))
