@@ -3,6 +3,7 @@ package cms
 import (
 	"database/sql"
 
+	"github.com/gouniverse/blockeditor"
 	"github.com/gouniverse/sb"
 )
 
@@ -14,6 +15,7 @@ type Config struct {
 	CustomEntityList           []CustomEntityStructure
 	Prefix                     string
 	BlocksEnable               bool
+	BlockDefinitions           []blockeditor.BlockDefinition
 	CacheAutomigrate           bool
 	CacheEnable                bool
 	EntitiesAutomigrate        bool

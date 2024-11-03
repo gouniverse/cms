@@ -1,13 +1,15 @@
 package cms
 
 import (
+	"github.com/gouniverse/blockeditor"
 	"github.com/gouniverse/bs"
+	"github.com/gouniverse/cms/types"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 )
 
 type Config struct {
-	// KeyEndpoint          string
+	BlockDefinitions     []blockeditor.BlockDefinition
 	Endpoint             string
 	EntityStore          *entitystore.Store
 	PageEntityType       string
@@ -17,11 +19,13 @@ type Config struct {
 	FuncLayout           func(string) string
 	CmsHeader            func(string) string
 	CmsBreadcrumbs       func([]bs.Breadcrumb) string
+	WebPageFindByID      func(string) (types.WebPageInterface, error)
+	WebPageUpdate        func(types.WebPageInterface) error
 }
 
 func NewUiManager(config Config) UiManager {
 	return UiManager{
-		// keyEndpoint:          config.KeyEndpoint,
+		blockDefinitions:     config.BlockDefinitions,
 		endpoint:             config.Endpoint,
 		entityStore:          config.EntityStore,
 		pageEntityType:       config.PageEntityType,
@@ -31,10 +35,13 @@ func NewUiManager(config Config) UiManager {
 		funcLayout:           config.FuncLayout,
 		cmsHeader:            config.CmsHeader,
 		cmsBreadcrumbs:       config.CmsBreadcrumbs,
+		webPageFindByID:      config.WebPageFindByID,
+		webPageUpdate:        config.WebPageUpdate,
 	}
 }
 
 type UiManager struct {
+	blockDefinitions     []blockeditor.BlockDefinition
 	endpoint             string
 	entityStore          *entitystore.Store
 	pageEntityType       string
@@ -44,4 +51,6 @@ type UiManager struct {
 	funcLayout           func(string) string
 	cmsHeader            func(string) string
 	cmsBreadcrumbs       func([]bs.Breadcrumb) string
+	webPageFindByID      func(string) (types.WebPageInterface, error)
+	webPageUpdate        func(types.WebPageInterface) error
 }

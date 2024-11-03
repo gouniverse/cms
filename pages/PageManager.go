@@ -28,12 +28,12 @@ func (m UiManager) PageManager(w http.ResponseWriter, r *http.Request) {
 	header := m.cmsHeader(m.endpoint)
 	breadcrumbs := m.cmsBreadcrumbs([]bs.Breadcrumb{
 		{
-			URL:  m.endpoint,
+			URL:  m.url(m.endpoint, map[string]string{}),
 			Name: "Home",
 		},
 		{
-			URL:  (m.endpoint + "?path=" + m.pathPagesPageManager),
-			Name: "UiManager",
+			URL:  m.url(m.pathPagesPageManager, map[string]string{}),
+			Name: "Webpages",
 		},
 	})
 

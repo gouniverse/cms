@@ -1,0 +1,17 @@
+package types
+
+const COLUMN_ALIAS = "alias"
+const COLUMN_CANONICAL_URL = "canonical_url"
+const COLUMN_CONTENT = "content"
+const COLUMN_CREATED_AT = "created_at"
+const COLUMN_EDITOR = "editor"
+const COLUMN_ID = "id"
+const COLUMN_HANDLE = "handle"
+const COLUMN_META_DESCRIPTION = "meta_description"
+const COLUMN_META_KEYWORDS = "meta_keywords"
+const COLUMN_META_ROBOTS = "meta_robots"
+const COLUMN_NAME = "name"
+const COLUMN_STATUS = "status"
+const COLUMN_TEMPLATE_ID = "template_id"
+const COLUMN_TITLE = "title"
+const COLUMN_UPDATED_AT = "updated_at"

@@ -24,7 +24,7 @@ const codemirrorPhpJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode
 const codemirrorFormattingJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"
 const codemirrorMatchBracketsJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js"
 
-func (m UiManager) PageUpdate(w http.ResponseWriter, r *http.Request) {
+func (m UiManager) PageUpdateV1(w http.ResponseWriter, r *http.Request) {
 	pageID := utils.Req(r, "page_id", "")
 	if pageID == "" {
 		api.Respond(w, r, api.Error("Page ID is required"))

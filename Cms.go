@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"github.com/gouniverse/blockeditor"
 	"github.com/gouniverse/cachestore"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/logstore"
@@ -29,7 +30,8 @@ type Cms struct {
 	entityTableName     string
 	attributeTableName  string
 
-	blocksEnabled bool
+	blocksEnabled    bool
+	blockDefinitions []blockeditor.BlockDefinition
 
 	cacheAutoMigrate bool
 	cacheEnabled     bool
@@ -109,6 +111,7 @@ func configToCms(config Config) *Cms {
 	}
 
 	cms.blocksEnabled = config.BlocksEnable
+	cms.blockDefinitions = config.BlockDefinitions
 	cms.cacheAutoMigrate = config.CacheAutomigrate
 	cms.cacheEnabled = config.CacheEnable
 	cms.customEntityList = config.CustomEntityList
