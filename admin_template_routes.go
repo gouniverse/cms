@@ -8,37 +8,33 @@ import (
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/bs"
 	"github.com/gouniverse/cdn"
+	cmsTemplates "github.com/gouniverse/cms/templates"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 )
 
+func (cms Cms) templatesUiManager(r *http.Request) cmsTemplates.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsTemplates.NewUiManager(cmsTemplates.Config{
+		Endpoint:             endpoint,
+		EntityStore:          cms.EntityStore,
+		TemplateEntityType:   string(ENTITY_TYPE_TEMPLATE),
+		PathPagesPageManager: string(PathPagesPageManager),
+		PathPagesPageUpdate:  string(PathPagesPageUpdate),
+		WebpageComplete:      WebpageComplete,
+		FuncLayout:           cms.funcLayout,
+		CmsHeader:            cms.cmsHeader,
+		CmsBreadcrumbs:       cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
+
 func (cms Cms) pageTemplatesTemplateCreateAjax(w http.ResponseWriter, r *http.Request) {
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-
-	if name == "" {
-		api.Respond(w, r, api.Error("name is required field"))
-		return
-	}
-
-	template, err := cms.EntityStore.EntityCreateWithType(ENTITY_TYPE_TEMPLATE)
-
-	if err != nil {
-		api.Respond(w, r, api.Error("Template failed to be created: "+err.Error()))
-		return
-	}
-
-	if template == nil {
-		api.Respond(w, r, api.Error("Template failed to be created"))
-		return
-	}
-
-	template.SetString("name", name)
-	template.SetString("status", "inactive")
-	cms.EntityStore.EntityUpdate(*template)
-
-	api.Respond(w, r, api.SuccessWithData("Template saved successfully", map[string]interface{}{"template_id": template.ID()}))
+	cms.templatesUiManager(r).TemplateCreateAjax(w, r)
 }
 
 func (cms Cms) pageTemplatesTemplateManager(w http.ResponseWriter, r *http.Request) {

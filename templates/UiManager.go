@@ -7,10 +7,9 @@ import (
 )
 
 type Config struct {
-	// KeyEndpoint          string
 	Endpoint             string
 	EntityStore          *entitystore.Store
-	PageEntityType       string
+	TemplateEntityType   string
 	PathPagesPageManager string
 	PathPagesPageUpdate  string
 	WebpageComplete      func(string, string) *hb.HtmlWebpage
@@ -24,7 +23,7 @@ func NewUiManager(config Config) UiManager {
 		// keyEndpoint:          config.KeyEndpoint,
 		endpoint:             config.Endpoint,
 		entityStore:          config.EntityStore,
-		pageEntityType:       config.PageEntityType,
+		templateEntityType:   config.TemplateEntityType,
 		pathPagesPageManager: config.PathPagesPageManager,
 		pathPagesPageUpdate:  config.PathPagesPageUpdate,
 		webpageComplete:      config.WebpageComplete,
@@ -35,9 +34,10 @@ func NewUiManager(config Config) UiManager {
 }
 
 type UiManager struct {
+	// keyEndpoint          string
 	endpoint             string
 	entityStore          *entitystore.Store
-	pageEntityType       string
+	templateEntityType   string
 	pathPagesPageManager string
 	pathPagesPageUpdate  string
 	webpageComplete      func(string, string) *hb.HtmlWebpage
