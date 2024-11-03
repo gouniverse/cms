@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/go-sql-driver/mysql v1.8.1
-	github.com/gouniverse/blockeditor v0.3.0
+	github.com/gouniverse/blockeditor v0.5.0
 	github.com/gouniverse/bs v0.13.0
 	github.com/gouniverse/cachestore v0.18.1
 	github.com/gouniverse/dataobject v0.3.0
@@ -17,6 +17,7 @@ require (
 	github.com/gouniverse/sessionstore v0.26.0
 	github.com/gouniverse/settingstore v0.12.0
 	github.com/gouniverse/taskstore v1.0.3
+	github.com/gouniverse/ui v0.10.0
 	github.com/gouniverse/utils v1.45.0
 	github.com/lib/pq v1.10.9
 	github.com/samber/lo v1.47.0
@@ -39,7 +40,6 @@ require (
 	github.com/golang-module/carbon v1.7.3 // indirect
 	github.com/gouniverse/crypto v0.2.0 // indirect
 	github.com/gouniverse/envenc v0.7.0 // indirect
-	github.com/gouniverse/ui v0.10.0 // indirect
 	github.com/gouniverse/webserver v0.1.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible // indirect
