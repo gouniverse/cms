@@ -4,7 +4,10 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gouniverse/cms/types"
 	"github.com/gouniverse/hb"
+	"github.com/gouniverse/ui"
+	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
 )
 
@@ -40,6 +43,7 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 	pageMetaDescription := ""
 	pageMetaRobots := ""
 	pageCanonicalURL := ""
+	pageEditor := ""
 	pageTemplateID := ""
 	for _, attr := range pageAttrs {
 		if attr.AttributeKey() == "content" {
@@ -63,6 +67,27 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 		if attr.AttributeKey() == "template_id" {
 			pageTemplateID = attr.AttributeValue()
 		}
+		if attr.AttributeKey() == "editor" {
+			pageEditor = attr.AttributeValue()
+		}
+	}
+
+	if pageEditor == types.WEBPAGE_EDITOR_BLOCKEDITOR {
+		if cms.blockEditorRenderer == nil {
+			return "Block editor not configured"
+		}
+
+		if !utils.IsJSON(pageContent) {
+			return "Malformed block content"
+		}
+
+		blocks, err := ui.BlocksFromJson(pageContent)
+
+		if err != nil {
+			return "Error parsing block content"
+		}
+
+		pageContent = cms.blockEditorRenderer(blocks)
 	}
 
 	if pageTemplateID == "" {

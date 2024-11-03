@@ -21,18 +21,18 @@ func (cms Cms) pagesUiManager(r *http.Request) cmsPages.UiManager {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 
 	ui := cmsPages.NewUiManager(cmsPages.Config{
-		BlockDefinitions:     cms.blockDefinitions,
-		Endpoint:             endpoint,
-		EntityStore:          cms.EntityStore,
-		PageEntityType:       string(ENTITY_TYPE_PAGE),
-		PathPagesPageManager: string(PathPagesPageManager),
-		PathPagesPageUpdate:  string(PathPagesPageUpdate),
-		WebpageComplete:      WebpageComplete,
-		FuncLayout:           cms.funcLayout,
-		CmsHeader:            cms.cmsHeader,
-		CmsBreadcrumbs:       cms.cmsBreadcrumbs,
-		WebPageFindByID:      cms.WebPageFindByID,
-		WebPageUpdate:        cms.WebPageUpdate,
+		BlockEditorDefinitions: cms.blockEditorDefinitions,
+		Endpoint:               endpoint,
+		EntityStore:            cms.EntityStore,
+		PageEntityType:         string(ENTITY_TYPE_PAGE),
+		PathPagesPageManager:   string(PathPagesPageManager),
+		PathPagesPageUpdate:    string(PathPagesPageUpdate),
+		WebpageComplete:        WebpageComplete,
+		FuncLayout:             cms.funcLayout,
+		CmsHeader:              cms.cmsHeader,
+		CmsBreadcrumbs:         cms.cmsBreadcrumbs,
+		WebPageFindByID:        cms.WebPageFindByID,
+		WebPageUpdate:          cms.WebPageUpdate,
 	})
 
 	return ui

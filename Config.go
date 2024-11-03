@@ -5,6 +5,7 @@ import (
 
 	"github.com/gouniverse/blockeditor"
 	"github.com/gouniverse/sb"
+	"github.com/gouniverse/ui"
 )
 
 type Config struct {
@@ -15,7 +16,8 @@ type Config struct {
 	CustomEntityList           []CustomEntityStructure
 	Prefix                     string
 	BlocksEnable               bool
-	BlockDefinitions           []blockeditor.BlockDefinition
+	BlockEditorDefinitions     []blockeditor.BlockDefinition
+	BlockEditorRenderer        func(blocks []ui.BlockInterface) string
 	CacheAutomigrate           bool
 	CacheEnable                bool
 	EntitiesAutomigrate        bool

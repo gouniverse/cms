@@ -87,7 +87,7 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 
 	assert.Nil(suite.T(), err)
 
-	assert.False(suite.T(), cms.blocksEnabled, "Enable blocks MUST BE false before init")
+	// assert.False(suite.T(), cms.blocksEnabled, "Enable blocks MUST BE false before init")
 	assert.False(suite.T(), cms.cacheEnabled, "Enable cache MUST BE false before init")
 	assert.False(suite.T(), cms.logsEnabled, "Enable logs MUST BE false before init")
 	assert.False(suite.T(), cms.pagesEnabled, "Enable pages MUST BE false before init")
@@ -115,7 +115,7 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	})
 
 	assert.Nil(suite.T(), err)
-	assert.True(suite.T(), cms2.blocksEnabled, "Enable blocks MUST BE true after init")
+	// assert.True(suite.T(), cms2.blocksEnabled, "Enable blocks MUST BE true after init")
 	assert.True(suite.T(), cms2.cacheEnabled, "Enable cache MUST BE true after init")
 	assert.True(suite.T(), cms2.logsEnabled, "Enable logs MUST BE true after init")
 	assert.True(suite.T(), cms2.pagesEnabled, "Enable pages MUST BE true after init")

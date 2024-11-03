@@ -45,7 +45,7 @@ func (controller pageUpdateController) Handler(w http.ResponseWriter, r *http.Re
 	}
 
 	if data.action == ACTION_BLOCKEDITOR_HANDLE {
-		return blockeditor.Handle(w, r, controller.m.blockDefinitions)
+		return blockeditor.Handle(w, r, controller.m.blockEditorDefinitions)
 	}
 
 	if r.Method == http.MethodPost {
@@ -365,7 +365,7 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 					Key:   types.WEBPAGE_EDITOR_CODEMIRROR,
 				})
 
-				if len(controller.m.blockDefinitions) > 0 {
+				if len(controller.m.blockEditorDefinitions) > 0 {
 					options = append(options, form.FieldOption{
 						Value: "BlockEditor (Visual Editor using Blocks)",
 						Key:   types.WEBPAGE_EDITOR_BLOCKEDITOR,
@@ -483,8 +483,7 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 				"page_id": data.pageID,
 				"action":  ACTION_BLOCKEDITOR_HANDLE,
 			}),
-			//BlockDefinitions: blocks.BlockEditorDefinitions(),
-			BlockDefinitions: controller.m.blockDefinitions,
+			BlockDefinitions: controller.m.blockEditorDefinitions,
 		})
 
 		if err != nil {

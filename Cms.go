@@ -9,6 +9,7 @@ import (
 	"github.com/gouniverse/sessionstore"
 	"github.com/gouniverse/settingstore"
 	"github.com/gouniverse/taskstore"
+	"github.com/gouniverse/ui"
 	"github.com/samber/lo"
 )
 
@@ -30,8 +31,10 @@ type Cms struct {
 	entityTableName     string
 	attributeTableName  string
 
-	blocksEnabled    bool
-	blockDefinitions []blockeditor.BlockDefinition
+	blocksEnabled bool
+
+	blockEditorDefinitions []blockeditor.BlockDefinition
+	blockEditorRenderer    func(blocks []ui.BlockInterface) string
 
 	cacheAutoMigrate bool
 	cacheEnabled     bool
@@ -111,7 +114,8 @@ func configToCms(config Config) *Cms {
 	}
 
 	cms.blocksEnabled = config.BlocksEnable
-	cms.blockDefinitions = config.BlockDefinitions
+	cms.blockEditorDefinitions = config.BlockEditorDefinitions
+	cms.blockEditorRenderer = config.BlockEditorRenderer
 	cms.cacheAutoMigrate = config.CacheAutomigrate
 	cms.cacheEnabled = config.CacheEnable
 	cms.customEntityList = config.CustomEntityList
