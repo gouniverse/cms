@@ -2,6 +2,7 @@ package cms
 
 import (
 	"context"
+	"maps"
 	"net/http"
 	"strconv"
 
@@ -11,7 +12,46 @@ import (
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
+
+	cmsPages "github.com/gouniverse/cms/pages"
+	cmsTemplates "github.com/gouniverse/cms/templates"
 )
+
+func (cms Cms) pagesUiManager(r *http.Request) cmsPages.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsPages.NewUiManager(cmsPages.Config{
+		Endpoint:             endpoint,
+		EntityStore:          cms.EntityStore,
+		PageEntityType:       string(ENTITY_TYPE_PAGE),
+		PathPagesPageManager: string(PathPagesPageManager),
+		PathPagesPageUpdate:  string(PathPagesPageUpdate),
+		WebpageComplete:      WebpageComplete,
+		FuncLayout:           cms.funcLayout,
+		CmsHeader:            cms.cmsHeader,
+		CmsBreadcrumbs:       cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
+
+func (cms Cms) templatesUiManager(r *http.Request) cmsTemplates.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsTemplates.NewUiManager(cmsTemplates.Config{
+		Endpoint:                     endpoint,
+		EntityStore:                  cms.EntityStore,
+		TemplateEntityType:           string(ENTITY_TYPE_TEMPLATE),
+		PathTemplatesTemplateManager: string(PathTemplatesTemplateManager),
+		PathTemplatesTemplateUpdate:  string(PathTemplatesTemplateUpdate),
+		WebpageComplete:              WebpageComplete,
+		FuncLayout:                   cms.funcLayout,
+		CmsHeader:                    cms.cmsHeader,
+		CmsBreadcrumbs:               cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
 
 // Router shows the admin page
 func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
@@ -28,6 +68,42 @@ func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
+	pageRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
+		PathPagesPageCreateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.pagesUiManager(r).PageCreateAjax(w, r)
+		},
+		PathPagesPageManager: func(w http.ResponseWriter, r *http.Request) {
+			cms.pagesUiManager(r).PageManager(w, r)
+		},
+		PathPagesPageTrashAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.pagesUiManager(r).PageTrashAjax(w, r)
+		},
+		PathPagesPageUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.pagesUiManager(r).PageUpdate(w, r)
+		},
+		PathPagesPageUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.pagesUiManager(r).PageUpdateAjax(w, r)
+		},
+	}
+
+	templateRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
+		PathTemplatesTemplateCreateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.templatesUiManager(r).TemplateCreateAjax(w, r)
+		},
+		PathTemplatesTemplateManager: func(w http.ResponseWriter, r *http.Request) {
+			cms.templatesUiManager(r).TemplateManager(w, r)
+		},
+		PathTemplatesTemplateTrashAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.templatesUiManager(r).TemplateTrashAjax(w, r)
+		},
+		PathTemplatesTemplateUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.templatesUiManager(r).TemplateUpdate(w, r)
+		},
+		PathTemplatesTemplateUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.templatesUiManager(r).TemplateUpdateAjax(w, r)
+		},
+	}
+
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathHome: cms.pageHome,
 
@@ -49,22 +125,6 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		PathMenusMenuItemsUpdateAjax: cms.pageMenusMenuItemsUpdateAjax,
 		PathMenusMenuUpdateAjax:      cms.pageMenusMenuUpdateAjax,
 		// END: Menus
-
-		// START: Pages
-		PathPagesPageCreateAjax: cms.pagePagesPageCreateAjax,
-		PathPagesPageManager:    cms.pagePagesPageManager,
-		PathPagesPageTrashAjax:  cms.pagePagesPageTrashAjax,
-		PathPagesPageUpdate:     cms.pagePagesPageUpdate,
-		PathPagesPageUpdateAjax: cms.pagePagesPageUpdateAjax,
-		// END: Pages
-
-		// START: Templates
-		PathTemplatesTemplateCreateAjax: cms.pageTemplatesTemplateCreateAjax,
-		PathTemplatesTemplateManager:    cms.pageTemplatesTemplateManager,
-		PathTemplatesTemplateTrashAjax:  cms.pageTemplatesTemplateTrashAjax,
-		PathTemplatesTemplateUpdate:     cms.pageTemplatesTemplateUpdate,
-		PathTemplatesTemplateUpdateAjax: cms.pageTemplatesTemplateUpdateAjax,
-		// END: Templates
 
 		// START: Widgets
 		PathWidgetsWidgetCreateAjax: cms.pageWidgetsWidgetCreateAjax,
@@ -110,6 +170,10 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		// END: Custom Entities
 
 	}
+
+	maps.Copy(routes, pageRoutes)
+	maps.Copy(routes, templateRoutes)
+
 	// log.Println(route)
 	if val, ok := routes[route]; ok {
 		return val
@@ -117,25 +181,6 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 
 	return routes[PathHome]
 }
-
-// func (cms Cms) pageUserHome(w http.ResponseWriter, r *http.Request) {
-// 	endpoint := r.Context().Value(keyEndpoint).(string)
-// 	// log.Println(endpoint)
-// 	header := cms.cmsHeader(endpoint)
-// 	breadcrumbs := cms.cmsBreadcrumbs(map[string]string{
-// 		endpoint: "Home",
-// 	})
-// 	container := hb.NewDiv().Attr("class", "container").Attr("id", "page-manager")
-// 	heading := hb.NewHeading1().HTML("User Dashboard")
-// 	container.AddChild(hb.NewHTML(header))
-// 	container.AddChild(heading)
-// 	container.AddChild(hb.NewHTML(breadcrumbs))
-// 	h := container.ToHTML()
-// 	webpage := WebpageComplete("Home", h)
-// 	w.WriteHeader(200)
-// 	w.Header().Set("Content-Type", "text/html")
-// 	w.Write([]byte(webpage.ToHTML()))
-// }
 
 func (cms Cms) pageHome(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
