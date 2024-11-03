@@ -38,7 +38,6 @@ require (
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/term v0.24.0 // indirect
-	golang.org/x/tools v0.25.0 // indirect
 	modernc.org/gc/v3 v3.0.0-20240801135723-a856999a2e4a // indirect
 )
 
@@ -60,6 +59,7 @@ require (
 	github.com/gouniverse/icons v1.3.1
 	github.com/gouniverse/sb v0.6.0
 	github.com/gouniverse/shortcode v0.1.4
+	github.com/gouniverse/strutils v0.6.0
 	github.com/gouniverse/uid v1.5.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect

@@ -66,9 +66,9 @@ func (cms Cms) pageWebsitesWebsiteManager(w http.ResponseWriter, r *http.Request
 		HTML(header).
 		Child(heading).
 		HTML(breadcrumbs).
-		Child(table).
-		Child(pagePagesPageCreateModal()).
-		Child(pagePagesPageTrashModal())
+		Child(table)
+		// Child(pagePagesPageCreateModal()).
+		// Child(pagePagesPageTrashModal())
 
 	if cms.funcLayout("") != "" {
 		out := NewWrap().
