@@ -7,11 +7,9 @@ import (
 )
 
 type Config struct {
-	Endpoint           string
-	EntityStore        *entitystore.Store
-	TemplateEntityType string
-	// PathPagesPageManager string
-	// PathPagesPageUpdate  string
+	Endpoint                     string
+	EntityStore                  *entitystore.Store
+	TemplateEntityType           string
 	PathTemplatesTemplateManager string
 	PathTemplatesTemplateUpdate  string
 	WebpageComplete              func(string, string) *hb.HtmlWebpage
@@ -23,11 +21,9 @@ type Config struct {
 func NewUiManager(config Config) UiManager {
 	return UiManager{
 		// keyEndpoint:          config.KeyEndpoint,
-		endpoint:           config.Endpoint,
-		entityStore:        config.EntityStore,
-		templateEntityType: config.TemplateEntityType,
-		// pathPagesPageManager: config.PathPagesPageManager,
-		// pathPagesPageUpdate:  config.PathPagesPageUpdate,
+		endpoint:                     config.Endpoint,
+		entityStore:                  config.EntityStore,
+		templateEntityType:           config.TemplateEntityType,
 		pathTemplatesTemplateManager: config.PathTemplatesTemplateManager,
 		pathTemplatesTemplateUpdate:  config.PathTemplatesTemplateUpdate,
 		webpageComplete:              config.WebpageComplete,

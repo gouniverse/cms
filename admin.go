@@ -13,9 +13,52 @@ import (
 	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 
+	cmsBlocks "github.com/gouniverse/cms/blocks"
+	cmsMenus "github.com/gouniverse/cms/menus"
 	cmsPages "github.com/gouniverse/cms/pages"
 	cmsTemplates "github.com/gouniverse/cms/templates"
+	cmsWidgets "github.com/gouniverse/cms/widgets"
 )
+
+func (cms Cms) blockUiManager(r *http.Request) cmsBlocks.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsBlocks.NewUiManager(cmsBlocks.Config{
+		Endpoint:               endpoint,
+		EntityStore:            cms.EntityStore,
+		BlockEntityType:        string(ENTITY_TYPE_BLOCK),
+		PathBlocksBlockManager: string(PathBlocksBlockManager),
+		PathBlocksBlockUpdate:  string(PathBlocksBlockUpdate),
+		WebpageComplete:        WebpageComplete,
+		FuncLayout:             cms.funcLayout,
+		CmsHeader:              cms.cmsHeader,
+		CmsBreadcrumbs:         cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
+
+func (cms Cms) menuUiManager(r *http.Request) cmsMenus.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsMenus.NewUiManager(cmsMenus.Config{
+		Endpoint:                     endpoint,
+		EntityStore:                  cms.EntityStore,
+		MenuEntityType:               string(ENTITY_TYPE_MENU),
+		PathMenusMenuManager:         string(PathMenusMenuManager),
+		PathMenusMenuUpdate:          string(PathMenusMenuUpdate),
+		PathMenusMenuCreateAjax:      string(PathMenusMenuCreateAjax),
+		PathMenusMenuItemsUpdate:     string(PathMenusMenuItemsUpdate),
+		PathMenusMenuItemsUpdateAjax: string(PathMenusMenuItemsUpdateAjax),
+		PathMenusMenuItemsFetchAjax:  string(PathMenusMenuItemsFetchAjax),
+		WebpageComplete:              WebpageComplete,
+		FuncLayout:                   cms.funcLayout,
+		CmsHeader:                    cms.cmsHeader,
+		CmsBreadcrumbs:               cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
 
 func (cms Cms) pagesUiManager(r *http.Request) cmsPages.UiManager {
 	endpoint := r.Context().Value(keyEndpoint).(string)
@@ -56,6 +99,24 @@ func (cms Cms) templatesUiManager(r *http.Request) cmsTemplates.UiManager {
 	return ui
 }
 
+func (cms Cms) widgetsUiManager(r *http.Request) cmsWidgets.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsWidgets.NewUiManager(cmsWidgets.Config{
+		Endpoint:                 endpoint,
+		EntityStore:              cms.EntityStore,
+		WidgetEntityType:         string(ENTITY_TYPE_WIDGET),
+		PathWidgetsWidgetManager: string(PathWidgetsWidgetManager),
+		PathWidgetsWidgetUpdate:  string(PathWidgetsWidgetUpdate),
+		WebpageComplete:          WebpageComplete,
+		FuncLayout:               cms.funcLayout,
+		CmsHeader:                cms.cmsHeader,
+		CmsBreadcrumbs:           cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
+
 // Router shows the admin page
 func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
 	path := utils.Req(r, "path", "home")
@@ -70,7 +131,35 @@ func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
 	routeFunc(w, r.WithContext(ctx))
 }
 
-func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
+func (cms Cms) menuRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
+	menuRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
+		PathMenusMenuCreateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.menuUiManager(r).MenuCreateAjax(w, r)
+		},
+		PathMenusMenuItemsFetchAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.menuUiManager(r).MenuItemsFetchAjax(w, r)
+		},
+		PathMenusMenuItemsUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.menuUiManager(r).MenuItemsUpdate(w, r)
+		},
+		PathMenusMenuItemsUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.menuUiManager(r).MenuItemsUpdateAjax(w, r)
+		},
+		PathMenusMenuManager: func(w http.ResponseWriter, r *http.Request) {
+			cms.menuUiManager(r).MenuManager(w, r)
+		},
+		PathMenusMenuUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.menuUiManager(r).MenuUpdate(w, r)
+		},
+		PathMenusMenuUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.menuUiManager(r).MenuUpdateAjax(w, r)
+		},
+	}
+
+	return menuRoutes
+}
+
+func (cms Cms) pageRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
 	pageRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathPagesPageCreateAjax: func(w http.ResponseWriter, r *http.Request) {
 			cms.pagesUiManager(r).PageCreateAjax(w, r)
@@ -89,6 +178,10 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		},
 	}
 
+	return pageRoutes
+}
+
+func (cms Cms) templateRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
 	templateRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathTemplatesTemplateCreateAjax: func(w http.ResponseWriter, r *http.Request) {
 			cms.templatesUiManager(r).TemplateCreateAjax(w, r)
@@ -107,17 +200,62 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		},
 	}
 
+	return templateRoutes
+}
+
+func (cms Cms) widgetRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
+	widgetRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
+		PathWidgetsWidgetCreateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.widgetsUiManager(r).WidgetCreateAjax(w, r)
+		},
+		PathWidgetsWidgetManager: func(w http.ResponseWriter, r *http.Request) {
+			cms.widgetsUiManager(r).WidgetManager(w, r)
+		},
+		// PathWidgetsWidgetTrashAjax: func(w http.ResponseWriter, r *http.Request) {
+		// 	cms.widgetsUiManager(r).WidgetTrashAjax(w, r)
+		// },
+		PathWidgetsWidgetUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.widgetsUiManager(r).WidgetUpdate(w, r)
+		},
+		PathWidgetsWidgetUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.widgetsUiManager(r).WidgetUpdateAjax(w, r)
+		},
+	}
+
+	return widgetRoutes
+}
+
+func (cms Cms) blocksRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
+
+	blockRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
+		PathBlocksBlockCreateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.blockUiManager(r).BlockCreateAjax(w, r)
+		},
+		PathBlocksBlockDeleteAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.blockUiManager(r).BlockDeleteAjax(w, r)
+		},
+		PathBlocksBlockManager: func(w http.ResponseWriter, r *http.Request) {
+			cms.blockUiManager(r).BlockManager(w, r)
+		},
+		PathBlocksBlockUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.blockUiManager(r).BlockUpdate(w, r)
+		},
+		PathBlocksBlockTrashAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.blockUiManager(r).BlockTrashAjax(w, r)
+		},
+		PathBlocksBlockUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.blockUiManager(r).BlockUpdateAjax(w, r)
+		},
+	}
+
+	return blockRoutes
+
+}
+
+func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Request) {
+
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathHome: cms.pageHome,
-
-		// START: Blocks
-		PathBlocksBlockCreateAjax: cms.pageBlocksBlockCreateAjax,
-		PathBlocksBlockDeleteAjax: cms.pageBlocksBlockDeleteAjax,
-		PathBlocksBlockManager:    cms.pageBlocksBlockManager,
-		PathBlocksBlockUpdate:     cms.pageBlocksBlockUpdate,
-		PathBlocksBlockTrashAjax:  cms.pageBlocksBlockTrashAjax,
-		PathBlocksBlockUpdateAjax: cms.pageBlocksBlockUpdateAjax,
-		// END: Blocks
 
 		// START: Menus
 		PathMenusMenuCreateAjax:      cms.pageMenusMenuCreateAjax,
@@ -128,13 +266,6 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		PathMenusMenuItemsUpdateAjax: cms.pageMenusMenuItemsUpdateAjax,
 		PathMenusMenuUpdateAjax:      cms.pageMenusMenuUpdateAjax,
 		// END: Menus
-
-		// START: Widgets
-		PathWidgetsWidgetCreateAjax: cms.pageWidgetsWidgetCreateAjax,
-		PathWidgetsWidgetManager:    cms.pageWidgetsWidgetManager,
-		PathWidgetsWidgetUpdate:     cms.pageWidgetsWidgetUpdate,
-		PathWidgetsWidgetUpdateAjax: cms.pageWidgetsWidgetUpdateAjax,
-		// END: Widgets
 
 		// START: Settings
 		PathSettingsSettingCreateAjax: cms.pageSettingsSettingCreateAjax,
@@ -174,8 +305,11 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 
 	}
 
-	maps.Copy(routes, pageRoutes)
-	maps.Copy(routes, templateRoutes)
+	maps.Copy(routes, cms.blocksRoutes())
+	maps.Copy(routes, cms.menuRoutes())
+	maps.Copy(routes, cms.pageRoutes())
+	maps.Copy(routes, cms.templateRoutes())
+	maps.Copy(routes, cms.widgetRoutes())
 
 	// log.Println(route)
 	if val, ok := routes[route]; ok {
