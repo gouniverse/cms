@@ -257,16 +257,6 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathHome: cms.pageHome,
 
-		// START: Menus
-		PathMenusMenuCreateAjax:      cms.pageMenusMenuCreateAjax,
-		PathMenusMenuManager:         cms.pageMenusMenuManager,
-		PathMenusMenuUpdate:          cms.pageMenusMenuUpdate,
-		PathMenusMenuItemsFetchAjax:  cms.pageMenusMenuItemsFetchAjax,
-		PathMenusMenuItemsUpdate:     cms.pageMenusMenuItemsUpdate,
-		PathMenusMenuItemsUpdateAjax: cms.pageMenusMenuItemsUpdateAjax,
-		PathMenusMenuUpdateAjax:      cms.pageMenusMenuUpdateAjax,
-		// END: Menus
-
 		// START: Settings
 		PathSettingsSettingCreateAjax: cms.pageSettingsSettingCreateAjax,
 		PathSettingsSettingDeleteAjax: cms.pageSettingsSettingDeleteAjax,
