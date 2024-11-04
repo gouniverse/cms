@@ -8,7 +8,7 @@ A "plug-and-play" content managing system (CMS) for GoLang that does its job and
 
 ## License
 
-This project is licensed under the GNU General Public License version 3 (GPL-3.0). You can find a copy of the license at https://www.gnu.org/licenses/gpl-3.0.en.html
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). You can find a copy of the license at [https://www.gnu.org/licenses/gpl-3.0.en.html](https://www.gnu.org/licenses/agpl-3.0.txt)
 
 For commercial use, please use my [contact page](https://lesichkov.co.uk/contact) to obtain a commercial license.
 
