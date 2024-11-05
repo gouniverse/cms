@@ -4,12 +4,12 @@ go 1.23
 
 require (
 	github.com/go-sql-driver/mysql v1.8.1
-	github.com/gouniverse/blockeditor v0.10.0
+	github.com/gouniverse/blockeditor v0.11.0
 	github.com/gouniverse/bs v0.13.0
 	github.com/gouniverse/cachestore v0.18.1
 	github.com/gouniverse/dataobject v0.3.0
 	github.com/gouniverse/entitystore v0.62.1
-	github.com/gouniverse/form v0.10.0
+	github.com/gouniverse/form v0.11.0
 	github.com/gouniverse/hb v1.78.0
 	github.com/gouniverse/logstore v1.5.0
 	github.com/gouniverse/responses v0.6.0
