@@ -77,7 +77,7 @@ require (
 	github.com/gouniverse/api v1.6.0
 	github.com/gouniverse/icons v1.3.1
 	github.com/gouniverse/sb v0.6.0
-	github.com/gouniverse/shortcode v0.3.0
+	github.com/gouniverse/shortcode v0.4.0
 	github.com/gouniverse/strutils v0.6.0
 	github.com/gouniverse/uid v1.5.0
 	github.com/joho/godotenv v1.5.1 // indirect
