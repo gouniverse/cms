@@ -257,8 +257,8 @@ func (controller pageUpdateController) page(data pageUpdateControllerData) hb.Ta
 }
 
 func (controller pageUpdateController) form(data pageUpdateControllerData) hb.TagInterface {
-	fieldsSettings := []form.Field{
-		{
+	fieldsSettings := []form.FieldInterface{
+		&form.Field{
 			Label: "Status",
 			Name:  "page_status",
 			Type:  form.FORM_FIELD_TYPE_SELECT,
@@ -287,7 +287,7 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 				},
 			},
 		},
-		{
+		&form.Field{
 			Label: "Template ID",
 			Name:  "page_template_id",
 			Type:  form.FORM_FIELD_TYPE_SELECT,
@@ -346,7 +346,7 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 		// 	Value: data.formPublishedAt,
 		// 	Help:  "The date this blog page was published.",
 		// },
-		{
+		&form.Field{
 			Label: "Editor",
 			Name:  "page_editor",
 			Type:  form.FORM_FIELD_TYPE_SELECT,
@@ -390,7 +390,7 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 				return options
 			},
 		},
-		{
+		&form.Field{
 			Label: "Webpage Name",
 			Name:  "page_name",
 			Type:  form.FORM_FIELD_TYPE_STRING,
@@ -404,7 +404,7 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 		// 	Value: data.formMemo,
 		// 	Help:  "Admin notes for this blogpage. These notes will not be visible to the public.",
 		// },
-		{
+		&form.Field{
 			Label:    "Webpage ID",
 			Name:     "page_id",
 			Type:     form.FORM_FIELD_TYPE_STRING,
@@ -412,7 +412,7 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 			Readonly: true,
 			Help:     "The reference number (ID) of the webpage. This is used to identify the webpage in the system and should not be changed.",
 		},
-		{
+		&form.Field{
 			Label:    "View",
 			Name:     "view",
 			Type:     form.FORM_FIELD_TYPE_HIDDEN,
@@ -494,23 +494,23 @@ func (controller pageUpdateController) form(data pageUpdateControllerData) hb.Ta
 		fieldContent.CustomInput = editor
 	}
 
-	fieldsContent := []form.Field{
-		{
+	fieldsContent := []form.FieldInterface{
+		&form.Field{
 			Label: "Title",
 			Name:  "page_title",
 			Type:  form.FORM_FIELD_TYPE_STRING,
 			Value: data.formTitle,
 			Help:  "The title of this blog as will be seen everywhere",
 		},
-		fieldContent,
-		{
+		&fieldContent,
+		&form.Field{
 			Label:    "page ID",
 			Name:     "page_id",
 			Type:     form.FORM_FIELD_TYPE_HIDDEN,
 			Value:    data.pageID,
 			Readonly: true,
 		},
-		{
+		&form.Field{
 			Label:    "View",
 			Name:     "view",
 			Type:     form.FORM_FIELD_TYPE_HIDDEN,
@@ -528,7 +528,7 @@ setTimeout(() => {
 			`).
 			ToHTML()
 
-		fieldsContent = append(fieldsContent, form.Field{
+		fieldsContent = append(fieldsContent, &form.Field{
 			Type:  form.FORM_FIELD_TYPE_RAW,
 			Value: contentScript,
 		})
@@ -566,7 +566,7 @@ setTimeout(function () {
 }, 500);
 		`).ToHTML()
 
-		fieldsContent = append(fieldsContent, form.Field{
+		fieldsContent = append(fieldsContent, &form.Field{
 			Type:  form.FORM_FIELD_TYPE_RAW,
 			Value: contentScript,
 		})
@@ -591,14 +591,14 @@ setTimeout(function () {
 	}
 
 	if data.formErrorMessage != "" {
-		formpageUpdate.AddField(form.Field{
+		formpageUpdate.AddField(&form.Field{
 			Type:  form.FORM_FIELD_TYPE_RAW,
 			Value: hb.Swal(hb.SwalOptions{Icon: "error", Text: data.formErrorMessage}).ToHTML(),
 		})
 	}
 
 	if data.formSuccessMessage != "" {
-		formpageUpdate.AddField(form.Field{
+		formpageUpdate.AddField(&form.Field{
 			Type:  form.FORM_FIELD_TYPE_RAW,
 			Value: hb.Swal(hb.SwalOptions{Icon: "success", Text: data.formSuccessMessage}).ToHTML(),
 		})
@@ -715,30 +715,30 @@ setTimeout(function () {
 	// return form
 }
 
-func (pageUpdateController) fieldsSEO(data pageUpdateControllerData) []form.Field {
-	fieldsSEO := []form.Field{
-		{
+func (pageUpdateController) fieldsSEO(data pageUpdateControllerData) []form.FieldInterface {
+	fieldsSEO := []form.FieldInterface{
+		&form.Field{
 			Label: "Alias / Path / User Friendly URL",
 			Name:  "page_alias",
 			Type:  form.FORM_FIELD_TYPE_STRING,
 			Value: data.formAlias,
 			Help:  "The relative path on the website where this page will be visible to the vistors. Once set do not change it as search engines will look for this path.",
 		},
-		{
+		&form.Field{
 			Label: "Meta Description",
 			Name:  "page_meta_description",
 			Type:  form.FORM_FIELD_TYPE_STRING,
 			Value: data.formMetaDescription,
 			Help:  "The description of this webpage as will be seen in search engines.",
 		},
-		{
+		&form.Field{
 			Label: "Meta Keywords",
 			Name:  "page_meta_keywords",
 			Type:  form.FORM_FIELD_TYPE_STRING,
 			Value: data.formMetaKeywords,
 			Help:  "Specifies the keywords that will be used by the search engines to find this webpage. Separate keywords with commas.",
 		},
-		{
+		&form.Field{
 			Label: "Meta Robots",
 			Name:  "page_meta_robots",
 			Type:  form.FORM_FIELD_TYPE_SELECT,
@@ -767,21 +767,21 @@ func (pageUpdateController) fieldsSEO(data pageUpdateControllerData) []form.Fiel
 				},
 			},
 		},
-		{
+		&form.Field{
 			Label: "Canonical URL",
 			Name:  "page_canonical_url",
 			Type:  form.FORM_FIELD_TYPE_STRING,
 			Value: data.formCanonicalURL,
 			Help:  "The canonical URL for this webpage. This is used by the search engines to display the preferred version of the web page in search results.",
 		},
-		{
+		&form.Field{
 			Label:    "Webpage ID",
 			Name:     "page_id",
 			Type:     form.FORM_FIELD_TYPE_STRING,
 			Value:    data.pageID,
 			Readonly: true,
 		},
-		{
+		&form.Field{
 			Label:    "View",
 			Name:     "view",
 			Type:     form.FORM_FIELD_TYPE_HIDDEN,
