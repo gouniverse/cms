@@ -16,6 +16,7 @@ import (
 	cmsBlocks "github.com/gouniverse/cms/blocks"
 	cmsMenus "github.com/gouniverse/cms/menus"
 	cmsPages "github.com/gouniverse/cms/pages"
+	cmsSettings "github.com/gouniverse/cms/settings"
 	cmsTemplates "github.com/gouniverse/cms/templates"
 	cmsWidgets "github.com/gouniverse/cms/widgets"
 )
@@ -81,6 +82,22 @@ func (cms Cms) pagesUiManager(r *http.Request) cmsPages.UiManager {
 	return ui
 }
 
+func (cms Cms) settingsUiManager(r *http.Request) cmsSettings.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsSettings.NewUiManager(cmsSettings.Config{
+		Endpoint:                   endpoint,
+		SettingStore:               cms.SettingStore,
+		PathSettingsSettingManager: string(PathSettingsSettingManager),
+		PathSettingsSettingUpdate:  string(PathSettingsSettingUpdate),
+		WebpageComplete:            WebpageComplete,
+		FuncLayout:                 cms.funcLayout,
+		CmsHeader:                  cms.cmsHeader,
+		CmsBreadcrumbs:             cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
 func (cms Cms) templatesUiManager(r *http.Request) cmsTemplates.UiManager {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 
@@ -181,6 +198,28 @@ func (cms Cms) pageRoutes() map[string]func(w http.ResponseWriter, r *http.Reque
 	return pageRoutes
 }
 
+func (cms Cms) settingRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
+	settingRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
+		PathSettingsSettingCreateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.settingsUiManager(r).SettingCreateAjax(w, r)
+		},
+		PathSettingsSettingDeleteAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.settingsUiManager(r).SettingDeleteAjax(w, r)
+		},
+		PathSettingsSettingManager: func(w http.ResponseWriter, r *http.Request) {
+			cms.settingsUiManager(r).SettingManager(w, r)
+		},
+		PathSettingsSettingUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.settingsUiManager(r).SettingUpdate(w, r)
+		},
+		PathSettingsSettingUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.settingsUiManager(r).SettingUpdateAjax(w, r)
+		},
+	}
+
+	return settingRoutes
+}
+
 func (cms Cms) templateRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
 	templateRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathTemplatesTemplateCreateAjax: func(w http.ResponseWriter, r *http.Request) {
@@ -256,15 +295,6 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathHome: cms.pageHome,
-
-		// START: Settings
-		PathSettingsSettingCreateAjax: cms.pageSettingsSettingCreateAjax,
-		PathSettingsSettingDeleteAjax: cms.pageSettingsSettingDeleteAjax,
-		PathSettingsSettingManager:    cms.pageSettingsSettingManager,
-		PathSettingsSettingUpdate:     cms.pageSettingsSettingUpdate,
-		PathSettingsSettingUpdateAjax: cms.pageSettingsSettingUpdateAjax,
-		// END: Settings
-
 		// START: Settings
 		PathTranslationsTranslationCreateAjax: cms.pageTranslationsTranslationCreateAjax,
 		PathTranslationsTranslationDeleteAjax: cms.pageTranslationsTranslationDeleteAjax,
@@ -298,6 +328,7 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 	maps.Copy(routes, cms.blocksRoutes())
 	maps.Copy(routes, cms.menuRoutes())
 	maps.Copy(routes, cms.pageRoutes())
+	maps.Copy(routes, cms.settingRoutes())
 	maps.Copy(routes, cms.templateRoutes())
 	maps.Copy(routes, cms.widgetRoutes())
 
