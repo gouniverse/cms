@@ -18,6 +18,7 @@ import (
 	cmsPages "github.com/gouniverse/cms/pages"
 	cmsSettings "github.com/gouniverse/cms/settings"
 	cmsTemplates "github.com/gouniverse/cms/templates"
+	cmsTranslations "github.com/gouniverse/cms/translations"
 	cmsWidgets "github.com/gouniverse/cms/widgets"
 )
 
@@ -111,6 +112,26 @@ func (cms Cms) templatesUiManager(r *http.Request) cmsTemplates.UiManager {
 		FuncLayout:                   cms.funcLayout,
 		CmsHeader:                    cms.cmsHeader,
 		CmsBreadcrumbs:               cms.cmsBreadcrumbs,
+	})
+
+	return ui
+}
+
+func (cms Cms) translationsUiManager(r *http.Request) cmsTranslations.UiManager {
+	endpoint := r.Context().Value(keyEndpoint).(string)
+
+	ui := cmsTranslations.NewUiManager(cmsTranslations.Config{
+		Endpoint:                           endpoint,
+		EntityStore:                        cms.EntityStore,
+		TranslationEntityType:              string(ENTITY_TYPE_TRANSLATION),
+		PathTranslationsTranslationManager: string(PathTranslationsTranslationManager),
+		PathTranslationsTranslationUpdate:  string(PathTranslationsTranslationUpdate),
+		TranslationLanguageDefault:         cms.translationLanguageDefault,
+		TranslationLanguages:               cms.translationLanguages,
+		WebpageComplete:                    WebpageComplete,
+		FuncLayout:                         cms.funcLayout,
+		CmsHeader:                          cms.cmsHeader,
+		CmsBreadcrumbs:                     cms.cmsBreadcrumbs,
 	})
 
 	return ui
@@ -242,6 +263,31 @@ func (cms Cms) templateRoutes() map[string]func(w http.ResponseWriter, r *http.R
 	return templateRoutes
 }
 
+func (cms Cms) translationRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
+	translationRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
+		PathTranslationsTranslationCreateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.translationsUiManager(r).TranslationCreateAjax(w, r)
+		},
+		PathTranslationsTranslationDeleteAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.translationsUiManager(r).TranslationDeleteAjax(w, r)
+		},
+		PathTranslationsTranslationManager: func(w http.ResponseWriter, r *http.Request) {
+			cms.translationsUiManager(r).TranslationManager(w, r)
+		},
+		PathTranslationsTranslationTrashAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.translationsUiManager(r).TranslationTrashAjax(w, r)
+		},
+		PathTranslationsTranslationUpdate: func(w http.ResponseWriter, r *http.Request) {
+			cms.translationsUiManager(r).TranslationUpdate(w, r)
+		},
+		PathTranslationsTranslationUpdateAjax: func(w http.ResponseWriter, r *http.Request) {
+			cms.translationsUiManager(r).TranslationUpdateAjax(w, r)
+		},
+	}
+
+	return translationRoutes
+}
+
 func (cms Cms) widgetRoutes() map[string]func(w http.ResponseWriter, r *http.Request) {
 	widgetRoutes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathWidgetsWidgetCreateAjax: func(w http.ResponseWriter, r *http.Request) {
@@ -295,14 +341,6 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 
 	routes := map[string]func(w http.ResponseWriter, r *http.Request){
 		PathHome: cms.pageHome,
-		// START: Settings
-		PathTranslationsTranslationCreateAjax: cms.pageTranslationsTranslationCreateAjax,
-		PathTranslationsTranslationDeleteAjax: cms.pageTranslationsTranslationDeleteAjax,
-		PathTranslationsTranslationManager:    cms.pageTranslationsTranslationManager,
-		PathTranslationsTranslationTrashAjax:  cms.pageTranslationsTranslationTrashAjax,
-		PathTranslationsTranslationUpdate:     cms.pageTranslationsTranslationUpdate,
-		PathTranslationsTranslationUpdateAjax: cms.pageTranslationsTranslationUpdateAjax,
-		// END: Settings
 
 		// START: Users
 		PathUsersUserCreateAjax: cms.pageUsersUserCreateAjax,
@@ -313,7 +351,7 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 		// END: Users
 
 		// START: Websites
-		PathWebsitesWebsiteManager: cms.pageWebsitesWebsiteManager,
+		// PathWebsitesWebsiteManager: cms.pageWebsitesWebsiteManager,
 		// END: Websites
 
 		// START: Custom Entities
@@ -330,6 +368,7 @@ func (cms Cms) getRoute(route string) func(w http.ResponseWriter, r *http.Reques
 	maps.Copy(routes, cms.pageRoutes())
 	maps.Copy(routes, cms.settingRoutes())
 	maps.Copy(routes, cms.templateRoutes())
+	maps.Copy(routes, cms.translationRoutes())
 	maps.Copy(routes, cms.widgetRoutes())
 
 	// log.Println(route)
