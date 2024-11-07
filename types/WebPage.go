@@ -184,38 +184,3 @@ func (o *WebPage) SetUpdatedAt(updatedAt string) {
 func (o *WebPage) UpdatedAtCarbon() carbon.Carbon {
 	return carbon.Parse(o.UpdatedAt())
 }
-
-// func (o *WebPage) SetCreatedAt(createdAt string) *WebPage {
-// 	o.Set("created_at", createdAt)
-// 	return o
-// }
-
-// func (o *WebPage) SetContent(content string) *WebPage {
-// 	o.Set("content", content)
-// 	return o
-// }
-
-// func (o *WebPage) SetHandle(handle string) *WebPage {
-// 	o.Set("handle", handle)
-// 	return o
-// }
-
-// func (o *WebPage) SetName(name string) *WebPage {
-// 	o.Set("name", name)
-// 	return o
-// }
-
-// func (o *WebPage) SetID(id string) *WebPage {
-// 	o.Set("id", id)
-// 	return o
-// }
-
-// func (o *WebPage) SetStatus(status string) *WebPage {
-// 	o.Set("status", status)
-// 	return o
-// }
-
-// func (o *WebPage) SetUpdatedAt(updatedAt string) *WebPage {
-// 	o.Set("updated_at", updatedAt)
-// 	return o
-// }

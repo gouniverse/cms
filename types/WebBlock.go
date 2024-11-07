@@ -26,6 +26,15 @@ func NewWebBlockFromExistingData(data map[string]string) *WebBlock {
 }
 
 // == SETTERS AND GETTERS ===================================================
+
+func (o *WebBlock) Content() string {
+	return o.Get(COLUMN_CONTENT)
+}
+
+func (o *WebBlock) SetContent(content string) {
+	o.Set(COLUMN_CONTENT, content)
+}
+
 func (o *WebBlock) CreatedAt() string {
 	return o.Get(COLUMN_CREATED_AT)
 }

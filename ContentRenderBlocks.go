@@ -51,18 +51,10 @@ func (cms *Cms) findBlockContent(blockID string) (string, error) {
 	if block == nil {
 		blockContent = ""
 	} else {
-		blockStatus, err := block.GetString("status", "")
-
-		if err != nil {
-			return "", err
-		}
+		blockStatus := block.Status()
 
 		if blockStatus == "active" {
-			blockContent, err = block.GetString("content", "")
-
-			if err != nil {
-				return "", err
-			}
+			blockContent = block.Content()
 		}
 	}
 
