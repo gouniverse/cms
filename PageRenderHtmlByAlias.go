@@ -81,7 +81,7 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 			return "Malformed block content"
 		}
 
-		blocks, err := ui.BlocksFromJson(pageContent)
+		blocks, err := ui.UnmarshalJsonToBlocks(pageContent)
 
 		if err != nil {
 			return "Error parsing block content"
