@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	Database                   *sb.Database
+	Database                   sb.DatabaseInterface
 	DbInstance                 *sql.DB
 	DbDriver                   string
 	DbDsn                      string

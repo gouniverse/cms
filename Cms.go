@@ -17,8 +17,7 @@ type LanguageKey struct{}
 
 // Cms defines the cms
 type Cms struct {
-	Database *sb.Database
-	// DbInstance   *sql.DB
+	Database     sb.DatabaseInterface
 	CacheStore   *cachestore.Store
 	EntityStore  *entitystore.Store
 	LogStore     *logstore.Store
