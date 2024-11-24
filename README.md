@@ -1,3 +1,8 @@
+---
+This project is being outdated, use the new project:
+New URL: https://github.com/gouniverse/cmsstore
+---
+
 # GoLang CMS <a href="https://gitpod.io/#https://github.com/gouniverse/cms" style="float:right:"><img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Open in Gitpod" loading="lazy"></a>
 
 ![tests](https://github.com/gouniverse/cms/workflows/tests/badge.svg)
