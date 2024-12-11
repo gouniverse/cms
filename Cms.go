@@ -21,7 +21,7 @@ type Cms struct {
 	CacheStore   *cachestore.Store
 	EntityStore  *entitystore.Store
 	LogStore     *logstore.Store
-	SessionStore *sessionstore.Store
+	SessionStore sessionstore.StoreInterface
 	SettingStore *settingstore.Store
 	TaskStore    *taskstore.Store
 	UserStore    *entitystore.Store

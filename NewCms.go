@@ -184,7 +184,7 @@ func cmsSessionSetup(cms *Cms) (err error) {
 	}
 
 	time.AfterFunc(3*time.Second, func() {
-		go cms.SessionStore.ExpireSessionGoroutine()
+		go cms.SessionStore.SessionExpiryGoroutine()
 	})
 
 	return nil
