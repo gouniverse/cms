@@ -19,15 +19,10 @@ func (m UiManager) SettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := m.settingStore.Set(settingKey, settingValue)
+	err := m.settingStore.Set(r.Context(), settingKey, settingValue)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Settings failed to be updated "+err.Error()))
-		return
-	}
-
-	if !isOk {
-		api.Respond(w, r, api.Error("Setting failed to be updated"))
 		return
 	}
 

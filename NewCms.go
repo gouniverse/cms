@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"context"
 	"errors"
 	"time"
 
@@ -177,7 +178,7 @@ func cmsSessionSetup(cms *Cms) (err error) {
 	}
 
 	if cms.sessionAutomigrate {
-		err = cms.SessionStore.AutoMigrate()
+		err = cms.SessionStore.AutoMigrate(context.Background())
 		if err != nil {
 			return err
 		}
@@ -196,14 +197,18 @@ func cmsSettingsSetup(cms *Cms) (err error) {
 		return nil
 	}
 
-	cms.SettingStore, err = settingstore.NewStore(settingstore.WithDb(cms.Database.DB()), settingstore.WithTableName(cms.settingsTableName), settingstore.WithAutoMigrate(true))
+	cms.SettingStore, err = settingstore.NewStore(settingstore.NewStoreOptions{
+		SettingTableName:   cms.settingsTableName,
+		DB:                 cms.Database.DB(),
+		AutomigrateEnabled: true,
+	})
 
 	if err != nil {
 		return err
 	}
 
 	if cms.settingsAutomigrate {
-		err = cms.SettingStore.AutoMigrate()
+		err = cms.SettingStore.AutoMigrate(context.Background())
 		if err != nil {
 			return err
 		}

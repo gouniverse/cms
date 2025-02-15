@@ -15,7 +15,14 @@ func (m UiManager) SettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	m.settingStore.Remove(settingKey)
+	setting, err := m.settingStore.SettingFindByKey(r.Context(), settingKey)
+
+	if err != nil {
+		api.Respond(w, r, api.Error(err.Error()))
+		return
+	}
+
+	m.settingStore.SettingDelete(r.Context(), setting)
 
 	// if isOk == false {
 	// 	api.Respond(w, r, api.Error("Setting failed to be deleted"))

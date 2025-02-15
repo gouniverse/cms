@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	Endpoint                   string
-	SettingStore               *settingstore.Store
+	SettingStore               settingstore.StoreInterface
 	PathSettingsSettingManager string
 	PathSettingsSettingUpdate  string
 	WebpageComplete            func(string, string) *hb.HtmlWebpage
@@ -39,7 +39,7 @@ func NewUiManager(config Config) UiManager {
 
 type UiManager struct {
 	endpoint                   string
-	settingStore               *settingstore.Store
+	settingStore               settingstore.StoreInterface
 	pathSettingsSettingManager string
 	pathSettingsSettingUpdate  string
 	webpageComplete            func(string, string) *hb.HtmlWebpage

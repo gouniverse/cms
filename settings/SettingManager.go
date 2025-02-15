@@ -8,6 +8,7 @@ import (
 	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/responses"
+	"github.com/gouniverse/settingstore"
 )
 
 func (m UiManager) SettingManager(w http.ResponseWriter, r *http.Request) {
@@ -35,11 +36,17 @@ func (m UiManager) SettingManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(m.settingDeleteModal())
 	container.AddChild(m.settingCreateModal())
 
-	settingKeys, err := m.settingStore.Keys()
+	settings, err := m.settingStore.SettingList(r.Context(), settingstore.SettingQuery())
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Setting keys failed to be retrieved "+err.Error()))
 		return
+	}
+
+	settingKeys := []string{}
+
+	for _, setting := range settings {
+		settingKeys = append(settingKeys, setting.GetKey())
 	}
 
 	table := hb.NewTable().ID("TableSettings").Class("table table-responsive table-striped mt-3")

@@ -31,7 +31,7 @@ func (m UiManager) SettingUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	settingValue, err := m.settingStore.Get(settingKey, "%%NOTFOUND%%")
+	settingValue, err := m.settingStore.Get(r.Context(), settingKey, "%%NOTFOUND%%")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("There was an error: "+err.Error()))

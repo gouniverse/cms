@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gouniverse/api"
+	"github.com/gouniverse/settingstore"
 	"github.com/gouniverse/utils"
 )
 
@@ -16,15 +17,11 @@ func (m UiManager) SettingCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := m.settingStore.Set(key, "")
+	setting := settingstore.NewSetting().SetKey(key).SetValue("")
+	err := m.settingStore.SettingCreate(r.Context(), setting)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Setting failed to be created: "+err.Error()))
-		return
-	}
-
-	if !isOk {
-		api.Respond(w, r, api.Error("Setting failed to be created"))
 		return
 	}
 
