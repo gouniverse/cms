@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	Endpoint                           string
-	EntityStore                        *entitystore.Store
+	EntityStore                        entitystore.StoreInterface
 	TranslationEntityType              string
 	PathTranslationsTranslationManager string
 	PathTranslationsTranslationUpdate  string
@@ -38,7 +38,7 @@ func NewUiManager(config Config) UiManager {
 
 type UiManager struct {
 	endpoint                           string
-	entityStore                        *entitystore.Store
+	entityStore                        entitystore.StoreInterface
 	translationEntityType              string
 	pathTranslationsTranslationManager string
 	pathTranslationsTranslationUpdate  string

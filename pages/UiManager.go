@@ -11,7 +11,7 @@ import (
 type Config struct {
 	BlockEditorDefinitions []blockeditor.BlockDefinition
 	Endpoint               string
-	EntityStore            *entitystore.Store
+	EntityStore            entitystore.StoreInterface
 	PageEntityType         string
 	PathPagesPageManager   string
 	PathPagesPageUpdate    string
@@ -43,7 +43,7 @@ func NewUiManager(config Config) UiManager {
 type UiManager struct {
 	blockEditorDefinitions []blockeditor.BlockDefinition
 	endpoint               string
-	entityStore            *entitystore.Store
+	entityStore            entitystore.StoreInterface
 	pageEntityType         string
 	pathPagesPageManager   string
 	pathPagesPageUpdate    string

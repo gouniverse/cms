@@ -3,27 +3,27 @@ module github.com/gouniverse/cms
 go 1.23.3
 
 require (
-	github.com/dromara/carbon/v2 v2.5.2
-	github.com/go-sql-driver/mysql v1.8.1
+	github.com/dromara/carbon/v2 v2.5.4
+	github.com/go-sql-driver/mysql v1.9.0
 	github.com/gouniverse/blockeditor v0.21.2
 	github.com/gouniverse/bs v0.13.0
-	github.com/gouniverse/cachestore v0.18.1
+	github.com/gouniverse/cachestore v0.19.1
 	github.com/gouniverse/dataobject v0.3.0
-	github.com/gouniverse/entitystore v0.64.0
+	github.com/gouniverse/entitystore v0.65.1
 	github.com/gouniverse/form v0.16.0
 	github.com/gouniverse/hb v1.83.4
-	github.com/gouniverse/logstore v1.5.1
+	github.com/gouniverse/logstore v1.6.1
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
 	github.com/gouniverse/sessionstore v0.30.0
-	github.com/gouniverse/settingstore v0.16.0
-	github.com/gouniverse/taskstore v1.3.1
+	github.com/gouniverse/settingstore v0.16.1
+	github.com/gouniverse/taskstore v1.4.1
 	github.com/gouniverse/ui v0.14.0
 	github.com/gouniverse/utils v1.45.4
 	github.com/lib/pq v1.10.9
 	github.com/samber/lo v1.49.1
 	github.com/stretchr/testify v1.10.0
-	modernc.org/sqlite v1.35.0
+	modernc.org/sqlite v1.36.1
 )
 
 require (
@@ -35,7 +35,7 @@ require (
 	github.com/go-chi/httprate v0.14.1 // indirect
 	github.com/go-openapi/errors v0.22.0 // indirect
 	github.com/go-openapi/strfmt v0.23.0 // indirect
-	github.com/gouniverse/base v0.8.1 // indirect
+	github.com/gouniverse/base v0.9.0 // indirect
 	github.com/gouniverse/crypto v0.2.0 // indirect
 	github.com/gouniverse/envenc v0.8.0 // indirect
 	github.com/gouniverse/webserver v0.1.0 // indirect
@@ -50,18 +50,18 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/teambition/rrule-go v1.8.2 // indirect
-	go.mongodb.org/mongo-driver v1.17.2 // indirect
-	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
-	golang.org/x/term v0.29.0 // indirect
+	go.mongodb.org/mongo-driver v1.17.3 // indirect
+	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
+	golang.org/x/term v0.30.0 // indirect
 )
 
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/georgysavva/scany v1.2.2 // indirect
-	github.com/gouniverse/cdn v1.5.0
+	github.com/georgysavva/scany v1.2.3 // indirect
+	github.com/gouniverse/cdn v1.6.0
 	github.com/gouniverse/maputils v0.7.0 // indirect
-	golang.org/x/crypto v0.33.0 // indirect
+	golang.org/x/crypto v0.36.0 // indirect
 )
 
 require (
@@ -79,9 +79,9 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
-	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/net v0.37.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	modernc.org/libc v1.61.13 // indirect
 	modernc.org/mathutil v1.7.1 // indirect

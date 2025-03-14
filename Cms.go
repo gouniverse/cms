@@ -18,13 +18,13 @@ type LanguageKey struct{}
 // Cms defines the cms
 type Cms struct {
 	Database     sb.DatabaseInterface
-	CacheStore   *cachestore.Store
-	EntityStore  *entitystore.Store
-	LogStore     *logstore.Store
+	CacheStore   cachestore.StoreInterface
+	EntityStore  entitystore.StoreInterface
+	LogStore     logstore.StoreInterface
 	SessionStore sessionstore.StoreInterface
 	SettingStore settingstore.StoreInterface
-	TaskStore    *taskstore.Store
-	UserStore    *entitystore.Store
+	TaskStore    taskstore.StoreInterface
+	UserStore    entitystore.StoreInterface
 
 	entitiesAutoMigrate bool
 	entityTableName     string

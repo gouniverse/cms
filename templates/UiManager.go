@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	Endpoint                     string
-	EntityStore                  *entitystore.Store
+	EntityStore                  entitystore.StoreInterface
 	TemplateEntityType           string
 	PathTemplatesTemplateManager string
 	PathTemplatesTemplateUpdate  string
@@ -36,7 +36,7 @@ func NewUiManager(config Config) UiManager {
 type UiManager struct {
 	// keyEndpoint          string
 	endpoint           string
-	entityStore        *entitystore.Store
+	entityStore        entitystore.StoreInterface
 	templateEntityType string
 	// pathPagesPageManager string
 	// pathPagesPageUpdate  string
