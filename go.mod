@@ -12,7 +12,7 @@ require (
 	github.com/gouniverse/entitystore v1.0.0
 	github.com/gouniverse/form v0.16.0
 	github.com/gouniverse/hb v1.83.4
-	github.com/gouniverse/logstore v1.6.1
+	github.com/gouniverse/logstore v1.7.0
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
 	github.com/gouniverse/sessionstore v1.0.0
