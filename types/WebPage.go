@@ -73,7 +73,7 @@ func (o *WebPage) SetCreatedAt(createdAt string) {
 	o.Set(COLUMN_CREATED_AT, createdAt)
 }
 
-func (o *WebPage) CreatedAtCarbon() carbon.Carbon {
+func (o *WebPage) CreatedAtCarbon() *carbon.Carbon {
 	return carbon.Parse(o.CreatedAt())
 }
 
@@ -181,6 +181,6 @@ func (o *WebPage) SetUpdatedAt(updatedAt string) {
 	o.Set(COLUMN_UPDATED_AT, updatedAt)
 }
 
-func (o *WebPage) UpdatedAtCarbon() carbon.Carbon {
+func (o *WebPage) UpdatedAtCarbon() *carbon.Carbon {
 	return carbon.Parse(o.UpdatedAt())
 }

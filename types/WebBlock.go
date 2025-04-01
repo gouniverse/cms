@@ -39,7 +39,7 @@ func (o *WebBlock) CreatedAt() string {
 	return o.Get(COLUMN_CREATED_AT)
 }
 
-func (o *WebBlock) CreatedAtCarbon() carbon.Carbon {
+func (o *WebBlock) CreatedAtCarbon() *carbon.Carbon {
 	return carbon.Parse(o.CreatedAt())
 }
 

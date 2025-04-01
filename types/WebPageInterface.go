@@ -13,7 +13,7 @@ type WebPageInterface interface {
 	SetAlias(alias string)
 	CreatedAt() string
 	SetCreatedAt(createdAt string)
-	CreatedAtCarbon() carbon.Carbon
+	CreatedAtCarbon() *carbon.Carbon
 	CanonicalUrl() string
 	SetCanonicalUrl(canonicalUrl string)
 	Content() string
@@ -38,7 +38,7 @@ type WebPageInterface interface {
 	SetTemplateID(templateID string)
 	UpdatedAt() string
 	SetUpdatedAt(updatedAt string)
-	UpdatedAtCarbon() carbon.Carbon
+	UpdatedAtCarbon() *carbon.Carbon
 
 	IsActive() bool
 	IsInactive() bool

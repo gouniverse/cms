@@ -10,7 +10,7 @@ type WebBlockInterface interface {
 
 	CreatedAt() string
 	SetCreatedAt(createdAt string)
-	CreatedAtCarbon() carbon.Carbon
+	CreatedAtCarbon() *carbon.Carbon
 
 	Content() string
 	SetContent(content string)

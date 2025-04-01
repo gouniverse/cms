@@ -30,7 +30,7 @@ func (o *WebWidget) CreatedAt() string {
 	return o.Get(COLUMN_CREATED_AT)
 }
 
-func (o *WebWidget) CreatedAtCarbon() carbon.Carbon {
+func (o *WebWidget) CreatedAtCarbon() *carbon.Carbon {
 	return carbon.Parse(o.CreatedAt())
 }
 

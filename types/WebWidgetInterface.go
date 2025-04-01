@@ -10,7 +10,7 @@ type WebWidgetInterface interface {
 
 	CreatedAt() string
 	SetCreatedAt(createdAt string)
-	CreatedAtCarbon() carbon.Carbon
+	CreatedAtCarbon() *carbon.Carbon
 	Handle() string
 	SetHandle(handle string)
 	ID() string
