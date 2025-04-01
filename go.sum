@@ -93,8 +93,8 @@ github.com/gouniverse/router v1.4.2 h1:6TDV51S8LzG3R3YasdFVNCmkdyYEr/kKo43pvaPJe
 github.com/gouniverse/router v1.4.2/go.mod h1:BLbxnznnHAN8cjZm8TiM/Wmf5/mdiEaUlLnLq3+ak24=
 github.com/gouniverse/sb v0.8.0 h1:XrHK15JKCPtvpHR8QEc+stLBVsLH1KjtkPOdzMbSIh0=
 github.com/gouniverse/sb v0.8.0/go.mod h1:REyzsOC67VFYEzBOFEJSojkQNNyBZdcyQpNyLSHvm0U=
-github.com/gouniverse/sessionstore v0.30.0 h1:jdEVr6eyzjP4+jluM5De5GnWlIeeb8RabZg2l3q02R8=
-github.com/gouniverse/sessionstore v0.30.0/go.mod h1:j/xiNPZqFfKq8g9MZLG3M9Pa/JQ1KqJwVLu+KPKwDVs=
+github.com/gouniverse/sessionstore v1.0.0 h1:Mqru0qlfKZYVz+u2knu1/UQ3Yvj/AL+Foa18bS1lXH4=
+github.com/gouniverse/sessionstore v1.0.0/go.mod h1:neWqqXj09NCz7CUG/8Pdiog24G1JnXHc824Zf1YJVpc=
 github.com/gouniverse/settingstore v1.0.0 h1:0bY/Wb42O6Ui5nWHFh4CUu59Cnx2RZioEaCP6eZcnzA=
 github.com/gouniverse/settingstore v1.0.0/go.mod h1:jacaWFIy2vtygOnVMWVB5qStEHxgaDde7GVAUrYKibQ=
 github.com/gouniverse/shortcode v0.4.0 h1:iIPI91nPRD7pNSnUCQBiHOvjJgorfJv+Na57W9xH9Kc=

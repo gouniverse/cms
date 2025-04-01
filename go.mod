@@ -15,7 +15,7 @@ require (
 	github.com/gouniverse/logstore v1.6.1
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
-	github.com/gouniverse/sessionstore v0.30.0
+	github.com/gouniverse/sessionstore v1.0.0
 	github.com/gouniverse/settingstore v1.0.0
 	github.com/gouniverse/taskstore v1.5.0
 	github.com/gouniverse/ui v0.14.0
