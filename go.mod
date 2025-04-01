@@ -1,6 +1,6 @@
 module github.com/gouniverse/cms
 
-go 1.23.3
+go 1.24.0
 
 require (
 	github.com/dromara/carbon/v2 v2.6.1
@@ -9,15 +9,15 @@ require (
 	github.com/gouniverse/bs v0.13.0
 	github.com/gouniverse/cachestore v0.19.1
 	github.com/gouniverse/dataobject v1.2.0
-	github.com/gouniverse/entitystore v0.65.1
+	github.com/gouniverse/entitystore v1.0.0
 	github.com/gouniverse/form v0.16.0
 	github.com/gouniverse/hb v1.83.4
 	github.com/gouniverse/logstore v1.6.1
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
 	github.com/gouniverse/sessionstore v0.30.0
-	github.com/gouniverse/settingstore v0.16.1
-	github.com/gouniverse/taskstore v1.4.1
+	github.com/gouniverse/settingstore v1.0.0
+	github.com/gouniverse/taskstore v1.5.0
 	github.com/gouniverse/ui v0.14.0
 	github.com/gouniverse/utils v1.45.4
 	github.com/lib/pq v1.10.9
@@ -67,7 +67,7 @@ require (
 
 require (
 	github.com/darkoatanasovski/htmltags v1.0.0 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gouniverse/api v1.6.0
 	github.com/gouniverse/icons v1.3.1
@@ -78,7 +78,7 @@ require (
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
