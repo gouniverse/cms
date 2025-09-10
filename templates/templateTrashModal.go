@@ -1,6 +1,6 @@
 package cms
 
-import "github.com/gouniverse/hb"
+import "github.com/dracory/hb"
 
 func templateTrashModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalTemplateTrash").Attr("class", "modal fade")

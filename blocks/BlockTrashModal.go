@@ -1,6 +1,6 @@
 package cms
 
-import "github.com/gouniverse/hb"
+import "github.com/dracory/hb"
 
 func (m UiManager) blockTrashModal() *hb.Tag {
 	modal := hb.NewDiv().Attr("id", "ModalBlockTrash").Attr("class", "modal fade")

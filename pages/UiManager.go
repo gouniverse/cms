@@ -1,11 +1,11 @@
 package cms
 
 import (
+	"github.com/dracory/bs"
+	"github.com/dracory/hb"
 	"github.com/gouniverse/blockeditor"
-	"github.com/gouniverse/bs"
 	"github.com/gouniverse/cms/types"
 	"github.com/gouniverse/entitystore"
-	"github.com/gouniverse/hb"
 )
 
 type Config struct {

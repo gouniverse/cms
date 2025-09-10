@@ -1,9 +1,9 @@
 package cms
 
 import (
-	"github.com/gouniverse/bs"
+	"github.com/dracory/bs"
+	"github.com/dracory/hb"
 	"github.com/gouniverse/entitystore"
-	"github.com/gouniverse/hb"
 )
 
 type Config struct {

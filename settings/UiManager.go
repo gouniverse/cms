@@ -1,8 +1,8 @@
 package cms
 
 import (
-	"github.com/gouniverse/bs"
-	"github.com/gouniverse/hb"
+	"github.com/dracory/bs"
+	"github.com/dracory/hb"
 	"github.com/gouniverse/settingstore"
 )
 

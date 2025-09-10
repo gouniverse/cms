@@ -1,7 +1,7 @@
 package cms
 
 import (
-	"github.com/gouniverse/hb"
+	"github.com/dracory/hb"
 )
 
 func (m UiManager) blockCreateModal() *hb.Tag {

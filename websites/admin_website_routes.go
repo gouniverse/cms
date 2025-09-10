@@ -3,9 +3,9 @@ package cms
 // import (
 // 	"net/http"
 
-// 	"github.com/gouniverse/bs"
+// 	"github.com/dracory/bs"
 // 	"github.com/gouniverse/cdn"
-// 	. "github.com/gouniverse/hb"
+// 	. "github.com/dracory/hb"
 // 	"github.com/gouniverse/responses"
 // )
 
