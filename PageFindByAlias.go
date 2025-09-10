@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gouniverse/entitystore"
+	"github.com/dracory/entitystore"
 )
 
 // PageFindByAlias helper method to find a page by alias

@@ -7,7 +7,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/gouniverse/entitystore"
+	"github.com/dracory/entitystore"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 

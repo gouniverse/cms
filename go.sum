@@ -35,6 +35,8 @@ github.com/dracory/database v0.3.0 h1:cy5xVMMWZvP6AKAf42UTFESui0kiio2KY0ZmAMu+18
 github.com/dracory/database v0.3.0/go.mod h1:Lxt/E19aVgjzo7tuBr7f2johlkh0OMGop3rLmMeqDL4=
 github.com/dracory/dataobject v1.6.0 h1:k9kVYthGqK3giZvG/HMF9wGjwY9sRLv8XJ543nsUTiE=
 github.com/dracory/dataobject v1.6.0/go.mod h1:eo0pRMmHAEpWKQo29F6TTs43Cpp7J5QRj9wiJ0eQrJ0=
+github.com/dracory/entitystore v1.1.0 h1:Q0emEL93n0GDSsaqco4Xl7XxZKNYO4j7H3JIpthuBHM=
+github.com/dracory/entitystore v1.1.0/go.mod h1:wnSF3yKaWfpq9zZy6jI+VAKMFRmcVSWSj64Q15WOQdY=
 github.com/dracory/form v0.19.0 h1:9UCfqsRl9tyoLcsSuQEi0c6crzyM5WAktvie3EbXzSE=
 github.com/dracory/form v0.19.0/go.mod h1:NxM0Y5ZdhDIHu1UsRtYezpSuE5ybwVB382wWRU8Le5A=
 github.com/dracory/hb v1.88.0 h1:PpxQ9IGTy/L8fZ2iQxTUhieB6u16sluuw/TNxYUcHPs=
@@ -103,8 +105,6 @@ github.com/gouniverse/crypto v0.2.0 h1:7ppqn9FrwrlC6nTfgVBnEop5cKBFNEZyP5yXoUH7M
 github.com/gouniverse/crypto v0.2.0/go.mod h1:uWfzSf1dsYyij6yrVTdxuLFfLZIvSJu24+x3sj+DLXU=
 github.com/gouniverse/dataobject v1.2.0 h1:PKzNkKIKa8I/0ZJZkI0/d3xHMjXp4WMA4TBLVAKdd24=
 github.com/gouniverse/dataobject v1.2.0/go.mod h1:kGYa0bv14xCmkTCW2CpF9dIkh+S1N3O04c5eJY1jFqg=
-github.com/gouniverse/entitystore v1.0.0 h1:EgY/4KunIoLKefjtGax+dIz/AiFuQ4I+n+ygllD/m4A=
-github.com/gouniverse/entitystore v1.0.0/go.mod h1:X5uLn0H0ipjvdwMC6MdG7U4P5Xn5JwE0FtzeCbpXnDk=
 github.com/gouniverse/envenc v0.10.0 h1:vgVuERUPRgX9wVMU5vLrEuu9uoREjEwv0CijjZB/79Q=
 github.com/gouniverse/envenc v0.10.0/go.mod h1:AlSuOmGyjJBrHoDUggHO2Cxv1iJWuBLXaq4lb0xdu1Q=
 github.com/gouniverse/hb v1.83.4 h1:6T92AS6R7TcZbiIDDBmAykliHEsMGjUh4Rls3PtO20o=

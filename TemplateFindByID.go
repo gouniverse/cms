@@ -1,7 +1,7 @@
 package cms
 
 import (
-	"github.com/gouniverse/entitystore"
+	"github.com/dracory/entitystore"
 )
 
 func (cms *Cms) TemplateFindByID(templateID string) (*entitystore.Entity, error) {
