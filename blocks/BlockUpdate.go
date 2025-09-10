@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/dracory/bs"
+	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
 	"github.com/gouniverse/api"
-	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"

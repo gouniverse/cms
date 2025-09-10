@@ -5,11 +5,11 @@ import (
 
 	"github.com/dracory/blockeditor"
 	"github.com/dracory/bs"
+	"github.com/dracory/cdn"
 	"github.com/dracory/entitystore"
 	"github.com/dracory/form"
 	"github.com/dracory/hb"
 	"github.com/gouniverse/api"
-	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/cms/types"
 	"github.com/gouniverse/router"
 	"github.com/gouniverse/utils"

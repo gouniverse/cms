@@ -6,6 +6,7 @@ require (
 	github.com/dracory/blockeditor v0.24.0
 	github.com/dracory/bs v0.15.0
 	github.com/dracory/cachestore v0.20.0
+	github.com/dracory/cdn v1.8.0
 	github.com/dracory/dataobject v1.6.0
 	github.com/dracory/entitystore v1.1.0
 	github.com/dracory/form v0.19.0
@@ -68,7 +69,7 @@ require (
 	github.com/doug-martin/goqu/v9 v9.19.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/georgysavva/scany v1.2.3 // indirect
-	github.com/gouniverse/cdn v1.6.0
+	github.com/gouniverse/cdn v1.6.0 // indirect
 	github.com/gouniverse/maputils v0.7.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 )

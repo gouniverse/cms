@@ -4,7 +4,7 @@ package cms
 // 	"net/http"
 
 // 	"github.com/dracory/bs"
-// 	"github.com/gouniverse/cdn"
+// 	"github.com/dracory/cdn"
 // 	. "github.com/dracory/hb"
 // 	"github.com/gouniverse/responses"
 // )

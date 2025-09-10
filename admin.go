@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/dracory/bs"
+	"github.com/dracory/cdn"
 	"github.com/dracory/entitystore"
 	"github.com/dracory/hb"
-	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/responses"
 	"github.com/gouniverse/utils"
 
