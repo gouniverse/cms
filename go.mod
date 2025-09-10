@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/dracory/bs v0.15.0
 	github.com/dracory/hb v1.88.0
-	github.com/dromara/carbon/v2 v2.6.1
+	github.com/dromara/carbon/v2 v2.6.11
 	github.com/go-sql-driver/mysql v1.9.1
 	github.com/gouniverse/blockeditor v0.21.2
 	github.com/gouniverse/cachestore v0.19.1
@@ -21,9 +21,9 @@ require (
 	github.com/gouniverse/ui v0.14.0
 	github.com/gouniverse/utils v1.45.4
 	github.com/lib/pq v1.10.9
-	github.com/samber/lo v1.49.1
-	github.com/stretchr/testify v1.10.0
-	modernc.org/sqlite v1.37.0
+	github.com/samber/lo v1.51.0
+	github.com/stretchr/testify v1.11.1
+	modernc.org/sqlite v1.38.2
 )
 
 require (
@@ -54,7 +54,7 @@ require (
 	github.com/teambition/rrule-go v1.8.2 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	go.mongodb.org/mongo-driver v1.17.3 // indirect
-	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
+	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
 	golang.org/x/term v0.32.0 // indirect
 )
 
@@ -83,10 +83,10 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	golang.org/x/net v0.41.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.62.1 // indirect
+	modernc.org/libc v1.66.3 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
-	modernc.org/memory v1.9.1 // indirect
+	modernc.org/memory v1.11.0 // indirect
 )
