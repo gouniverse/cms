@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
+	"github.com/spf13/cast"
 )
 
 // FrontendHandler is the main handler for the CMS frontend.
@@ -38,7 +38,7 @@ func (cms *Cms) FrontendHandlerRenderAsString(w http.ResponseWriter, r *http.Req
 	}
 
 	languageAny := r.Context().Value(LanguageKey{})
-	language := utils.ToString(languageAny)
+	language := cast.ToString(languageAny)
 
 	if cms.translationsEnabled {
 		isValidLanguage := lo.Contains(lo.Keys(cms.translationLanguages), language)

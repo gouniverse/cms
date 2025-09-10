@@ -10,8 +10,9 @@ import (
 	"github.com/dracory/cdn"
 	"github.com/dracory/entitystore"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
+	"github.com/spf13/cast"
 
 	cmsBlocks "github.com/gouniverse/cms/blocks"
 	cmsMenus "github.com/gouniverse/cms/menus"
@@ -157,7 +158,7 @@ func (cms Cms) widgetsUiManager(r *http.Request) cmsWidgets.UiManager {
 
 // Router shows the admin page
 func (cms Cms) Router(w http.ResponseWriter, r *http.Request) {
-	path := utils.Req(r, "path", "home")
+	path := req.GetStringTrimmed(r, "path")
 
 	if path == "" {
 		path = PathHome
@@ -504,7 +505,7 @@ func (cms Cms) cmsHeader(endpoint string) string {
 	}
 
 	if cms.translationsEnabled {
-		ulNav.AddChild(hb.NewLI().Class("nav-item").Child(linkTranslations.Child(hb.NewSpan().Class("badge bg-secondary").HTML(utils.ToString(translationsCount)))))
+		ulNav.AddChild(hb.NewLI().Class("nav-item").Child(linkTranslations.Child(hb.NewSpan().Class("badge bg-secondary").HTML(cast.ToString(translationsCount)))))
 	}
 
 	if cms.settingsEnabled {

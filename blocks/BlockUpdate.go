@@ -8,9 +8,9 @@ import (
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 const codemirrorCss = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css"
@@ -25,7 +25,7 @@ const codemirrorFormattingJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36
 const codemirrorMatchBracketsJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js"
 
 func (m UiManager) BlockUpdate(w http.ResponseWriter, r *http.Request) {
-	blockID := utils.Req(r, "block_id", "")
+	blockID := req.GetStringTrimmed(r, "block_id")
 	if blockID == "" {
 		api.Respond(w, r, api.Error("Block ID is required"))
 		return

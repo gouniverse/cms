@@ -34,7 +34,7 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/dracory/database v0.3.0 // indirect
-	github.com/dracory/req v0.1.0 // indirect
+	github.com/dracory/req v0.1.0
 	github.com/dracory/str v0.3.0 // indirect
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
 	github.com/go-chi/cors v1.2.2 // indirect
@@ -48,7 +48,7 @@ require (
 	github.com/gouniverse/uid v1.5.0 // indirect
 	github.com/gouniverse/webserver v0.1.0 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible // indirect
-	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
+	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
@@ -57,7 +57,7 @@ require (
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/spf13/cast v1.10.0 // indirect
+	github.com/spf13/cast v1.10.0
 	github.com/teambition/rrule-go v1.8.2 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	go.mongodb.org/mongo-driver v1.17.4 // indirect

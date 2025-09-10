@@ -3,26 +3,25 @@ package cms
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/entitystore"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 func (cms Cms) pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Request) {
-	entityType := utils.Req(r, "type", "")
+	entityType := req.GetStringTrimmed(r, "type")
 
 	if entityType == "" {
 		api.Respond(w, r, api.Error("Entity Type is required"))
 		return
 	}
 
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
+	name := req.GetStringTrimmed(r, "name")
 
 	if name == "" {
 		api.Respond(w, r, api.Error("name is required field"))
@@ -50,7 +49,7 @@ func (cms Cms) pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request)
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	entityType := utils.Req(r, "type", "")
+	entityType := req.GetStringTrimmed(r, "type")
 	if entityType == "" {
 		api.Respond(w, r, api.Error("Entity Type is required"))
 		return
@@ -219,7 +218,7 @@ func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) 
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	entityID := utils.Req(r, "entity_id", "")
+	entityID := req.GetStringTrimmed(r, "entity_id")
 	if entityID == "" {
 		api.Respond(w, r, api.Error("Entity ID is required"))
 		return
@@ -401,10 +400,10 @@ setTimeout(() => {
 }
 
 func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	entityID := strings.Trim(utils.Req(r, "entity_id", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
+	entityID := req.GetStringTrimmed(r, "entity_id")
+	status := req.GetStringTrimmed(r, "status")
+	name := req.GetStringTrimmed(r, "name")
+	handle := req.GetStringTrimmed(r, "handle")
 
 	if entityID == "" {
 		api.Respond(w, r, api.Error("Entity ID is required"))
@@ -430,7 +429,7 @@ func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Reque
 
 	entityAttributeList := cms.customEntityAttributeList(entity.Type())
 	for _, attr := range entityAttributeList {
-		attrValue := strings.Trim(utils.Req(r, attr.Name, ""), " ")
+		attrValue := req.GetStringTrimmed(r, attr.Name)
 		// attrLabel := attr.Label
 		entity.SetString(attr.Name, attrValue)
 	}

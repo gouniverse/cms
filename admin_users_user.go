@@ -3,15 +3,14 @@ package cms
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/entitystore"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 func (cms Cms) pageUsersUserManager(w http.ResponseWriter, r *http.Request) {
@@ -224,7 +223,7 @@ func pageUsersUserCreateModal() *hb.Tag {
 
 // pageUsersUserTrashAjax - moves the user to the trash
 func (cms Cms) pageUsersUserTrashAjax(w http.ResponseWriter, r *http.Request) {
-	userID := strings.Trim(utils.Req(r, "user_id", ""), " ")
+	userID := req.GetStringTrimmed(r, "user_id")
 
 	if userID == "" {
 		api.Respond(w, r, api.Error("User ID is required"))
@@ -256,8 +255,8 @@ func (cms Cms) pageUsersUserTrashAjax(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cms Cms) pageUsersUserCreateAjax(w http.ResponseWriter, r *http.Request) {
-	firstName := strings.Trim(utils.Req(r, "first_name", ""), " ")
-	lastName := strings.Trim(utils.Req(r, "last_name", ""), " ")
+	firstName := req.GetStringTrimmed(r, "first_name")
+	lastName := req.GetStringTrimmed(r, "last_name")
 
 	if firstName == "" {
 		api.Respond(w, r, api.Error("first name is required field"))
@@ -291,10 +290,10 @@ func (cms Cms) pageUsersUserCreateAjax(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cms Cms) pageUsersUserUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	userID := strings.Trim(utils.Req(r, "user_id", ""), " ")
-	firstName := strings.Trim(utils.Req(r, "first_name", ""), " ")
-	lastName := strings.Trim(utils.Req(r, "last_name", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
+	userID := req.GetStringTrimmed(r, "user_id")
+	firstName := req.GetStringTrimmed(r, "first_name")
+	lastName := req.GetStringTrimmed(r, "last_name")
+	status := req.GetStringTrimmed(r, "status")
 
 	if userID == "" {
 		api.Respond(w, r, api.Error("User ID is required"))
@@ -339,7 +338,7 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	userID := utils.Req(r, "user_id", "")
+	userID := req.GetStringTrimmed(r, "user_id")
 	if userID == "" {
 		api.Respond(w, r, api.Error("User ID is required"))
 		return
