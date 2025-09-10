@@ -12,13 +12,14 @@ require (
 	github.com/dracory/sessionstore v1.3.0
 	github.com/dracory/settingstore v1.2.0
 	github.com/dracory/taskstore v1.7.0
+	github.com/dracory/ui v0.17.0
+	github.com/dracory/uid v1.8.0
 	github.com/dromara/carbon/v2 v2.6.11
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/gouniverse/entitystore v1.0.0
 	github.com/gouniverse/form v0.16.0
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
-	github.com/gouniverse/ui v0.14.0
 	github.com/gouniverse/utils v1.45.4
 	github.com/lib/pq v1.10.9
 	github.com/samber/lo v1.51.0
@@ -34,8 +35,6 @@ require (
 	github.com/dracory/req v0.1.0 // indirect
 	github.com/dracory/sb v0.11.0 // indirect
 	github.com/dracory/str v0.3.0 // indirect
-	github.com/dracory/ui v0.17.0 // indirect
-	github.com/dracory/uid v1.8.0 // indirect
 	github.com/go-chi/chi/v5 v5.2.1 // indirect
 	github.com/go-chi/cors v1.2.1 // indirect
 	github.com/go-chi/httprate v0.15.0 // indirect
@@ -46,6 +45,7 @@ require (
 	github.com/gouniverse/dataobject v1.2.0 // indirect
 	github.com/gouniverse/envenc v0.10.0 // indirect
 	github.com/gouniverse/hb v1.83.4 // indirect
+	github.com/gouniverse/uid v1.5.0 // indirect
 	github.com/gouniverse/webserver v0.1.0 // indirect
 	github.com/jedib0t/go-pretty v4.3.0+incompatible // indirect
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
@@ -83,7 +83,6 @@ require (
 	github.com/gouniverse/sb v0.8.0
 	github.com/gouniverse/shortcode v0.4.0
 	github.com/gouniverse/strutils v0.7.0
-	github.com/gouniverse/uid v1.5.0
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect

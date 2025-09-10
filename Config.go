@@ -4,8 +4,8 @@ import (
 	"database/sql"
 
 	"github.com/dracory/blockeditor"
+	"github.com/dracory/ui"
 	"github.com/gouniverse/sb"
-	"github.com/gouniverse/ui"
 )
 
 type Config struct {

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/dracory/hb"
+	"github.com/dracory/ui"
 	"github.com/gouniverse/cms/types"
-	"github.com/gouniverse/ui"
 	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
 )

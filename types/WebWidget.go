@@ -2,8 +2,8 @@ package types
 
 import (
 	"github.com/dracory/dataobject"
+	"github.com/dracory/uid"
 	"github.com/dromara/carbon/v2"
-	"github.com/gouniverse/uid"
 )
 
 type WebWidget struct {

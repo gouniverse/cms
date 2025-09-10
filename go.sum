@@ -125,8 +125,6 @@ github.com/gouniverse/shortcode v0.4.0 h1:iIPI91nPRD7pNSnUCQBiHOvjJgorfJv+Na57W9
 github.com/gouniverse/shortcode v0.4.0/go.mod h1:3AmIfeaJKbteiVmalROhmE6mcq73l37uPpDWlCrhvas=
 github.com/gouniverse/strutils v0.7.0 h1:xz8Ag7SSoAjBntRGfOsrXjT98+4eOB5aivi1F+Xy9SU=
 github.com/gouniverse/strutils v0.7.0/go.mod h1:NfVT8LbENvAT39bFtjuxQLFq6A4wHDJuyqcmsys1o0A=
-github.com/gouniverse/ui v0.14.0 h1:PHhlsYl0I49P7+yKGbQtCyyV7SPSuPshxElAzmZX6j4=
-github.com/gouniverse/ui v0.14.0/go.mod h1:VFhyMrYdh1o7nFf/HFn/++tk62n17Q+5SgqsVoNJGVM=
 github.com/gouniverse/uid v1.5.0 h1:evyGegnY7+KeYirDhJntI9xmODf8jPMQw8DlMpQIPnM=
 github.com/gouniverse/uid v1.5.0/go.mod h1:06dzYTyBLOu+iRlKZ8GxzEfgDSLyoZwgKns9Fcvt7G4=
 github.com/gouniverse/utils v1.45.4 h1:WrOSdTJH+C0j7+wDypb6+cFm35anI/X6DR+hWW/s2hM=
