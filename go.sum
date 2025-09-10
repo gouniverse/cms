@@ -33,8 +33,8 @@ github.com/dracory/cachestore v0.20.0 h1:zOuDB6g3+/o+gQQmAIXGccMRZ8jWayZgNIKgV8o
 github.com/dracory/cachestore v0.20.0/go.mod h1:lICiVglrxeG711unSTjIHUgwqOlvdGN91uZKdPzaPwU=
 github.com/dracory/database v0.3.0 h1:cy5xVMMWZvP6AKAf42UTFESui0kiio2KY0ZmAMu+18s=
 github.com/dracory/database v0.3.0/go.mod h1:Lxt/E19aVgjzo7tuBr7f2johlkh0OMGop3rLmMeqDL4=
-github.com/dracory/dataobject v1.5.0 h1:poTQCSlJs4lnixOEk306LUSEm6TUQam5umDcWPs0oFQ=
-github.com/dracory/dataobject v1.5.0/go.mod h1:YwUjTZSHLTR3IoG9qhJaAholvKYizs6Q41T82BymoAg=
+github.com/dracory/dataobject v1.6.0 h1:k9kVYthGqK3giZvG/HMF9wGjwY9sRLv8XJ543nsUTiE=
+github.com/dracory/dataobject v1.6.0/go.mod h1:eo0pRMmHAEpWKQo29F6TTs43Cpp7J5QRj9wiJ0eQrJ0=
 github.com/dracory/form v0.19.0 h1:9UCfqsRl9tyoLcsSuQEi0c6crzyM5WAktvie3EbXzSE=
 github.com/dracory/form v0.19.0/go.mod h1:NxM0Y5ZdhDIHu1UsRtYezpSuE5ybwVB382wWRU8Le5A=
 github.com/dracory/hb v1.88.0 h1:PpxQ9IGTy/L8fZ2iQxTUhieB6u16sluuw/TNxYUcHPs=
@@ -49,6 +49,8 @@ github.com/dracory/sessionstore v1.3.0 h1:KWn/kfjUOFO2iOD3tpFud8+TyGRXaVHDj3ODxY
 github.com/dracory/sessionstore v1.3.0/go.mod h1:4BEBCd/KcA6NLiKteyQAqKKo976j+uaRgeA0VSM7+wM=
 github.com/dracory/str v0.3.0 h1:4I1a7MGp73WukPVac+cLFh6bA7X5bVLTVSComhUXTr0=
 github.com/dracory/str v0.3.0/go.mod h1:9p5fqokBVw5GEO/CJ2xCmCq1cfjxAiKS2KK7RUFIwRE=
+github.com/dracory/taskstore v1.7.0 h1:asFIm9cKMLPs6Fdsm5g5insdzjmILX2tffQtCw2RBLI=
+github.com/dracory/taskstore v1.7.0/go.mod h1:gQ9xFsDxJMTYPVtf3fem43FC62BfTszCbNzL2uyGow8=
 github.com/dracory/ui v0.17.0 h1:h8MQk0H41LuMAWlCQDG02DymAf0OBgJi/BuxrKPf1Bs=
 github.com/dracory/ui v0.17.0/go.mod h1:ItkhffHGUvwu0O+mwzXYy2nxGUYedFcm5KtmC8PHVak=
 github.com/dracory/uid v1.8.0 h1:L2D8fNH0CcmJLD3TM8f9RZ9UCpHB1Bbi82n7PG4I+5M=
@@ -74,8 +76,8 @@ github.com/go-openapi/strfmt v0.23.0 h1:nlUS6BCqcnAk0pyhi9Y+kdDVZdZMHfEKQiS4HaMg
 github.com/go-openapi/strfmt v0.23.0/go.mod h1:NrtIpfKtWIygRkKVsxh7XQMDQW5HKQl6S5ik2elW+K4=
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
-github.com/go-sql-driver/mysql v1.9.1 h1:FrjNGn/BsJQjVRuSa8CBrM5BWA9BWoXXat3KrtSb/iI=
-github.com/go-sql-driver/mysql v1.9.1/go.mod h1:qn46aNg1333BRMNU69Lq93t8du/dwxI64Gl8i5p1WMU=
+github.com/go-sql-driver/mysql v1.9.3 h1:U/N249h2WzJ3Ukj8SowVFjdtZKfu9vlLZxjPXV1aweo=
+github.com/go-sql-driver/mysql v1.9.3/go.mod h1:qn46aNg1333BRMNU69Lq93t8du/dwxI64Gl8i5p1WMU=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/gofrs/flock v0.8.1 h1:+gYjHKf32LDeiEEFhQaotPbLuUXjY5ZqxKgXy7n59aw=
 github.com/gofrs/flock v0.8.1/go.mod h1:F1TvTiK9OcQqauNUHlbJvyl9Qa1QvF/gOUDKA14jxHU=
@@ -123,8 +125,6 @@ github.com/gouniverse/shortcode v0.4.0 h1:iIPI91nPRD7pNSnUCQBiHOvjJgorfJv+Na57W9
 github.com/gouniverse/shortcode v0.4.0/go.mod h1:3AmIfeaJKbteiVmalROhmE6mcq73l37uPpDWlCrhvas=
 github.com/gouniverse/strutils v0.7.0 h1:xz8Ag7SSoAjBntRGfOsrXjT98+4eOB5aivi1F+Xy9SU=
 github.com/gouniverse/strutils v0.7.0/go.mod h1:NfVT8LbENvAT39bFtjuxQLFq6A4wHDJuyqcmsys1o0A=
-github.com/gouniverse/taskstore v1.5.0 h1:2UgCuhpaBBxvLM42RmBDdVZ5+iYYqdao9Xvcgcl6T38=
-github.com/gouniverse/taskstore v1.5.0/go.mod h1:W6kMdP3z9nvrdP+Qv4D66eFfpF8oJQ1jTGQpLjx3E1M=
 github.com/gouniverse/ui v0.14.0 h1:PHhlsYl0I49P7+yKGbQtCyyV7SPSuPshxElAzmZX6j4=
 github.com/gouniverse/ui v0.14.0/go.mod h1:VFhyMrYdh1o7nFf/HFn/++tk62n17Q+5SgqsVoNJGVM=
 github.com/gouniverse/uid v1.5.0 h1:evyGegnY7+KeYirDhJntI9xmODf8jPMQw8DlMpQIPnM=

@@ -8,9 +8,9 @@ import (
 	"github.com/dracory/cachestore"
 	"github.com/dracory/logstore"
 	"github.com/dracory/sessionstore"
+	"github.com/dracory/taskstore"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/settingstore"
-	"github.com/gouniverse/taskstore"
 )
 
 // NewCms creates a new CMS instance based on the given configuration

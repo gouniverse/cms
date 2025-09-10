@@ -1,8 +1,8 @@
 package types
 
 import (
+	"github.com/dracory/dataobject"
 	"github.com/dromara/carbon/v2"
-	"github.com/gouniverse/dataobject"
 )
 
 type WebBlockInterface interface {
