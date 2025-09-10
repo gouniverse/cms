@@ -3,6 +3,7 @@ module github.com/gouniverse/cms
 go 1.24.5
 
 require (
+	github.com/dracory/api v1.7.0
 	github.com/dracory/blockeditor v0.24.0
 	github.com/dracory/bs v0.15.0
 	github.com/dracory/cachestore v0.20.0
@@ -69,6 +70,7 @@ require (
 	github.com/doug-martin/goqu/v9 v9.19.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/georgysavva/scany v1.2.3 // indirect
+	github.com/gouniverse/api v1.6.0 // indirect
 	github.com/gouniverse/cdn v1.6.0 // indirect
 	github.com/gouniverse/maputils v0.7.0 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
@@ -78,7 +80,6 @@ require (
 	github.com/darkoatanasovski/htmltags v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gouniverse/api v1.6.0
 	github.com/gouniverse/icons v1.3.1
 	github.com/gouniverse/sb v0.8.0 // indirect
 	github.com/gouniverse/shortcode v0.4.0
