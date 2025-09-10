@@ -7,8 +7,8 @@ import (
 
 	"github.com/dracory/cachestore"
 	"github.com/dracory/logstore"
+	"github.com/dracory/sessionstore"
 	"github.com/gouniverse/entitystore"
-	"github.com/gouniverse/sessionstore"
 	"github.com/gouniverse/settingstore"
 	"github.com/gouniverse/taskstore"
 )

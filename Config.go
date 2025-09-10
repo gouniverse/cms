@@ -3,7 +3,7 @@ package cms
 import (
 	"database/sql"
 
-	"github.com/gouniverse/blockeditor"
+	"github.com/dracory/blockeditor"
 	"github.com/gouniverse/sb"
 	"github.com/gouniverse/ui"
 )

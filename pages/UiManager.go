@@ -1,9 +1,9 @@
 package cms
 
 import (
+	"github.com/dracory/blockeditor"
 	"github.com/dracory/bs"
 	"github.com/dracory/hb"
-	"github.com/gouniverse/blockeditor"
 	"github.com/gouniverse/cms/types"
 	"github.com/gouniverse/entitystore"
 )
