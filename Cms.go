@@ -5,10 +5,10 @@ import (
 	"github.com/dracory/cachestore"
 	"github.com/dracory/logstore"
 	"github.com/dracory/sessionstore"
+	"github.com/dracory/settingstore"
 	"github.com/dracory/taskstore"
 	"github.com/gouniverse/entitystore"
 	"github.com/gouniverse/sb"
-	"github.com/gouniverse/settingstore"
 	"github.com/gouniverse/ui"
 	"github.com/samber/lo"
 )

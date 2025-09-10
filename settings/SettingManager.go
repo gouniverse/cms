@@ -5,10 +5,10 @@ import (
 
 	"github.com/dracory/bs"
 	"github.com/dracory/hb"
+	"github.com/dracory/settingstore"
 	"github.com/gouniverse/api"
 	"github.com/gouniverse/cdn"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/settingstore"
 )
 
 func (m UiManager) SettingManager(w http.ResponseWriter, r *http.Request) {

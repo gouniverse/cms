@@ -3,7 +3,7 @@ package cms
 import (
 	"github.com/dracory/bs"
 	"github.com/dracory/hb"
-	"github.com/gouniverse/settingstore"
+	"github.com/dracory/settingstore"
 )
 
 type Config struct {

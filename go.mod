@@ -10,6 +10,7 @@ require (
 	github.com/dracory/hb v1.88.0
 	github.com/dracory/logstore v1.8.0
 	github.com/dracory/sessionstore v1.3.0
+	github.com/dracory/settingstore v1.2.0
 	github.com/dracory/taskstore v1.7.0
 	github.com/dromara/carbon/v2 v2.6.11
 	github.com/go-sql-driver/mysql v1.9.3
@@ -17,7 +18,6 @@ require (
 	github.com/gouniverse/form v0.16.0
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
-	github.com/gouniverse/settingstore v1.0.0
 	github.com/gouniverse/ui v0.14.0
 	github.com/gouniverse/utils v1.45.4
 	github.com/lib/pq v1.10.9

@@ -47,6 +47,8 @@ github.com/dracory/sb v0.11.0 h1:dXGEb+QH573W8qnfw4uBBzBQZNZfAy8VL9S/SzbuxdA=
 github.com/dracory/sb v0.11.0/go.mod h1:wkjUe9gS52De3ryqcwtzT/AfaSvsyT/2YXEPDxF+b2M=
 github.com/dracory/sessionstore v1.3.0 h1:KWn/kfjUOFO2iOD3tpFud8+TyGRXaVHDj3ODxYECrx8=
 github.com/dracory/sessionstore v1.3.0/go.mod h1:4BEBCd/KcA6NLiKteyQAqKKo976j+uaRgeA0VSM7+wM=
+github.com/dracory/settingstore v1.2.0 h1:W1UZh/irzADGCNWg5gzp8XC/ghK01Uah7vHGuc+PHMU=
+github.com/dracory/settingstore v1.2.0/go.mod h1:tP90TCRS8XGR/7nmqKr9IDYS+ZrzH0yicqDXUbZlwqU=
 github.com/dracory/str v0.3.0 h1:4I1a7MGp73WukPVac+cLFh6bA7X5bVLTVSComhUXTr0=
 github.com/dracory/str v0.3.0/go.mod h1:9p5fqokBVw5GEO/CJ2xCmCq1cfjxAiKS2KK7RUFIwRE=
 github.com/dracory/taskstore v1.7.0 h1:asFIm9cKMLPs6Fdsm5g5insdzjmILX2tffQtCw2RBLI=
@@ -119,8 +121,6 @@ github.com/gouniverse/router v1.4.2 h1:6TDV51S8LzG3R3YasdFVNCmkdyYEr/kKo43pvaPJe
 github.com/gouniverse/router v1.4.2/go.mod h1:BLbxnznnHAN8cjZm8TiM/Wmf5/mdiEaUlLnLq3+ak24=
 github.com/gouniverse/sb v0.8.0 h1:XrHK15JKCPtvpHR8QEc+stLBVsLH1KjtkPOdzMbSIh0=
 github.com/gouniverse/sb v0.8.0/go.mod h1:REyzsOC67VFYEzBOFEJSojkQNNyBZdcyQpNyLSHvm0U=
-github.com/gouniverse/settingstore v1.0.0 h1:0bY/Wb42O6Ui5nWHFh4CUu59Cnx2RZioEaCP6eZcnzA=
-github.com/gouniverse/settingstore v1.0.0/go.mod h1:jacaWFIy2vtygOnVMWVB5qStEHxgaDde7GVAUrYKibQ=
 github.com/gouniverse/shortcode v0.4.0 h1:iIPI91nPRD7pNSnUCQBiHOvjJgorfJv+Na57W9xH9Kc=
 github.com/gouniverse/shortcode v0.4.0/go.mod h1:3AmIfeaJKbteiVmalROhmE6mcq73l37uPpDWlCrhvas=
 github.com/gouniverse/strutils v0.7.0 h1:xz8Ag7SSoAjBntRGfOsrXjT98+4eOB5aivi1F+Xy9SU=
