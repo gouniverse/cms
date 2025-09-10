@@ -7,6 +7,7 @@ require (
 	github.com/dracory/bs v0.15.0
 	github.com/dracory/cachestore v0.20.0
 	github.com/dracory/dataobject v1.6.0
+	github.com/dracory/form v0.19.0
 	github.com/dracory/hb v1.88.0
 	github.com/dracory/logstore v1.8.0
 	github.com/dracory/sessionstore v1.3.0
@@ -17,7 +18,6 @@ require (
 	github.com/dromara/carbon/v2 v2.6.11
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/gouniverse/entitystore v1.0.0
-	github.com/gouniverse/form v0.16.0
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
 	github.com/gouniverse/utils v1.45.4
@@ -31,7 +31,6 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/dracory/database v0.3.0 // indirect
-	github.com/dracory/form v0.19.0 // indirect
 	github.com/dracory/req v0.1.0 // indirect
 	github.com/dracory/sb v0.11.0 // indirect
 	github.com/dracory/str v0.3.0 // indirect

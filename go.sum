@@ -107,8 +107,6 @@ github.com/gouniverse/entitystore v1.0.0 h1:EgY/4KunIoLKefjtGax+dIz/AiFuQ4I+n+yg
 github.com/gouniverse/entitystore v1.0.0/go.mod h1:X5uLn0H0ipjvdwMC6MdG7U4P5Xn5JwE0FtzeCbpXnDk=
 github.com/gouniverse/envenc v0.10.0 h1:vgVuERUPRgX9wVMU5vLrEuu9uoREjEwv0CijjZB/79Q=
 github.com/gouniverse/envenc v0.10.0/go.mod h1:AlSuOmGyjJBrHoDUggHO2Cxv1iJWuBLXaq4lb0xdu1Q=
-github.com/gouniverse/form v0.16.0 h1:6a3VfrB0zwkP5jT3omgXiTKz+bOs1x6AHc188rrh0qw=
-github.com/gouniverse/form v0.16.0/go.mod h1:kf9cDGkClfFO2grSxsZEFYlLbjmQTyrDJqmkuGB/tXc=
 github.com/gouniverse/hb v1.83.4 h1:6T92AS6R7TcZbiIDDBmAykliHEsMGjUh4Rls3PtO20o=
 github.com/gouniverse/hb v1.83.4/go.mod h1:WDUCGoptHp/fAYT634lQ2846sGx88yXOOWMvlEaezYM=
 github.com/gouniverse/icons v1.3.1 h1:CCiBmWRkUcREX1nSvW9lJD6IjII3m6LZJkKd3y/PhdI=
