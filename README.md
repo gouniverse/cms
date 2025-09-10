@@ -208,7 +208,7 @@ myCms, errCms := cms.NewCms(cms.Config{
 Some of the data retrieval or processing tasks performed by your application could be CPU intensive or take several seconds to complete. When this is the case, it is common to cache the retrieved data for a time so it can be retrieved quickly on subsequent requests for the same data. 
 
 CMS comes out of the box with and SQL based cache store that can be enabled on demand. The cache store is based on the following project:
-https://github.com/gouniverse/cachestore
+https://github.com/dracory/cachestore
 
 1. Initialization with Cache Store
 

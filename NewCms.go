@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/gouniverse/cachestore"
+	"github.com/dracory/cachestore"
+	"github.com/dracory/logstore"
 	"github.com/gouniverse/entitystore"
-	"github.com/gouniverse/logstore"
 	"github.com/gouniverse/sessionstore"
 	"github.com/gouniverse/settingstore"
 	"github.com/gouniverse/taskstore"

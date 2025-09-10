@@ -4,15 +4,15 @@ go 1.24.0
 
 require (
 	github.com/dracory/bs v0.15.0
+	github.com/dracory/cachestore v0.20.0
 	github.com/dracory/hb v1.88.0
+	github.com/dracory/logstore v1.8.0
 	github.com/dromara/carbon/v2 v2.6.11
 	github.com/go-sql-driver/mysql v1.9.1
 	github.com/gouniverse/blockeditor v0.21.2
-	github.com/gouniverse/cachestore v0.19.1
 	github.com/gouniverse/dataobject v1.2.0
 	github.com/gouniverse/entitystore v1.0.0
 	github.com/gouniverse/form v0.16.0
-	github.com/gouniverse/logstore v1.7.0
 	github.com/gouniverse/responses v0.6.0
 	github.com/gouniverse/router v1.4.2
 	github.com/gouniverse/sessionstore v1.0.0
@@ -29,6 +29,7 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
+	github.com/dracory/uid v1.7.0 // indirect
 	github.com/go-chi/chi/v5 v5.2.1 // indirect
 	github.com/go-chi/cors v1.2.1 // indirect
 	github.com/go-chi/httprate v0.15.0 // indirect
