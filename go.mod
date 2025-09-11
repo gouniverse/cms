@@ -33,7 +33,7 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
-	github.com/dracory/database v0.3.0 // indirect
+	github.com/dracory/database v0.4.0 // indirect
 	github.com/dracory/req v0.1.0
 	github.com/dracory/str v0.3.0
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
@@ -55,13 +55,13 @@ require (
 	github.com/teambition/rrule-go v1.8.2 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	go.mongodb.org/mongo-driver v1.17.4 // indirect
-	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
+	golang.org/x/exp v0.0.0-20250911091902-df9299821621 // indirect
 	golang.org/x/term v0.35.0 // indirect
 )
 
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0 // indirect
-	github.com/dracory/envenc v0.12.0 // indirect
+	github.com/dracory/envenc v1.0.0 // indirect
 	github.com/dracory/websrv v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/georgysavva/scany v1.2.3 // indirect
