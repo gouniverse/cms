@@ -9,7 +9,6 @@ import (
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
 	"github.com/dracory/req"
-	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
 )
 
@@ -57,21 +56,21 @@ func (m UiManager) MenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 	buttonCancel := hb.NewHyperlink().
 		Class("btn btn-info").
 		Href(backURL).
-		Child(hb.NewHTML(icons.BootstrapChevronLeft)).
+		Child(hb.I().Class("bi bi-chevron-left")).
 		HTML(" Cancel")
 	buttonAddNode := hb.NewButton().
 		Attr("v-on:click", "menuItemAdd").
 		Class("btn btn-success float-end").
 		ID("ButtonNewMenuItem").
 		Attr("disabled", "disabled").
-		Child(hb.NewHTML(icons.BootstrapPlusCircle)).
+		Child(hb.I().Class("bi bi-plus-circle")).
 		HTML(" Add item")
 	buttonSaveNode := hb.NewButton().
 		Attr("v-on:click", "menuItemsSave").
 		Class("btn btn-success").
 		ID("ButtonSaveMenuItems").
 		Attr("disabled", "disabled").
-		Child(hb.NewHTML(icons.BootstrapBoxArrowInDown)).
+		Child(hb.I().Class("bi bi-box-arrow-in-down")).
 		HTML(" Save")
 
 	actionsCard := hb.NewDiv().

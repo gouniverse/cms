@@ -8,7 +8,6 @@ import (
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
 	"github.com/dracory/req"
-	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
 )
 
@@ -44,7 +43,7 @@ func (m UiManager) MenuUpdate(w http.ResponseWriter, r *http.Request) {
 
 	container := hb.NewDiv().Class("container").Attr("id", "menu-update")
 	heading := hb.NewHeading1().HTML("Edit Menu")
-	button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Class("btn btn-success float-end").Attr("v-on:click", "menuSave")
+	button := hb.NewButton().AddChild(hb.I().Class("bi bi-check-circle")).HTML("Save").Class("btn btn-success float-end").Attr("v-on:click", "menuSave")
 	heading.AddChild(button)
 
 	formGroupStatus := hb.NewDiv().Class("form-group")

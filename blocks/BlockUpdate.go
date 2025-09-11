@@ -9,7 +9,6 @@ import (
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
 	"github.com/dracory/req"
-	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
 )
 
@@ -61,7 +60,7 @@ func (m UiManager) BlockUpdate(w http.ResponseWriter, r *http.Request) {
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "block-update")
 	heading := hb.NewHeading1().HTML("Edit Block")
-	button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "blockSave")
+	button := hb.NewButton().AddChild(hb.I().Class("bi bi-check-circle")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "blockSave")
 	heading.AddChild(button)
 
 	formGroupStatus := hb.NewDiv().Attr("class", "form-group")

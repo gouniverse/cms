@@ -9,7 +9,6 @@ import (
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
 	"github.com/dracory/req"
-	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
 )
 
@@ -61,7 +60,7 @@ func (m UiManager) SettingUpdate(w http.ResponseWriter, r *http.Request) {
 
 	container := hb.NewDiv().Attr("class", "container").Attr("id", "setting-update")
 	heading := hb.NewHeading1().HTML("Edit Setting")
-	button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "settingSave")
+	button := hb.NewButton().AddChild(hb.I().Class("bi bi-check-circle")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "settingSave")
 	heading.AddChild(button)
 
 	formGroupName := hb.NewDiv().Attr("class", "form-group")

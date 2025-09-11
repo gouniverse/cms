@@ -9,7 +9,6 @@ import (
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
 	"github.com/dracory/req"
-	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
 	"github.com/samber/lo"
 )
@@ -61,7 +60,7 @@ func (m UiManager) TranslationUpdate(w http.ResponseWriter, r *http.Request) {
 	})
 
 	heading := hb.NewHeading1().HTML("Edit Translation")
-	button := hb.NewButton().AddChild(hb.NewHTML(icons.BootstrapCheckCircle+" ")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "translationSave")
+	button := hb.NewButton().AddChild(hb.I().Class("bi bi-check-circle")).HTML("Save").Attr("class", "btn btn-success float-end").Attr("v-on:click", "translationSave")
 	heading.AddChild(button)
 
 	formGroupStatus := hb.NewDiv().Class("form-group").Children([]hb.TagInterface{
