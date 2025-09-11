@@ -2,17 +2,16 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) MenuUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	menuID := strings.Trim(utils.Req(r, "menu_id", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
+	menuID := req.GetStringTrimmed(r, "menu_id")
+	status := req.GetStringTrimmed(r, "status")
+	name := req.GetStringTrimmed(r, "name")
+	handle := req.GetStringTrimmed(r, "handle")
 
 	if menuID == "" {
 		api.Respond(w, r, api.Error("Menu ID is required"))

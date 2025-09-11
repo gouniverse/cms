@@ -2,22 +2,21 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 	"github.com/samber/lo"
 )
 
 func (m UiManager) TranslationUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	translationID := strings.Trim(utils.Req(r, "translation_id", ""), " ")
-	comment := strings.Trim(utils.Req(r, "comment", ""), " ")
-	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
+	translationID := req.GetStringTrimmed(r, "translation_id")
+	comment := req.GetStringTrimmed(r, "comment")
+	handle := req.GetStringTrimmed(r, "handle")
+	name := req.GetStringTrimmed(r, "name")
+	status := req.GetStringTrimmed(r, "status")
 	translationContents := map[string]string{}
 	lo.ForEach(lo.Keys(m.translationLanguages), func(key string, index int) {
-		translationContent := strings.Trim(utils.Req(r, "translations["+key+"]", ""), " ")
+		translationContent := req.GetStringTrimmed(r, "translations["+key+"]")
 		translationContents[key] = translationContent
 	})
 

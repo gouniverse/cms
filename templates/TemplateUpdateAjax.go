@@ -2,19 +2,18 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 // pageTemplatesTemplateUpdateAjax - saves the template via Ajax
 func (m UiManager) TemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
-	content := strings.Trim(utils.Req(r, "content", ""), " ")
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
-	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
+	templateID := req.GetStringTrimmed(r, "template_id")
+	content := req.GetStringTrimmed(r, "content")
+	name := req.GetStringTrimmed(r, "name")
+	status := req.GetStringTrimmed(r, "status")
+	handle := req.GetStringTrimmed(r, "handle")
 
 	if templateID == "" {
 		api.Respond(w, r, api.Error("Template ID is required"))

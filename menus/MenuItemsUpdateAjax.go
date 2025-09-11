@@ -4,16 +4,15 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 	"github.com/samber/lo"
 )
 
 func (m UiManager) MenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	menuID := strings.TrimSpace(utils.Req(r, "menu_id", ""))
-	data := strings.TrimSpace(utils.Req(r, "data", ""))
+	menuID := req.GetStringTrimmed(r, "menu_id")
+	data := req.GetStringTrimmed(r, "data")
 
 	if menuID == "" {
 		api.Respond(w, r, api.Error("Menu ID is required"))

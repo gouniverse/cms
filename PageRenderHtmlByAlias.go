@@ -7,7 +7,6 @@ import (
 	"github.com/dracory/hb"
 	"github.com/dracory/ui"
 	"github.com/gouniverse/cms/types"
-	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
 )
 
@@ -77,7 +76,7 @@ func (cms *Cms) PageRenderHtmlByAlias(r *http.Request, alias string, language st
 			return "Block editor not configured"
 		}
 
-		if !utils.IsJSON(pageContent) {
+		if !isJSON(pageContent) {
 			return "Malformed block content"
 		}
 

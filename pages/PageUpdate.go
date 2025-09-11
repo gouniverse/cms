@@ -9,8 +9,8 @@ import (
 	"github.com/dracory/cdn"
 	"github.com/dracory/entitystore"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 const codemirrorCss = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css"
@@ -25,7 +25,7 @@ const codemirrorFormattingJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36
 const codemirrorMatchBracketsJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js"
 
 func (m UiManager) PageUpdateV1(w http.ResponseWriter, r *http.Request) {
-	pageID := utils.Req(r, "page_id", "")
+	pageID := req.GetStringTrimmed(r, "page_id")
 	if pageID == "" {
 		api.Respond(w, r, api.Error("Page ID is required"))
 		return

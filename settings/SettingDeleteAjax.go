@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) SettingDeleteAjax(w http.ResponseWriter, r *http.Request) {
-	settingKey := utils.Req(r, "setting_key", "")
+	settingKey := req.GetStringTrimmed(r, "setting_key")
 
 	if settingKey == "" {
 		api.Respond(w, r, api.Error("Setting key is required"))

@@ -7,13 +7,13 @@ import (
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 func (m UiManager) MenuUpdate(w http.ResponseWriter, r *http.Request) {
-	menuID := utils.Req(r, "menu_id", "")
+	menuID := req.GetStringTrimmed(r, "menu_id")
 	if menuID == "" {
 		api.Respond(w, r, api.Error("Menu ID is required"))
 		return

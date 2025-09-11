@@ -1,19 +1,20 @@
 package cms
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/dracory/api"
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 func (m UiManager) MenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
-	menuID := utils.Req(r, "menu_id", "")
+	menuID := req.GetStringTrimmed(r, "menu_id")
 	if menuID == "" {
 		api.Respond(w, r, api.Error("Menu ID is required"))
 		return
@@ -152,12 +153,12 @@ func (m UiManager) MenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 
 	menuItemsUpdateURL := m.endpoint + "?path=" + m.pathMenusMenuItemsUpdateAjax
 	menuItemsFetchURL := m.endpoint + "?path=" + m.pathMenusMenuItemsFetchAjax
-	pagesDropdownJSON, _ := utils.ToJSON(pagesDropdownList)
+	pagesDropdownJSON, _ := json.Marshal(pagesDropdownList)
 	inlineScript := `
 var menuItemsSaveUrl = "` + menuItemsUpdateURL + `";
 var menuItemsFetchUrl = "` + menuItemsFetchURL + `";
 var menuId = "` + menuID + `";
-var pagesDropdownList = ` + pagesDropdownJSON + `;
+var pagesDropdownList = ` + string(pagesDropdownJSON) + `;
 const MenuItemsUpdate = {
 	data() {
 		return {

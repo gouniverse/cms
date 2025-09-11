@@ -2,15 +2,14 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 // TemplateTrashAjax - moves the template to the trash
 func (m UiManager) TemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
-	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
+	templateID := req.GetStringTrimmed(r, "template_id")
 
 	if templateID == "" {
 		api.Respond(w, r, api.Error("Template ID is required"))

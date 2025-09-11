@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/dracory/env"
 	"github.com/dracory/hb"
 	"github.com/gouniverse/cms"
-	"github.com/gouniverse/utils"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
@@ -20,11 +20,11 @@ var db *sql.DB
 
 func main() {
 	log.Println("1. Initializing environment variables...")
-	utils.EnvInitialize(".env")
+	env.Load(".env")
 
 	log.Println("2. Initializing database...")
 	var err error
-	db, err = mainDb(utils.Env("DB_DRIVER"), utils.Env("DB_HOST"), utils.Env("DB_PORT"), utils.Env("DB_DATABASE"), utils.Env("DB_USERNAME"), utils.Env("DB_PASSWORD"))
+	db, err = mainDb(env.GetString("DB_DRIVER"), env.GetString("DB_HOST"), env.GetString("DB_PORT"), env.GetString("DB_DATABASE"), env.GetString("DB_USERNAME"), env.GetString("DB_PASSWORD"))
 
 	if err != nil {
 		log.Panic("Database is NIL: " + err.Error())
@@ -36,8 +36,8 @@ func main() {
 		return
 	}
 
-	log.Println("4. Starting server on http://" + utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT") + " ...")
-	log.Println("URL: http://" + utils.Env("APP_URL") + " ...")
+	log.Println("4. Starting server on http://" + env.GetString("SERVER_HOST") + ":" + env.GetString("SERVER_PORT") + " ...")
+	log.Println("URL: http://" + env.GetString("APP_URL") + " ...")
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		menu := hb.NewHTML("<a href='/cms'>Standalone CMS</a> <br /> <br /> <a href='/cmswithlayout'>CMS WIth Layout</a> <br /> <br /> <a href='/embeddedcms'>Embedded CMS in IFRAME</a>")
@@ -50,7 +50,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler: mux,
-		Addr:    utils.Env("SERVER_HOST") + ":" + utils.Env("SERVER_PORT"),
+		Addr:    env.GetString("SERVER_HOST") + ":" + env.GetString("SERVER_PORT"),
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout:      15 * time.Second,
 		ReadTimeout:       15 * time.Second,

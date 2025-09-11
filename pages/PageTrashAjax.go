@@ -5,11 +5,11 @@ import (
 	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) PageTrashAjax(w http.ResponseWriter, r *http.Request) {
-	pageID := strings.Trim(utils.Req(r, "page_id", ""), " ")
+	pageID := strings.Trim(req.GetStringTrimmed(r, "page_id"), " ")
 
 	if pageID == "" {
 		api.Respond(w, r, api.Error("Page ID is required"))

@@ -4,9 +4,8 @@ import (
 	"errors"
 
 	"github.com/dracory/entitystore"
+	"github.com/dracory/str"
 	"github.com/gouniverse/cms/types"
-	"github.com/gouniverse/strutils"
-	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
 )
 
@@ -26,7 +25,7 @@ type WebPageQueryOptions struct {
 func (cms *Cms) WebPageCreate(page types.WebPageInterface) error {
 	name := page.Name()
 	status := page.Status()
-	alias := "/" + strutils.Slugify(name+"-"+utils.StrRandom(16), '-')
+	alias := "/" + str.Slugify(name+"-"+str.Random(16), '-')
 
 	if name == "" {
 		return errors.New("page name is empty")

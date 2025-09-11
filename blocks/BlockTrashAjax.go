@@ -2,14 +2,13 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) BlockTrashAjax(w http.ResponseWriter, r *http.Request) {
-	blockID := strings.Trim(utils.Req(r, "block_id", ""), " ")
+	blockID := req.GetStringTrimmed(r, "block_id")
 
 	if blockID == "" {
 		api.Respond(w, r, api.Error("Block ID is required"))

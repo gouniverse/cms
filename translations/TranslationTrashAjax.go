@@ -2,14 +2,13 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) TranslationTrashAjax(w http.ResponseWriter, r *http.Request) {
-	translationID := strings.Trim(utils.Req(r, "translation_id", ""), " ")
+	translationID := req.GetStringTrimmed(r, "translation_id")
 
 	if translationID == "" {
 		api.Respond(w, r, api.Error("Translation ID is required"))

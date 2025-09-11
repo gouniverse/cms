@@ -8,9 +8,9 @@ import (
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
 )
 
@@ -26,7 +26,7 @@ const codemirrorFormattingJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36
 const codemirrorMatchBracketsJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js"
 
 func (m UiManager) TranslationUpdate(w http.ResponseWriter, r *http.Request) {
-	translationID := utils.Req(r, "translation_id", "")
+	translationID := req.GetStringTrimmed(r, "translation_id")
 	if translationID == "" {
 		api.Respond(w, r, api.Error("Translation ID is required"))
 		return

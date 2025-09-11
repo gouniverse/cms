@@ -8,9 +8,9 @@ import (
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/icons"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 const codemirrorCss = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css"
@@ -25,7 +25,7 @@ const codemirrorFormattingJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36
 const codemirrorMatchBracketsJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.22.0/addon/edit/matchbrackets.min.js"
 
 func (m UiManager) SettingUpdate(w http.ResponseWriter, r *http.Request) {
-	settingKey := utils.Req(r, "setting_key", "")
+	settingKey := req.GetStringTrimmed(r, "setting_key")
 	if settingKey == "" {
 		api.Respond(w, r, api.Error("Setting key is required"))
 		return

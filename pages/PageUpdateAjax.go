@@ -2,26 +2,25 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) PageUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	pageID := strings.Trim(utils.Req(r, "page_id", ""), " ")
-	alias := strings.Trim(utils.Req(r, "alias", ""), " ")
-	canonicalURL := strings.Trim(utils.Req(r, "canonical_url", ""), " ")
-	content := strings.Trim(utils.Req(r, "content", ""), " ")
-	contentEditor := strings.Trim(utils.Req(r, "content_editor", ""), " ")
-	metaDescription := strings.Trim(utils.Req(r, "meta_description", ""), " ")
-	metaKeywords := strings.Trim(utils.Req(r, "meta_keywords", ""), " ")
-	metaRobots := strings.Trim(utils.Req(r, "meta_robots", ""), " ")
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
-	title := strings.Trim(utils.Req(r, "title", ""), " ")
-	templateID := strings.Trim(utils.Req(r, "template_id", ""), " ")
-	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
+	pageID := req.GetStringTrimmed(r, "page_id")
+	alias := req.GetStringTrimmed(r, "alias")
+	canonicalURL := req.GetStringTrimmed(r, "canonical_url")
+	content := req.GetStringTrimmed(r, "content")
+	contentEditor := req.GetStringTrimmed(r, "content_editor")
+	metaDescription := req.GetStringTrimmed(r, "meta_description")
+	metaKeywords := req.GetStringTrimmed(r, "meta_keywords")
+	metaRobots := req.GetStringTrimmed(r, "meta_robots")
+	name := req.GetStringTrimmed(r, "name")
+	status := req.GetStringTrimmed(r, "status")
+	title := req.GetStringTrimmed(r, "title")
+	templateID := req.GetStringTrimmed(r, "template_id")
+	handle := req.GetStringTrimmed(r, "handle")
 
 	if pageID == "" {
 		api.Respond(w, r, api.Error("Page ID is required"))

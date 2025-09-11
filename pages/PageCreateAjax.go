@@ -2,15 +2,14 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/strutils"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
+	"github.com/dracory/str"
 )
 
 func (m UiManager) PageCreateAjax(w http.ResponseWriter, r *http.Request) {
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
+	name := req.GetStringTrimmed(r, "name")
 
 	if name == "" {
 		api.Respond(w, r, api.Error("name is required field"))
@@ -32,7 +31,7 @@ func (m UiManager) PageCreateAjax(w http.ResponseWriter, r *http.Request) {
 	page.SetString("name", name)
 	page.SetString("status", "inactive")
 	page.SetString("title", name)
-	page.SetString("alias", "/"+strutils.Slugify(name+"-"+strutils.Random(16), '-'))
+	page.SetString("alias", "/"+str.Slugify(name+"-"+str.Random(16), '-'))
 
 	api.Respond(w, r, api.SuccessWithData("Page saved successfully", map[string]interface{}{"page_id": page.ID()}))
 }

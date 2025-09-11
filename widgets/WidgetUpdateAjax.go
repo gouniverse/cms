@@ -2,18 +2,17 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) WidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	widgetID := strings.Trim(utils.Req(r, "widget_id", ""), " ")
-	content := strings.Trim(utils.Req(r, "content", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
+	widgetID := req.GetStringTrimmed(r, "widget_id")
+	content := req.GetStringTrimmed(r, "content")
+	status := req.GetStringTrimmed(r, "status")
+	name := req.GetStringTrimmed(r, "name")
+	handle := req.GetStringTrimmed(r, "handle")
 
 	if widgetID == "" {
 		api.Respond(w, r, api.Error("Widget ID is required"))

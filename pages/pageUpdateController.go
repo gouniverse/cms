@@ -10,9 +10,9 @@ import (
 	"github.com/dracory/entitystore"
 	"github.com/dracory/form"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/cms/types"
 	"github.com/gouniverse/router"
-	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
 )
 
@@ -793,22 +793,22 @@ func (pageUpdateController) fieldsSEO(data pageUpdateControllerData) []form.Fiel
 }
 
 func (controller pageUpdateController) savepage(r *http.Request, data pageUpdateControllerData) (d pageUpdateControllerData, errorMessage string) {
-	data.formAlias = utils.Req(r, "page_alias", "")
-	data.formCanonicalURL = utils.Req(r, "page_canonical_url", "")
-	data.formContent = utils.Req(r, "page_content", "")
-	data.formEditor = utils.Req(r, "page_editor", "")
-	data.formFeatured = utils.Req(r, "page_featured", "")
-	data.formImageUrl = utils.Req(r, "page_image_url", "")
-	data.formMemo = utils.Req(r, "page_memo", "")
-	data.formMetaDescription = utils.Req(r, "page_meta_description", "")
-	data.formMetaKeywords = utils.Req(r, "page_meta_keywords", "")
-	data.formMetaRobots = utils.Req(r, "page_meta_robots", "")
-	data.formName = utils.Req(r, "page_name", "")
-	data.formPublishedAt = utils.Req(r, "page_published_at", "")
-	data.formSummary = utils.Req(r, "page_summary", "")
-	data.formStatus = utils.Req(r, "page_status", "")
-	data.formTitle = utils.Req(r, "page_title", "")
-	data.formTemplateID = utils.Req(r, "page_template_id", "")
+	data.formAlias = req.GetStringTrimmed(r, "page_alias")
+	data.formCanonicalURL = req.GetStringTrimmed(r, "page_canonical_url")
+	data.formContent = req.GetStringTrimmed(r, "page_content")
+	data.formEditor = req.GetStringTrimmed(r, "page_editor")
+	data.formFeatured = req.GetStringTrimmed(r, "page_featured")
+	data.formImageUrl = req.GetStringTrimmed(r, "page_image_url")
+	data.formMemo = req.GetStringTrimmed(r, "page_memo")
+	data.formMetaDescription = req.GetStringTrimmed(r, "page_meta_description")
+	data.formMetaKeywords = req.GetStringTrimmed(r, "page_meta_keywords")
+	data.formMetaRobots = req.GetStringTrimmed(r, "page_meta_robots")
+	data.formName = req.GetStringTrimmed(r, "page_name")
+	data.formPublishedAt = req.GetStringTrimmed(r, "page_published_at")
+	data.formSummary = req.GetStringTrimmed(r, "page_summary")
+	data.formStatus = req.GetStringTrimmed(r, "page_status")
+	data.formTitle = req.GetStringTrimmed(r, "page_title")
+	data.formTemplateID = req.GetStringTrimmed(r, "page_template_id")
 
 	if data.view == VIEW_SETTINGS {
 		if data.formStatus == "" {
@@ -865,9 +865,9 @@ func (controller pageUpdateController) savepage(r *http.Request, data pageUpdate
 }
 
 func (controller pageUpdateController) prepareDataAndValidate(r *http.Request) (data pageUpdateControllerData, errorMessage string) {
-	data.action = utils.Req(r, "action", "")
-	data.pageID = utils.Req(r, "page_id", "")
-	data.view = utils.Req(r, "view", VIEW_CONTENT)
+	data.action = req.GetStringTrimmed(r, "action")
+	data.pageID = req.GetStringTrimmed(r, "page_id")
+	data.view = req.GetStringTrimmedOr(r, "view", VIEW_CONTENT)
 
 	if data.view == "" {
 		data.view = VIEW_CONTENT

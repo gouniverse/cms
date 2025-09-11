@@ -2,18 +2,17 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) BlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	blockID := strings.Trim(utils.Req(r, "block_id", ""), " ")
-	content := strings.Trim(utils.Req(r, "content", ""), " ")
-	status := strings.Trim(utils.Req(r, "status", ""), " ")
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
-	handle := strings.Trim(utils.Req(r, "handle", ""), " ")
+	blockID := req.GetStringTrimmed(r, "block_id")
+	content := req.GetStringTrimmed(r, "content")
+	status := req.GetStringTrimmed(r, "status")
+	name := req.GetStringTrimmed(r, "name")
+	handle := req.GetStringTrimmed(r, "handle")
 
 	if blockID == "" {
 		api.Respond(w, r, api.Error("Block ID is required"))

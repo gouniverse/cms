@@ -2,15 +2,14 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
+	"github.com/dracory/req"
 	"github.com/dracory/settingstore"
-	"github.com/gouniverse/utils"
 )
 
 func (m UiManager) SettingCreateAjax(w http.ResponseWriter, r *http.Request) {
-	key := strings.Trim(utils.Req(r, "key", ""), " ")
+	key := req.GetStringTrimmed(r, "key")
 
 	if key == "" {
 		api.Respond(w, r, api.Error("Key is required field"))

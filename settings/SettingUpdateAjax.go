@@ -4,12 +4,12 @@ import (
 	"net/http"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) SettingUpdateAjax(w http.ResponseWriter, r *http.Request) {
-	settingKey := utils.Req(r, "setting_key", "")
-	settingValue := utils.Req(r, "setting_value", "%%NOTSENT%%")
+	settingKey := req.GetStringTrimmed(r, "setting_key")
+	settingValue := req.GetStringTrimmedOr(r, "setting_value", "%%NOTSENT%%")
 	if settingKey == "" {
 		api.Respond(w, r, api.Error("Setting key is required"))
 		return

@@ -2,12 +2,13 @@ package cms
 
 import (
 	"log"
+	"slices"
 	"sort"
 	"strconv"
 
 	"github.com/dracory/entitystore"
-	"github.com/gouniverse/utils"
 	"github.com/samber/lo"
+	"github.com/spf13/cast"
 )
 
 func getChildren(data []map[string]interface{}, parentID string) []map[string]interface{} {
@@ -152,7 +153,7 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 		children, hasChildren := node["children"]
 		delete(node, "children")
 
-		node["sequence"] = utils.ToString((index + 1))
+		node["sequence"] = cast.ToString((index + 1))
 		flatTree = append(flatTree, node)
 
 		if !hasChildren {
@@ -181,7 +182,7 @@ func (m UiManager) cleanMenuFromNonExistingMenuItems(menuID string, existingMenu
 
 	// Delete old menu items
 	for _, menuitem := range allMenuItems {
-		exists, _ := utils.ArrayContains(existingMenuItemIDs, menuitem.ID())
+		exists := slices.Contains(existingMenuItemIDs, menuitem.ID())
 		if !exists {
 			m.entityStore.EntityDelete(menuitem.ID())
 		}

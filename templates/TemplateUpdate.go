@@ -8,8 +8,8 @@ import (
 	"github.com/dracory/bs"
 	"github.com/dracory/cdn"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 const codemirrorCss = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css"
@@ -25,7 +25,7 @@ const codemirrorMatchBracketsJs = "//cdnjs.cloudflare.com/ajax/libs/codemirror/3
 
 // pageTemplatesTemplateUpdate shows the template edit page
 func (m UiManager) TemplateUpdate(w http.ResponseWriter, r *http.Request) {
-	templateID := utils.Req(r, "template_id", "")
+	templateID := req.GetStringTrimmed(r, "template_id")
 	if templateID == "" {
 		api.Respond(w, r, api.Error("Template ID is required"))
 		return

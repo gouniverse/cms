@@ -6,12 +6,12 @@ import (
 	"github.com/dracory/api"
 	"github.com/dracory/bs"
 	"github.com/dracory/hb"
+	"github.com/dracory/req"
 	"github.com/gouniverse/responses"
-	"github.com/gouniverse/utils"
 )
 
 func (m UiManager) WidgetUpdate(w http.ResponseWriter, r *http.Request) {
-	widgetID := utils.Req(r, "widget_id", "")
+	widgetID := req.GetStringTrimmed(r, "widget_id")
 	if widgetID == "" {
 		api.Respond(w, r, api.Error("Widget ID is required"))
 		return

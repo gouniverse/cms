@@ -2,14 +2,13 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) MenuItemsFetchAjax(w http.ResponseWriter, r *http.Request) {
-	menuID := strings.Trim(utils.Req(r, "menu_id", ""), " ")
+	menuID := req.GetStringTrimmed(r, "menu_id")
 
 	if menuID == "" {
 		api.Respond(w, r, api.Error("Menu ID is required"))

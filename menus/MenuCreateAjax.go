@@ -2,14 +2,13 @@ package cms
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/dracory/api"
-	"github.com/gouniverse/utils"
+	"github.com/dracory/req"
 )
 
 func (m UiManager) MenuCreateAjax(w http.ResponseWriter, r *http.Request) {
-	name := strings.Trim(utils.Req(r, "name", ""), " ")
+	name := req.GetStringTrimmed(r, "name")
 
 	if name == "" {
 		api.Respond(w, r, api.Error("name is required field"))
