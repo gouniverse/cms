@@ -109,7 +109,7 @@ func cmsCacheSetup(cms *Cms) (err error) {
 	}
 
 	time.AfterFunc(3*time.Second, func() {
-		go cms.CacheStore.ExpireCacheGoroutine()
+		go cms.CacheStore.ExpireCacheGoroutine(context.Background())
 	})
 
 	return nil
@@ -185,7 +185,7 @@ func cmsSessionSetup(cms *Cms) (err error) {
 	}
 
 	time.AfterFunc(3*time.Second, func() {
-		go cms.SessionStore.SessionExpiryGoroutine()
+		go cms.SessionStore.SessionExpiryGoroutine(context.Background())
 	})
 
 	return nil
