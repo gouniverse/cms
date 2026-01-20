@@ -44,7 +44,7 @@ func (m UiManager) TranslationManager(w http.ResponseWriter, r *http.Request) {
 			m.translationTrashModal(),
 		})
 
-	translations, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	translations, err := m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: m.translationEntityType,
 		Offset:     0,
 		Limit:      200,

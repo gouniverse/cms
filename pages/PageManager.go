@@ -12,7 +12,7 @@ import (
 )
 
 func (m UiManager) PageManager(w http.ResponseWriter, r *http.Request) {
-	UiManager, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	UiManager, err := m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: m.pageEntityType,
 		Offset:     0,
 		Limit:      200,

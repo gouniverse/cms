@@ -24,7 +24,7 @@ func (m UiManager) MenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, _ := m.entityStore.EntityFindByID(menuID)
+	menu, _ := m.entityStore.EntityFindByID(r.Context(), menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))
@@ -51,9 +51,9 @@ func (m UiManager) MenuItemsUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		parentID := lo.ValueOr(node, "parent_id", "").(string)
 		sequence := lo.ValueOr(node, "sequence", "").(string)
 
-		menuitem, _ := m.entityStore.EntityFindByID(id)
+		menuitem, _ := m.entityStore.EntityFindByID(r.Context(), id)
 		if menuitem == nil {
-			menuitem, err = m.entityStore.EntityCreateWithType(m.menuEntityType)
+			menuitem, err = m.entityStore.EntityCreateWithType(r.Context(), m.menuEntityType)
 			if err != nil {
 				api.Respond(w, r, api.Error("Menu item failed to be created "+err.Error()))
 				return

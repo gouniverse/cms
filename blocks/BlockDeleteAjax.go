@@ -15,7 +15,7 @@ func (m UiManager) BlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := m.entityStore.EntityFindByID(blockID)
+	block, err := m.entityStore.EntityFindByID(r.Context(), blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Database error: "+err.Error()))
@@ -27,7 +27,7 @@ func (m UiManager) BlockDeleteAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := m.entityStore.EntityDelete(blockID)
+	isOk, err := m.entityStore.EntityDelete(r.Context(), blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be deleted: "+err.Error()))

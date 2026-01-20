@@ -15,7 +15,7 @@ func (m UiManager) WidgetCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, err := m.entityStore.EntityCreateWithType(m.widgetEntityType)
+	widget, err := m.entityStore.EntityCreateWithType(r.Context(), m.widgetEntityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Widget failed to be created: "+err.Error()))

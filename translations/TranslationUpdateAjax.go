@@ -25,7 +25,7 @@ func (m UiManager) TranslationUpdateAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	translation, err := m.entityStore.EntityFindByID(translationID)
+	translation, err := m.entityStore.EntityFindByID(r.Context(), translationID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Translation not found: "+err.Error()))
@@ -48,7 +48,7 @@ func (m UiManager) TranslationUpdateAjax(w http.ResponseWriter, r *http.Request)
 	}
 
 	translation.SetHandle(handle)
-	err = m.entityStore.EntityUpdate(*translation)
+	err = m.entityStore.EntityUpdate(r.Context(), *translation)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Translation failed to be updated: "+err.Error()))

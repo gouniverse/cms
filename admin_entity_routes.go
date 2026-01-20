@@ -28,7 +28,7 @@ func (cms Cms) pageEntitiesEntityCreateAjax(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	entity, err := cms.EntityStore.EntityCreateWithType(entityType)
+	entity, err := cms.EntityStore.EntityCreateWithType(r.Context(), entityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity failed to be created"))
@@ -91,7 +91,7 @@ func (cms Cms) pageEntitiesEntityManager(w http.ResponseWriter, r *http.Request)
 	container.AddChild(cms.pageEntitiesEntityCreateModal())
 	container.AddChild(cms.pageEntitiesEntityTrashModal())
 
-	entities, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+	entities, err := cms.EntityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: entityType,
 		Offset:     0,
 		Limit:      200,
@@ -224,7 +224,7 @@ func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	entity, _ := cms.EntityStore.EntityFindByID(entityID)
+	entity, _ := cms.EntityStore.EntityFindByID(r.Context(), entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))
@@ -292,7 +292,7 @@ func (cms Cms) pageEntitiesEntityUpdate(w http.ResponseWriter, r *http.Request) 
 			formGroupAttrInput = hb.NewTextArea().Attr("class", "form-control").Attr("v-model", "entityModel."+attrName)
 		}
 		if attr.BelongsToType != "" {
-			entities, _ := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+			entities, _ := cms.EntityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 				EntityType: attr.BelongsToType,
 				Offset:     0,
 				Limit:      300,
@@ -410,7 +410,7 @@ func (cms Cms) pageEntitiesEntityUpdateAjax(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	entity, _ := cms.EntityStore.EntityFindByID(entityID)
+	entity, _ := cms.EntityStore.EntityFindByID(r.Context(), entityID)
 
 	if entity == nil {
 		api.Respond(w, r, api.Error("Entity NOT FOUND with ID "+entityID))

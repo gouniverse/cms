@@ -15,7 +15,7 @@ func (m UiManager) TranslationCreateAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	translation, err := m.entityStore.EntityCreateWithType(m.translationEntityType)
+	translation, err := m.entityStore.EntityCreateWithType(r.Context(), m.translationEntityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Translation failed to be created: "+err.Error()))

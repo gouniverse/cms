@@ -1,6 +1,8 @@
 package cms
 
 import (
+	"context"
+
 	"github.com/dracory/entitystore"
 	"github.com/samber/lo"
 )
@@ -14,7 +16,7 @@ func (cms *Cms) TranslationFindByIdOrHandle(idOrHandle string, language string) 
 	id := ""
 	if !isNumeric(idOrHandle) {
 		handle = idOrHandle
-		entity, err := cms.EntityStore.EntityFindByHandle(ENTITY_TYPE_TRANSLATION, handle)
+		entity, err := cms.EntityStore.EntityFindByHandle(context.Background(), ENTITY_TYPE_TRANSLATION, handle)
 		if err != nil {
 			return "", err
 		}
@@ -26,7 +28,7 @@ func (cms *Cms) TranslationFindByIdOrHandle(idOrHandle string, language string) 
 		id = idOrHandle
 	}
 
-	attributes, err := cms.EntityStore.EntityAttributeList(id)
+	attributes, err := cms.EntityStore.EntityAttributeList(context.Background(), id)
 	if err != nil {
 		return "", err
 	}

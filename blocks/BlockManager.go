@@ -36,7 +36,7 @@ func (m UiManager) BlockManager(w http.ResponseWriter, r *http.Request) {
 	container.AddChild(m.blockCreateModal())
 	container.AddChild(m.blockTrashModal())
 
-	blocks, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	blocks, err := m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: m.blockEntityType,
 		Offset:     0,
 		Limit:      200,

@@ -128,7 +128,7 @@ func cmsEntitiesSetup(cms *Cms) (err error) {
 	}
 
 	if cms.entitiesAutoMigrate {
-		err = cms.EntityStore.AutoMigrate()
+		err = cms.EntityStore.AutoMigrate(context.Background())
 		if err != nil {
 			return err
 		}
@@ -260,7 +260,7 @@ func cmsUsersSetup(cms *Cms) (err error) {
 	}
 
 	if cms.usersAutoMigrate {
-		err = cms.UserStore.AutoMigrate()
+		err = cms.UserStore.AutoMigrate(context.Background())
 		if err != nil {
 			return err
 		}

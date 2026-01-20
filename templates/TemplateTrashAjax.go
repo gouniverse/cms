@@ -16,14 +16,14 @@ func (m UiManager) TemplateTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := m.entityStore.EntityFindByID(templateID)
+	template, _ := m.entityStore.EntityFindByID(r.Context(), templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
 		return
 	}
 
-	isOk, err := m.entityStore.EntityTrash(templateID)
+	isOk, err := m.entityStore.EntityTrash(r.Context(), templateID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Template failed to be moved to trash "+err.Error()))

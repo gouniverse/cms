@@ -31,7 +31,7 @@ func (m UiManager) TemplateUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := m.entityStore.EntityFindByID(templateID)
+	template, _ := m.entityStore.EntityFindByID(r.Context(), templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))

@@ -15,7 +15,7 @@ func (m UiManager) BlockCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := m.entityStore.EntityCreateWithType(m.blockEntityType)
+	block, err := m.entityStore.EntityCreateWithType(r.Context(), m.blockEntityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be created: "+err.Error()))

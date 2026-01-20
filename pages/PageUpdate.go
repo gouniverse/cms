@@ -31,7 +31,7 @@ func (m UiManager) PageUpdateV1(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, _ := m.entityStore.EntityFindByID(pageID)
+	page, _ := m.entityStore.EntityFindByID(r.Context(), pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
@@ -135,7 +135,7 @@ func (m UiManager) PageUpdateV1(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Template
-	templateList, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	templateList, err := m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: "template",
 		Offset:     0,
 		Limit:      100,

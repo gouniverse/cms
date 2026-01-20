@@ -17,7 +17,7 @@ func (cms Cms) pageUsersUserManager(w http.ResponseWriter, r *http.Request) {
 	endpoint := r.Context().Value(keyEndpoint).(string)
 	// log.Println(endpoint)
 
-	users, err := cms.UserStore.EntityList(entitystore.EntityQueryOptions{
+	users, err := cms.UserStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: "user",
 		Offset:     0,
 		Limit:      200,
@@ -230,14 +230,14 @@ func (cms Cms) pageUsersUserTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, _ := cms.UserStore.EntityFindByID(userID)
+	user, _ := cms.UserStore.EntityFindByID(r.Context(), userID)
 
 	if user == nil {
 		api.Respond(w, r, api.Error("User NOT FOUND with ID "+userID))
 		return
 	}
 
-	isOk, err := cms.UserStore.EntityTrash(userID)
+	isOk, err := cms.UserStore.EntityTrash(r.Context(), userID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("User failed to be trashed "+err.Error()))
@@ -268,7 +268,7 @@ func (cms Cms) pageUsersUserCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := cms.UserStore.EntityCreateWithType("user")
+	user, err := cms.UserStore.EntityCreateWithType(r.Context(), "user")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("User failed to be created: "+err.Error()))
@@ -300,7 +300,7 @@ func (cms Cms) pageUsersUserUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, _ := cms.UserStore.EntityFindByID(userID)
+	user, _ := cms.UserStore.EntityFindByID(r.Context(), userID)
 
 	if user == nil {
 		api.Respond(w, r, api.Error("User NOT FOUND with ID "+userID))
@@ -344,7 +344,7 @@ func (cms Cms) pageUsersUserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, _ := cms.UserStore.EntityFindByID(userID)
+	user, _ := cms.UserStore.EntityFindByID(r.Context(), userID)
 
 	if user == nil {
 		api.Respond(w, r, api.Error("User NOT FOUND with ID "+userID))

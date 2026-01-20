@@ -19,7 +19,7 @@ func (m UiManager) WidgetUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, _ := m.entityStore.EntityFindByID(widgetID)
+	widget, _ := m.entityStore.EntityFindByID(r.Context(), widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))

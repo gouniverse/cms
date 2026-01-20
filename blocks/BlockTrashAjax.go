@@ -15,7 +15,7 @@ func (m UiManager) BlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := m.entityStore.EntityFindByID(blockID)
+	block, err := m.entityStore.EntityFindByID(r.Context(), blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Error: "+err.Error()))
@@ -27,7 +27,7 @@ func (m UiManager) BlockTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isOk, err := m.entityStore.EntityTrash(blockID)
+	isOk, err := m.entityStore.EntityTrash(r.Context(), blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be trashed"))

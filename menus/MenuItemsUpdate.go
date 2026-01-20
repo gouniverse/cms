@@ -19,7 +19,7 @@ func (m UiManager) MenuItemsUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, _ := m.entityStore.EntityFindByID(menuID)
+	menu, _ := m.entityStore.EntityFindByID(r.Context(), menuID)
 
 	if menu == nil {
 		api.Respond(w, r, api.Error("Menu NOT FOUND with ID "+menuID))

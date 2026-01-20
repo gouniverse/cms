@@ -15,7 +15,7 @@ func (m UiManager) MenuCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	menu, err := m.entityStore.EntityCreateWithType(m.menuEntityType)
+	menu, err := m.entityStore.EntityCreateWithType(r.Context(), m.menuEntityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Menu failed to be created "+err.Error()))

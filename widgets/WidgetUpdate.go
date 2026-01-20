@@ -17,7 +17,7 @@ func (m UiManager) WidgetUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	widget, _ := m.entityStore.EntityFindByID(widgetID)
+	widget, _ := m.entityStore.EntityFindByID(r.Context(), widgetID)
 
 	if widget == nil {
 		api.Respond(w, r, api.Error("Widget NOT FOUND with ID "+widgetID))
@@ -82,7 +82,7 @@ func (m UiManager) WidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	h := container.ToHTML()
 
 	name, _ := widget.GetString("name", "")
-	statusAttribute, err := m.entityStore.AttributeFind(widget.ID(), "status")
+	statusAttribute, err := m.entityStore.AttributeFind(r.Context(), widget.ID(), "status")
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be found: "+err.Error()))
 		return
@@ -92,7 +92,7 @@ func (m UiManager) WidgetUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := m.entityStore.AttributeFind(widget.ID(), "content")
+	contentAttribute, err := m.entityStore.AttributeFind(r.Context(), widget.ID(), "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be found: "+err.Error()))

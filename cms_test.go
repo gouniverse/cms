@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"context"
 	"log"
 	"testing"
 
@@ -123,7 +124,7 @@ func (suite *CmsTestSuite) TestCmsInitConfigs() {
 	assert.True(suite.T(), cms2.sessionEnabled, "Enable pages MUST BE true after init")
 	assert.True(suite.T(), cms2.templatesEnabled, "Enable templates MUST BE true after init")
 
-	pages, err := cms2.EntityStore.EntityList(entitystore.EntityQueryOptions{
+	pages, err := cms2.EntityStore.EntityList(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_PAGE,
 		Offset:     0,
 		Limit:      10,
@@ -160,7 +161,7 @@ func (suite *CmsTestSuite) TestCmsPages() {
 	})
 	assert.Nil(suite.T(), err)
 
-	pages, err := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+	pages, err := cms.EntityStore.EntityList(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_PAGE,
 		Offset:     0,
 		Limit:      10,

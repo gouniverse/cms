@@ -30,7 +30,7 @@ func (m UiManager) BlockUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := m.entityStore.EntityFindByID(blockID)
+	block, err := m.entityStore.EntityFindByID(r.Context(), blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block failed to be retrieved: "+err.Error()))
@@ -105,7 +105,7 @@ func (m UiManager) BlockUpdate(w http.ResponseWriter, r *http.Request) {
 		api.Respond(w, r, api.Error("Name failed to be retrieved: "+err.Error()))
 		return
 	}
-	statusAttribute, err := m.entityStore.AttributeFind(block.ID(), "status")
+	statusAttribute, err := m.entityStore.AttributeFind(r.Context(), block.ID(), "status")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be pulled"))
@@ -116,7 +116,7 @@ func (m UiManager) BlockUpdate(w http.ResponseWriter, r *http.Request) {
 	if statusAttribute != nil {
 		status = statusAttribute.GetString()
 	}
-	contentAttribute, err := m.entityStore.AttributeFind(block.ID(), "content")
+	contentAttribute, err := m.entityStore.AttributeFind(r.Context(), block.ID(), "content")
 
 	if err != nil {
 		api.Respond(w, r, api.Error("IO Error. Attribute failed to be fetched"))

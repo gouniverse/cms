@@ -31,7 +31,7 @@ func (m UiManager) TranslationUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	translation, err := m.entityStore.EntityFindByID(translationID)
+	translation, err := m.entityStore.EntityFindByID(r.Context(), translationID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Translation failed to be retrieved: "+err.Error()))

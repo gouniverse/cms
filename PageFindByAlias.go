@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"context"
 	"regexp"
 	"strings"
 
@@ -18,7 +19,7 @@ import (
 // =====================================================================
 func (cms *Cms) PageFindByAlias(alias string) (*entitystore.Entity, error) {
 	// Try to find by "alias"
-	page, err := cms.EntityStore.EntityFindByAttribute(ENTITY_TYPE_PAGE, "alias", ""+alias+"")
+	page, err := cms.EntityStore.EntityFindByAttribute(context.Background(), ENTITY_TYPE_PAGE, "alias", ""+alias+"")
 
 	if err != nil {
 		return nil, err
@@ -29,7 +30,7 @@ func (cms *Cms) PageFindByAlias(alias string) (*entitystore.Entity, error) {
 	}
 
 	// Try to find by "/alias"
-	page, err = cms.EntityStore.EntityFindByAttribute(ENTITY_TYPE_PAGE, "alias", "/"+alias+"")
+	page, err = cms.EntityStore.EntityFindByAttribute(context.Background(), ENTITY_TYPE_PAGE, "alias", "/"+alias+"")
 
 	if err != nil {
 		return nil, err
@@ -77,7 +78,7 @@ func (cms *Cms) PageFindByAliasWithPatterns(alias string) (*entitystore.Entity, 
 		":alpha":   "([a-zA-Z0-9-_]+)",
 	}
 
-	attributes, err := cms.EntityStore.AttributeList(entitystore.AttributeQueryOptions{
+	attributes, err := cms.EntityStore.AttributeList(context.Background(), entitystore.AttributeQueryOptions{
 		EntityType:   ENTITY_TYPE_PAGE,
 		AttributeKey: "alias",
 	})
@@ -101,7 +102,7 @@ func (cms *Cms) PageFindByAliasWithPatterns(alias string) (*entitystore.Entity, 
 
 		matcher := regexp.MustCompile("^" + pageAlias + "$")
 		if matcher.MatchString(alias) {
-			return cms.EntityStore.EntityFindByID(pageID)
+			return cms.EntityStore.EntityFindByID(context.Background(), pageID)
 		}
 	}
 

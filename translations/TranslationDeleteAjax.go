@@ -15,7 +15,7 @@ func (m UiManager) TranslationDeleteAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	translation, err := m.entityStore.EntityFindByID(translationID)
+	translation, err := m.entityStore.EntityFindByID(r.Context(), translationID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Database error: "+err.Error()))
@@ -27,7 +27,7 @@ func (m UiManager) TranslationDeleteAjax(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	isOk, err := m.entityStore.EntityDelete(translationID)
+	isOk, err := m.entityStore.EntityDelete(r.Context(), translationID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Translation failed to be deleted: "+err.Error()))

@@ -12,7 +12,7 @@ import (
 )
 
 func (m UiManager) TemplateManager(w http.ResponseWriter, r *http.Request) {
-	templates, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	templates, err := m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: "template",
 		Offset:     0,
 		Limit:      200,

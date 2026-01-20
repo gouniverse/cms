@@ -16,7 +16,7 @@ func (m UiManager) PageCreateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, err := m.entityStore.EntityCreateWithType(m.pageEntityType)
+	page, err := m.entityStore.EntityCreateWithType(r.Context(), m.pageEntityType)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Page failed to be created: "+err.Error()))

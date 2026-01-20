@@ -20,7 +20,7 @@ func (m UiManager) TemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, _ := m.entityStore.EntityFindByID(templateID)
+	template, _ := m.entityStore.EntityFindByID(r.Context(), templateID)
 
 	if template == nil {
 		api.Respond(w, r, api.Error("Template NOT FOUND with ID "+templateID))
@@ -37,26 +37,26 @@ func (m UiManager) TemplateUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := m.entityStore.AttributeSetString(template.ID(), "content", content)
+	err := m.entityStore.AttributeSetString(r.Context(), template.ID(), "content", content)
 	if err != nil {
 		api.Respond(w, r, api.Error("Content failed to be updated: "+err.Error()))
 		return
 	}
 
-	err = m.entityStore.AttributeSetString(template.ID(), "name", name)
+	err = m.entityStore.AttributeSetString(r.Context(), template.ID(), "name", name)
 	if err != nil {
 		api.Respond(w, r, api.Error("Name failed to be updated: "+err.Error()))
 		return
 	}
 
-	err = m.entityStore.AttributeSetString(template.ID(), "status", status)
+	err = m.entityStore.AttributeSetString(r.Context(), template.ID(), "status", status)
 	if err != nil {
 		api.Respond(w, r, api.Error("Status failed to be updated: "+err.Error()))
 		return
 	}
 
 	template.SetHandle(handle)
-	errUpdate := m.entityStore.EntityUpdate(*template)
+	errUpdate := m.entityStore.EntityUpdate(r.Context(), *template)
 
 	if errUpdate != nil {
 		api.Respond(w, r, api.Error("Template failed to be updated: "+errUpdate.Error()))

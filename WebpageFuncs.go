@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"context"
 	"errors"
 
 	"github.com/dracory/entitystore"
@@ -31,7 +32,7 @@ func (cms *Cms) WebPageCreate(page types.WebPageInterface) error {
 		return errors.New("page name is empty")
 	}
 
-	pageEntity, err := cms.EntityStore.EntityCreateWithTypeAndAttributes(ENTITY_TYPE_PAGE, map[string]string{
+	pageEntity, err := cms.EntityStore.EntityCreateWithTypeAndAttributes(context.Background(), ENTITY_TYPE_PAGE, map[string]string{
 		"name":   name,
 		"status": status,
 		"title":  name,
@@ -84,9 +85,8 @@ func (cms *Cms) WebPageCount(options WebPageQueryOptions) (int64, error) {
 }
 
 func (cms *Cms) WebPageList(options WebPageQueryOptions) ([]types.WebPageInterface, error) {
-	entityList, errEntityList := cms.EntityStore.EntityList(entitystore.EntityQueryOptions{
+	entityList, errEntityList := cms.EntityStore.EntityList(context.Background(), entitystore.EntityQueryOptions{
 		EntityType:   ENTITY_TYPE_PAGE,
-		ID:           options.ID,
 		EntityHandle: options.Handle,
 		Limit:        uint64(options.Limit),
 		Offset:       uint64(options.Offset),
@@ -142,7 +142,7 @@ func (cms *Cms) WebPageUpdate(page types.WebPageInterface) error {
 		return nil
 	}
 
-	err := cms.EntityStore.AttributesSet(page.ID(), dataChanged)
+	err := cms.EntityStore.AttributesSet(context.Background(), page.ID(), dataChanged)
 	if err != nil {
 		return err
 	}

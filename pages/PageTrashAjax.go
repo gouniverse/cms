@@ -16,14 +16,14 @@ func (m UiManager) PageTrashAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, _ := m.entityStore.EntityFindByID(pageID)
+	page, _ := m.entityStore.EntityFindByID(r.Context(), pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))
 		return
 	}
 
-	isOk, err := m.entityStore.EntityTrash(pageID)
+	isOk, err := m.entityStore.EntityTrash(r.Context(), pageID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Entity failed to be trashed "+err.Error()))

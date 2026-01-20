@@ -19,7 +19,7 @@ func (m UiManager) BlockUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	block, err := m.entityStore.EntityFindByID(blockID)
+	block, err := m.entityStore.EntityFindByID(r.Context(), blockID)
 
 	if err != nil {
 		api.Respond(w, r, api.Error("Block not found: "+err.Error()))

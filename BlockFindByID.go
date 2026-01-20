@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"context"
 	"errors"
 
 	"github.com/dracory/entitystore"
@@ -13,7 +14,7 @@ import (
 // }
 
 func (cms *Cms) BlockFindByID(blockID string) (types.WebBlockInterface, error) {
-	entity, err := cms.EntityStore.EntityFindByID(blockID)
+	entity, err := cms.EntityStore.EntityFindByID(context.Background(), blockID)
 
 	if err != nil {
 		return nil, err

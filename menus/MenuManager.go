@@ -47,7 +47,7 @@ func (m UiManager) MenuManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	menus, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	menus, err := m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: m.menuEntityType,
 		Offset:     0,
 		Limit:      200,

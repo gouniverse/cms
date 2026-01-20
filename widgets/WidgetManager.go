@@ -46,7 +46,7 @@ func (m UiManager) WidgetManager(w http.ResponseWriter, r *http.Request) {
 	modal.AddChild(modalDialog)
 	container.AddChild(modal)
 
-	widgets, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	widgets, err := m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: "widget",
 		Offset:     0,
 		Limit:      200,

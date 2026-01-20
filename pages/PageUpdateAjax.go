@@ -27,7 +27,7 @@ func (m UiManager) PageUpdateAjax(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page, _ := m.entityStore.EntityFindByID(pageID)
+	page, _ := m.entityStore.EntityFindByID(r.Context(), pageID)
 
 	if page == nil {
 		api.Respond(w, r, api.Error("Page NOT FOUND with ID "+pageID))

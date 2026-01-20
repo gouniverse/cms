@@ -462,22 +462,22 @@ func (cms Cms) cmsHeader(endpoint string) string {
 		Href(endpoint + "?path=" + PathTranslationsTranslationManager).
 		Class("nav-link")
 
-	blocksCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+	blocksCount, _ := cms.EntityStore.EntityCount(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_BLOCK,
 	})
-	menusCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+	menusCount, _ := cms.EntityStore.EntityCount(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_MENU,
 	})
-	pagesCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+	pagesCount, _ := cms.EntityStore.EntityCount(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_PAGE,
 	})
-	templatesCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+	templatesCount, _ := cms.EntityStore.EntityCount(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_TEMPLATE,
 	})
-	translationsCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+	translationsCount, _ := cms.EntityStore.EntityCount(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_TRANSLATION,
 	})
-	widgetsCount, _ := cms.EntityStore.EntityCount(entitystore.EntityQueryOptions{
+	widgetsCount, _ := cms.EntityStore.EntityCount(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: ENTITY_TYPE_WIDGET,
 	})
 

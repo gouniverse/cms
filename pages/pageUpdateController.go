@@ -908,7 +908,7 @@ func (controller pageUpdateController) prepareDataAndValidate(r *http.Request) (
 	data.formTemplateID = data.page.TemplateID()
 	data.formTitle = data.page.Title()
 
-	templateList, err := controller.m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	templateList, err := controller.m.entityStore.EntityList(r.Context(), entitystore.EntityQueryOptions{
 		EntityType: "template",
 		Offset:     0,
 		Limit:      100,

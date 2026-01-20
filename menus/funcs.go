@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"context"
 	"log"
 	"slices"
 	"sort"
@@ -61,7 +62,7 @@ func buildTreeFromData(data []map[string]interface{}, parentID string) []map[str
 }
 
 func (m UiManager) buildTree(menuID string) []map[string]interface{} {
-	menuitems, err := m.entityStore.EntityListByAttribute(m.menuEntityType, "menu_id", menuID)
+	menuitems, err := m.entityStore.EntityListByAttribute(context.Background(), m.menuEntityType, "menu_id", menuID)
 
 	if err != nil {
 		log.Panicln("Menu items failed to be retrieved " + err.Error())
@@ -95,7 +96,7 @@ func (m UiManager) buildTree(menuID string) []map[string]interface{} {
 }
 
 func (m UiManager) pageMenusMenuItemsPagesDropdownList() (pagesDropdownList []map[string]string, errorMessage string) {
-	pages, err := m.entityStore.EntityList(entitystore.EntityQueryOptions{
+	pages, err := m.entityStore.EntityList(context.Background(), entitystore.EntityQueryOptions{
 		EntityType: m.pageEntityType,
 		Offset:     0,
 		Limit:      200,
@@ -174,7 +175,7 @@ func flattenTree(nodes []map[string]interface{}) []map[string]interface{} {
 }
 
 func (m UiManager) cleanMenuFromNonExistingMenuItems(menuID string, existingMenuItemIDs []string) (errorMessage string) {
-	allMenuItems, err := m.entityStore.EntityListByAttribute(m.menuEntityType, "menu_id", menuID)
+	allMenuItems, err := m.entityStore.EntityListByAttribute(context.Background(), m.menuEntityType, "menu_id", menuID)
 
 	if err != nil {
 		return "Menu items failed to be fetched: " + err.Error()
@@ -184,7 +185,7 @@ func (m UiManager) cleanMenuFromNonExistingMenuItems(menuID string, existingMenu
 	for _, menuitem := range allMenuItems {
 		exists := slices.Contains(existingMenuItemIDs, menuitem.ID())
 		if !exists {
-			m.entityStore.EntityDelete(menuitem.ID())
+			m.entityStore.EntityDelete(context.Background(), menuitem.ID())
 		}
 	}
 
