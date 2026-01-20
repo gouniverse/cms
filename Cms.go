@@ -66,6 +66,7 @@ type Cms struct {
 	tasksAutomigrate    bool
 	tasksTaskTableName  string
 	tasksQueueTableName string
+	scheduleTableName   string
 
 	shortcodes []ShortcodeInterface
 
@@ -153,6 +154,7 @@ func configToCms(config Config) *Cms {
 	cms.settingsTableName = cms.prefix + "setting"
 	cms.tasksQueueTableName = cms.prefix + "tasks_queue"
 	cms.tasksTaskTableName = cms.prefix + "tasks_task"
+	cms.scheduleTableName = cms.prefix + "schedule"
 	cms.userEntityTableName = cms.prefix + "users_entity"
 	cms.userAttributeTableName = cms.prefix + "users_attribute"
 

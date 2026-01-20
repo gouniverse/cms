@@ -224,9 +224,10 @@ func cmsTasksSetup(cms *Cms) (err error) {
 	}
 
 	cms.TaskStore, err = taskstore.NewStore(taskstore.NewStoreOptions{
-		DB:             cms.Database.DB(),
-		TaskTableName:  cms.tasksTaskTableName,
-		QueueTableName: cms.tasksQueueTableName,
+		DB:                      cms.Database.DB(),
+		ScheduleTableName:       cms.scheduleTableName,
+		TaskDefinitionTableName: cms.tasksTaskTableName,
+		TaskQueueTableName:      cms.tasksQueueTableName,
 	})
 
 	if err != nil {
